@@ -13,22 +13,44 @@ let router= new Router({
         {
             path: '/index',
             name: 'index',
-            component: ()=>import('@/views/index/index')
+            component: ()=>import('@/views/index/index'),
+            meta: {
+                title: '首页'
+            }
         },
         {
             path: '/login',
             name: 'login',
-            component: ()=>import('@/views/login/index')
+            component: ()=>import('@/views/login/index'),
+            meta: {
+                title: '登录'
+            }
+        },
+        {
+            path: '/particulars',
+            name: 'particulars',
+            component: ()=>import('@/views/particulars/index'),
+            meta: {
+                title: '门店详情'
+            }
+        },
+        {
+            path: '/user',
+            name: 'user',
+            component: ()=>import('@/views/user/index'),
+            meta: {
+                title: '个人中心'
+            }
         },
     ]
 })
 
-// router.beforeEach((to, from, next) => {
-// 	Vue.prototype.$hideLoading();
-// 	if (to.meta.title) {
-//     document.title = to.meta.title
-//   }
-// 	next();
-// })
+router.beforeEach((to, from, next) => {
+	// Vue.prototype.$hideLoading();
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+	next();
+})
 
 export default router

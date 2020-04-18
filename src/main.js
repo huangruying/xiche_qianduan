@@ -16,6 +16,8 @@ rem()
 
 // 初始化样式库
 import './styles/base.css'
+// icon 字体图标库
+import './icon/iconfont.css'
 
 Vue.config.productionTip = false
 
