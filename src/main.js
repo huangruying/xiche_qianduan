@@ -11,6 +11,7 @@ import 'vant/lib/index.css';
 Vue.use(Vant);
 
 // rem 大小屏幕单位适配
+// import 'lib-flexible'
 import rem from './rem/remConfig'
 rem()
 
@@ -22,7 +23,7 @@ import './icon/iconfont.css'
 Vue.config.productionTip = false
 
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    render: h => h(App)
 }).$mount('#app')

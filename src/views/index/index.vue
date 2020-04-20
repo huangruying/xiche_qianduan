@@ -7,8 +7,8 @@
           <!-- <van-dropdown-menu>
             <van-dropdown-item v-model="value" :options="option1" />
           </van-dropdown-menu> -->
-          <div class="tou_bu">
-            <span>天河区</span>
+          <div class="tou_bu" @click="pickerShow = true">
+            <span>{{ area }}</span>
             <img src="@/assets/index/多边形 1@2x.png" alt="">
           </div>
         </div>
@@ -68,13 +68,36 @@
         </div>
       </div>
     </div>
+    <!-- 省市区联动 -->
+    <div class="cell">
+      <van-popup v-model="pickerShow" position="bottom" :style="{ height: '50%' }">
+          <van-area
+              :area-list="areaList"
+              :visible-item-count="4"
+              @confirm="areaChange"
+              @click.stop
+              cancel-button-text=" "
+              title="请选择位置"
+              :value="adcode" 
+            />
+      </van-popup>
+    </div>
   </div>
 </template>
 
 <script>
+import areaList from "@/utils/area";
+import AMap from 'AMap' // 引入高德地图
+import Vue from 'vue';
+import { Toast } from 'vant';
+Vue.use(Toast);
 export default {
   data(){
     return{
+      adcode: "",
+      area: "",
+      pickerShow: false,
+      areaList: areaList,
       rate: 4.5,
       value: 0,
       search: "",
@@ -101,18 +124,115 @@ export default {
       activeName: 0
     }
   },
+  mounted(){
+    this.getLocation()
+    Toast.loading({
+      message: '正在定位...',
+      forbidClick: true,
+    });
+  },
   methods: {
     onClick(name, title) {
       
     },
+    async areaChange(e) {
+      console.log(e);
+      console.log(this.adcode);
+      this.pickerShow = false
+      // this.province = e[0].name;
+      // this.city = e[1].name;
+      this.area = e[2].name;
+    },
     particulars(){
       this.$router.push({name:"particulars"})
-    }
+    },
+    getLocation() {
+      var thiss = this
+        AMap.plugin('AMap.Geolocation', function () {
+          var geolocation = new AMap.Geolocation({
+            // 是否使用高精度定位，默认：true
+            enableHighAccuracy: true,
+            // 设置定位超时时间，默认：无穷大
+            timeout: 10000,
+          })
+
+          geolocation.getCurrentPosition()
+          AMap.event.addListener(geolocation, 'complete', onComplete)
+          AMap.event.addListener(geolocation, 'error', onError)
+
+          function onComplete(data) {
+            // data是具体的定位信息
+            console.log('定位成功信息：', data)
+            self.adcode = data.addressComponent.adcode
+            // self.province = data.addressComponent.province
+            // self.city = data.addressComponent.city.replace("市", "");
+            // self.area = data.addressComponent.district.replace("区", "");
+          }
+
+          function onError(data) {
+            // 定位出错
+            console.log('定位失败错误：', data)
+            thiss.getLngLatLocation()
+          }
+        })
+    },
+    getLngLatLocation() {
+        Toast.fail('定位失败！请点击左上角手动选择位置');
+        return
+        AMap.plugin('AMap.CitySearch', function () {
+          var citySearch = new AMap.CitySearch()
+          citySearch.getLocalCity(function (status, result) {
+            if (status === 'complete' && result.info === 'OK') {
+              // 查询成功，result即为当前所在城市信息
+              console.log('通过ip获取当前城市：',result)
+              //逆向地理编码
+              AMap.plugin('AMap.Geocoder', function () {
+                  var geocoder = new AMap.Geocoder({
+                      // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+                      city: result.adcode
+                      // city: result.city
+                  })
+
+                  var lnglat = result.rectangle.split(';')[0].split(',');
+                  console.log(lnglat);
+                  
+                  // geocoder.getLocation(lnglat, function(status, result) {
+                  //   if (status === 'complete' && result.info === 'OK') {
+                  //     // result中对应详细地理坐标信息
+                  //     console.log(result);
+                  //   }
+                  // })
+                  geocoder.getAddress(lnglat, function (status, data) {
+                      if (status === 'complete' && data.info === 'OK') {
+                          // result为对应的地理位置详细信息
+                          console.log(data)
+                      }
+                  })
+              })
+            }
+          })
+        })
+      }
   }
 }
 </script>
 
 <style lang="less" scoped>
+.cell{
+  /deep/.van-cell{
+    padding: 20px;
+  }
+  /deep/.van-ellipsis{
+  font-size: 30px;
+}
+/deep/.van-picker__toolbar{
+    height: 80px;
+    line-height: 80px;
+    .van-picker__cancel,.van-picker__title,.van-picker__confirm{
+      font-size: 28px;
+    }
+  }
+}
 .search_input{
   flex: 1;
   display: flex;

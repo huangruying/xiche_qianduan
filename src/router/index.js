@@ -42,6 +42,14 @@ let router= new Router({
                 title: '个人中心'
             }
         },
+        {
+            path: '/cardVolume',
+            name: 'cardVolume',
+            component: ()=>import('@/views/cardVolume/index'),
+            meta: {
+                title: '我的卡卷'
+            }
+        },
     ]
 })
 
