@@ -5,18 +5,18 @@
     <div class="input_box">
       <van-form @submit="onSubmit" :show-error="false" label-width="100px">
         <van-field
-          v-model="userName"
-          name= "姓名"
+          v-model="name"
+          name= "name"
           label="姓名"
           placeholder="请输入姓名"
         />
         <van-field
           required
-          v-model="mobile"
+          v-model="phone"
           name= "phone"
           label="手机号码"
           placeholder="请输入手机号码"
-         :rules="[{ required: true, message: '请输入手机号码！' },{validator:phone , message: '手机号码不合法！' }]"
+         :rules="[{ required: true, message: '请输入手机号码！' },{validator:mobile , message: '手机号码不合法！' }]"
         />
         <van-field
           v-model="engine"
@@ -25,16 +25,16 @@
           placeholder="请输入发动机号"
         />
         <van-field
-          v-model="horsenumber"
-          name= "horseNumber"
+          v-model="frame"
+          name= "frame"
           label="车驾号"
           placeholder="请输入车驾号"
         />
         <div class="che_pai">
           <van-field
             required
-            v-model="plateNumber"
-            name= "plateNumber"
+            v-model="licensePlate"
+            name= "licensePlate"
             label="车牌号码"
             placeholder="请输入车牌号码"
             :rules="[{ required: true, message: '请输入车牌号码' }]"
@@ -60,14 +60,15 @@
 
 <script>
 import { cardTitle , letter } from '@/utils/plateNumber'
+import api from '@/api/user'
 export default {
   data (){
     return {
-      userName: "",
-      mobile: "",
+      name: "",
+      phone: "",
       engine: "",
-      horsenumber: "",
-      plateNumber: "",
+      frame: "",
+      licensePlate: "",
       plate: "粤A",
       show: false,
       columns: [
@@ -86,9 +87,16 @@ export default {
   },
   methods: {
      onSubmit(values) {
-      console.log('submit', values);
+       values.licensePlate = this.plate + values.licensePlate
+       api.saveVehicleUserId(values).then(res=>{
+         if(res.data.code == 200){
+            this.$toast.success("绑定成功！")
+         }else{
+           this.$toast(res.data.msg)
+         }
+       })
     },
-    phone(val) {
+    mobile(val) {
       return  /^1[0-9]{10}$/.test(val);
     },
     onCancel(){

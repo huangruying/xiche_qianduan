@@ -41,7 +41,7 @@
         <p>4.支付成功后进店服务。</p>
       </div>
       <div class="explain_box2" v-if="!bgdleft">
-
+          
       </div>
     </div>
     <!-- 无数据 -->
@@ -75,6 +75,9 @@ export default {
       pastDue: false,
       pastDue2: false
     };
+  },
+  mounted(){
+    
   },
   methods: {
     onClick(name, title) {

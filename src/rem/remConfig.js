@@ -6,7 +6,7 @@ export default function () {
         var clientWidth = docEl.clientWidth
         if (!clientWidth) return
         // 100 * () + 'px'
-        docEl.style.fontSize = 75 * (clientWidth / 750) + 'px'
+        docEl.style.fontSize = 110 * (clientWidth / 750) + 'px'
       }
     if (!doc.addEventListener) return
     win.addEventListener(resizeEvt, recalc, false)

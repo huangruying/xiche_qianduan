@@ -19,34 +19,34 @@
             </div>
         </template>
       </van-swipe>
-      <div class="title">广州市锦辉汽车维修服务有限公司</div>
+      <div class="title">{{dataList.dotName}}</div>
       <div class="rate_box">
           <div class="rate">
-            <van-rate v-model="rate" allow-half readonly size="16px" color="#ffaf00"/>
-            <span>4.5 分</span>
+            <van-rate v-model="dataList.score" allow-half readonly size="16px" color="#ffaf00"/>
+            <span>{{dataList.score}} 分</span>
           </div>
-          <span>销量266</span>
+          <span>销量{{dataList.volume}}</span>
       </div>
       <div class="bottom_address">
         <div class="left">
-          <img src="../../assets/particulars/电话@2x.png" alt="">
-          <span>电话 <span>020-48488484</span></span>
+          <img src="@/assets/particulars/电话@2x.png" alt="">
+          <span>电话 <span>{{dataList.mobile}}</span></span>
         </div>
         <div class="right">
           <img src="@/assets/index/时间@2x.png" alt="" class="img">
-          <span>8:30-17:30</span>
+          <span>{{dataList.businessHours}}</span>
         </div>
       </div>
       <div class="bgd_box">
           <div class="navigation">
               <div class="nav">
                   <img src="@/assets/index/定位@2x.png" alt="">
-                  <span>燕岭路585号</span>
+                  <span>{{dataList.address}}</span>
               </div>
-              <div class="nav_btn">
+              <div class="nav_btn" @click="navigation(dataList.address)">
                   <div>
                       <img src="@/assets/particulars/指路牌@2x.png" alt="">
-                      <span>1.4km</span>
+                      <span>{{distance}}km</span>
                   </div>
                   <span>导航</span>
               </div>
@@ -68,7 +68,7 @@
           </div>
       </div>
       <div class="price_box">
-          <div class="price">
+          <div class="price" @click="payTheBil">
               <span>普通洗车</span>
               <div>
                   <span>门市价：</span>￥46
@@ -87,10 +87,13 @@
               </div>
           </div>
       </div>
+      <van-share-sheet v-model="showShare" :options="options" @select="onSelect" />
   </div>
 </template>
 
 <script>
+import api from '@/api/particulars'
+import axios from 'axios'
 export default {
     data () {
         return {
@@ -98,6 +101,26 @@ export default {
             current: 0,
             index: 0,
             activeName: 0,
+            showShare: false,
+            options: [
+                {
+                name: '百度地图',
+                icon: require('@/assets/baidu.png') ,
+                },
+                {
+                name: '高德地图',
+                icon: require('@/assets/gaode.png'),
+                },
+                {
+                name: '腾讯地图',
+                icon: require('@/assets/tenxun.png'),
+                },
+            ],
+            distance: "",
+            city: "",
+            lat: "",
+            lng: "",
+            dataList: {},
             vanTab:[
                 {
                 title: "洗车",
@@ -114,7 +137,57 @@ export default {
             ],
         }
     },
+    mounted(){
+        var { dotCode , city , region , distance} = this.$route.query
+        this.apiGetList(dotCode,city,region)
+        this.city = city
+        this.distance = distance
+    },
     methods: {
+        payTheBil(){
+            axios({
+                method: 'post',
+                url: 'http://test2.yuyuetrip.com.cn/weChatUnifiedorder',
+                data:{ money: '1' }
+            }).then(res=>{
+                window.location.href = res                      
+            }).catch(err=>{
+                console.log(err);
+            })
+        },
+        onSelect(option) {
+          if(option.name == '百度地图'){
+              window.location.href = `http://api.map.baidu.com/marker?location=${this.lat},${this.lng}&title=${this.dataList.address}&content=${this.dataList.address}&output=html`
+          }else if(option.name == '高德地图'){
+              window.location.href = `http://uri.amap.com/marker?position=lng,lat&name=${this.dataList.address}&coordinate=${this.lat}&callnative=${this.lng}`
+          }else if(option.name == '腾讯地图'){
+              window.location.href = `http://apis.map.qq.com/uri/v1/marker?marker=coord:${this.lat},${this.lng};addr:${this.dataList.address}`
+          }
+          this.showShare = false;
+        },
+        async apiGetList(dotCode,city,region){
+            var res = await api.getOfficialDotByDotCode({dotCode,city,region})
+            this.dataList = res.data.data
+            console.log(res);
+        },
+        navigation(address){
+            var thiss = this
+            AMap.plugin('AMap.Geocoder', function() {
+            var geocoder = new AMap.Geocoder({
+                // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+                city: thiss.city
+            })
+
+            geocoder.getLocation( address, function(status, result) {
+                if (status === 'complete' && result.info === 'OK') {
+                   // result中对应详细地理坐标信息
+                   thiss.lat = result.geocodes[0].location.lat
+                   thiss.lng = result.geocodes[0].location.lng
+                   thiss.showShare = true
+                }
+            })
+            })
+        },
         onChange(index) {
          this.current = index;
         },
@@ -129,6 +202,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/.van-share-sheet__options{
+    padding: 40px 30px;
+    /deep/.van-share-sheet__icon{
+        width: 100px;
+        height: 100px;
+        border-radius: 20px;
+    }
+}
+/deep/.van-share-sheet__cancel{
+    height: 80px;
+    line-height: 80px;
+}
 .price_box{
     background: #fff;
     padding: 0 23px;
@@ -242,6 +327,11 @@ export default {
             >span{
                 color: #333333;
                 font-size: 24px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
             }
         }
     }

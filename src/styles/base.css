@@ -15,7 +15,7 @@ time, mark, audio, video, input {
     padding: 0;
     border: 0;
     color: inherit;
-    font-size: 26px;
+    font-size: 27px;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     /*点击高亮效果的清除*/
@@ -25,7 +25,7 @@ time, mark, audio, video, input {
 html,body {
   line-height: 1;
   font-family: "Microsoft YaHei",sans-serif;
-  font-size: 26px;
+  font-size: 27px;
   height: 100%;
   width: 100%;
   outline: none;
@@ -95,7 +95,6 @@ input::-moz-placeholder { /* Mozilla Firefox 19+ */
 input:-ms-input-placeholder { /* Internet Explorer 10+ */
   color: #B9B9B9;
 }
-
 table {
     border-collapse: collapse;
     border-spacing: 0;
@@ -125,61 +124,13 @@ button{
 button:enabled:active{
   background-color: transparent;
 }
-/* H5顶部 */
-.wrapper_hd{
-  width: 100%;
-  height: 0.96rem;
-  background: #fff;
+/* 消息提示 */
+.van-toast{
+ width: 200px;
+ min-height: 130px;
+ max-width: 80%;
+ border-radius: 10px;
 }
-.wrapper_hd .hd_pd{
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-.wrapper_hd .hd_pd .hd_pd_br{
-  display: flex;
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-.wrapper_hd .hd_pd span{
-  font-size: 0.34rem;
-}
-.wrapper_hd .hd_pd .back{
-  display: block;
-  padding: 0 0.2rem 0 0.32rem;
-}
-.wrapper_hd .hd_pd .back img{
-  display: block;
-  width: 0.18rem;
-  height: 0.34rem;
-}
-.wrapper_hd .hd_pd .line{
-  width: 0.02rem;
-  height: 0.32rem;
-  background: #333333;
-}
-.wrapper_hd .hd_pd .close{
-  display: block;
-  padding-left: 0.2rem;
-}
-.wrapper_hd .hd_pd .close img{
-  display: block;
-  width: 0.32rem;
-  height: 0.32rem;
-}
-.wrapper_hd .hd_pd .hd_pd_txt{
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: space-between;
-}
-.wrapper_hd .hd_pd .hd_pd_txt .titlr_l,.wrapper_hd .hd_pd .hd_pd_txt .titlr_r{
-  font-size: 0.34rem;
-  padding: 0 0.34rem;
+.van-toast__text{
+  line-height: 30px;
 }

@@ -2,27 +2,23 @@
 import axios from '@/utils/myaxios'
     
 // 首页
-export const index = data => {
+const indexInfo = data => {
   return axios({
     method: 'post',
-    url: 'station/findYyProductOfficial',
+    url: 'wash/findOfficialDotInfos',
     data
   })
 }
 
-// 首页-商品详情
-export const getQuery = data => {
-    return axios({
-      method: 'post',
-      url: 'station/getYyProductOfficialById',
-      data
-    })
+const findCarwashTypeInfos = data => {
+  return axios({
+    method: 'post',
+    url: 'wash/findCarwashTypeInfos',
+    data
+  })
 }
 
-// export const index = data => {
-//   return axios({
-//     method: 'get',
-//     url: 'station/getYyProductOfficialById',
-//     params: data
-//   })
-// }
+export default{
+  indexInfo,
+  findCarwashTypeInfos
+}

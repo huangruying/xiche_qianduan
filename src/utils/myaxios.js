@@ -2,7 +2,7 @@
 import axios from 'axios'
 if(process.env.NODE_ENV==='development'){
   // 开发环境
-  axios.defaults.baseURL = 'http://192.168.0.161:8182/yuyuetrip/'
+  axios.defaults.baseURL = 'http://192.168.0.161:8181/yuyuetrip/'
  }else{
    // 生产环境
   axios.defaults.baseURL = ''
