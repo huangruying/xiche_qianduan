@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="search_input">
-          <van-search v-model="search" placeholder="请输入搜索关键词" />
+          <van-search v-model="search" placeholder="请输入搜索关键词" @blur="blurSearch"/>
         </div>
         <div class="text">地图</div>
       </div>
@@ -28,6 +28,14 @@
       <van-tab :title="tab.dotsType" :name="tab.ids" v-for="tab in vanTab" :key="tab.name"></van-tab>
     </van-tabs>
     <div class="commodity_box">
+      <!-- 加载 -->
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+
       <div class="commodity" @click="particulars(item)" v-for="(item,ind) in shopList" :key="ind">
         <img :src="item.storeImage" alt="">
         <div class="text_box">
@@ -51,10 +59,13 @@
           </div>
         </div>
       </div>
-      <div class="nodata" v-if="nodata">
+
+      </van-list>
+      <!-- <div class="nodata" v-if="nodata">
         暂无数据~
-      </div>
+      </div> -->
     </div>
+     <div id="container" />
     <!-- 省市区联动 -->
     <div class="cell">
       <van-popup v-model="pickerShow" position="bottom" :style="{ height: '50%' }">
@@ -75,16 +86,19 @@
 <script>
 import areaList from "@/utils/area";
 import api from '@/api/index'
+import { location } from "@/utils/LocationUtil";
 // import AMap from 'AMap' // 引入高德地图
 export default {
   data(){
     return{
+      loading: true,
+      finished: false,
       adcode: "",
       area: "",
       city: "",
       region: "",
       pickerShow: false,
-      nodata: false,
+      // nodata: false,
       areaList: areaList,
       rate: 4.5,
       value: 0,
@@ -95,6 +109,7 @@ export default {
       carwashId: "",
       tabsList: [],
       shopList: [],
+      shopList2: [],
       indexSrc: require('@/assets/index/index_img.png'),
       vanTab:[],
       option1: [
@@ -102,25 +117,67 @@ export default {
         { text: '白云区', value: 1 },
         { text: '番禺区', value: 2 },
       ],
-      activeName: 0
+      activeName: 0,
+      duration: 0,
+      total: "",
+      pageNum: 1
     }
   },
-  created() {
+  mounted (){
     // 此处为调用精确定位之后，调取ip定位，可根据实际情况改写
     this.getLocation();
     this.tabList()
     // this.getLngLatLocation()
   },
+  created() {
+    // this.getLocationPop(); // 调用获取地理位置 
+  },
   methods: {
+    // 上拉加载
+     onLoad() {
+          // this.loading = false;
+          this.apiGetlist()
+    },
+    // 搜索
+    blurSearch(){
+      this.pageNum = 1
+      if(this.search == ""){
+        this.tabList()
+        this.apiGetlist()   
+      }else{
+        this.vanTab = [{
+                dotsType: "全部",
+                ids: ""
+        }]
+        this.apiGetlist()
+      }
+    },
+    /**获取地图定位*/
+    getLocationPop() {
+      let _that = this;
+      let geolocation = location.initMap("map-container"); //定位
+      AMap.event.addListener(geolocation, "complete", result => {
+        _that.lat = result.position.lat;
+        _that.lng = result.position.lng;
+        _that.province = result.addressComponent.province;
+        _that.city = result.addressComponent.city;
+        _that.district = result.addressComponent.district;
+      });
+    },
+    // 点击分类
     onClick(name, title) {
+      this.pageNum = 1
       this.carwashsIds = name
       this.apiGetlist()
     },
+    // 点击总分类
     vanTabList(tab, id){
-      this.vanTab = tab
       this.carwashId = id
+      this.pageNum = 1
+      this.vanTab = tab    
       this.apiGetlist()
     },
+    // 经纬度计算距离    15817495925  88888888
     latLng(lat,lng){
        var lat2 = this.lat
        var lng2 = this.lng
@@ -135,29 +192,49 @@ export default {
        s = Math.round(s * 10000) / 10000;
        return s.toFixed(2)
     },
+    //经纬度转换成三角函数中度分表形式。
     rad(d){
-      return d * Math.PI / 180.0;//经纬度转换成三角函数中度分表形式。
+      return d * Math.PI / 180.0;
     },
+    // 获取数据
     apiGetlist(){
       api.indexInfo({
+        pageNum: this.pageNum,
+        pageSize: 4,
+        search: this.search,
         carwashId: this.carwashId,   // 洗车  美容...
         city: this.city,          // 城市名称
         region: this.region,     // 区域名称
         carwashsIds: this.carwashsIds  // 1普通洗车2全套精洗
       }).then(res=>{
-        this.shopList = res.data.data
-        if(res.data.data){
-          this.nodata = false
+        if(res.data.data.length > 0){
+          if(this.pageNum == 1){
+               this.shopList = []
+              this.finished = false
+          }
+           ++this.pageNum
+          // this.nodata = false
+          this.shopList = [...this.shopList , ...res.data.data]
+          this.total = res.data.total
+          this.loading = false
           this.shopList.map(v=>{
             var distance = this.latLng(v.latitude,v.longitude)
             v.distance = distance
-            // console.log(distance) Number;
           })
-        }else{
-          this.nodata = true
+        }else if(res.data.data.length <= 0){
+              if(this.pageNum == 1){
+                this.shopList = []
+                this.finished = true
+                return
+              }
+              this.finished = true;    
+        }
+        if(this.shopList.length >= res.data.total){
+          this.finished = true;
         }
       })
     },
+    // 获取总分类数据
     async tabList(){
         var res = await api.findCarwashTypeInfos()
         this.tabsList = res.data.data
@@ -171,9 +248,10 @@ export default {
         this.vanTab = this.tabsList[0].carwashsTypes
         this.carwashId = this.tabsList[0].id
         this.carwashsIds = this.tabsList[0].carwashsTypes[0].ids
-        this.apiGetlist()
-        // console.log(res);
+        // this.pageNum = 1
+        // this.apiGetlist()   
     },
+    // 手动选择省市区
     areaChange(e) {
       var thiss = this
       this.pickerShow = false
@@ -193,12 +271,13 @@ export default {
             console.log(result);
             thiss.lat = bounds.lat
             thiss.lng = bounds.lng
+            thiss.pageNum = 1
             thiss.apiGetlist()
           })
         })
     },
+    // 点击跳转详情页
     particulars(item){
-      console.log(item);
       this.$router.push({name:"particulars",query: {
         dotCode: item.dotCode,
         city: item.city,
@@ -206,12 +285,23 @@ export default {
         distance: item.distance
       }})
     },
+    // 定位
     getLocation() {
+      // const url =
+      //   'https://webapi.amap.com/maps?v=1.4.15&key=56ff9418fd027ac8fbfb82ff4787e38c&callback=onLoad'
+      // const jsapi = document.createElement('script')
+      // jsapi.charset = 'utf-8'
+      // jsapi.src = url
+      // document.head.appendChild(jsapi)
       const self = this;
-      // this.$toast.loading({
-      //   message: '',
-      //   forbidClick: true,
-      // });
+      this.$toast.loading({
+        duration: self.duration, // 持续展示 toast
+        message: '',
+        forbidClick: true,
+      });
+      // var map = new AMap.Map('container',{
+      //   resizeEnable: true
+      // })
       AMap.plugin("AMap.Geolocation", function() {
         var geolocation = new AMap.Geolocation({
           // 是否使用高精度定位，默认：true
@@ -221,18 +311,22 @@ export default {
         });
 
         geolocation.getCurrentPosition();
+       // map.addControl(geolocation); //geolocation.getCurrentPosition(); //精准定位
+       // geolocation.getCityInfo();  //定位到城市
         AMap.event.addListener(geolocation, "complete", onComplete);
         AMap.event.addListener(geolocation, "error", onError);
 
         function onComplete(data) {
           // data是具体的定位信息
-          console.log("定位成功信息：", data);
+          // console.log("定位成功信息：", data);
+          self.duration = 1
           self.lng = data.position.lng
           self.lat = data.position.lat
           self.area = data.addressComponent.district
           self.city = data.addressComponent.city
-          self.region = data.addressComponent.region
+          self.region = data.addressComponent.district
           self.apiGetlist()
+          self.finished = false
           for(let key in self.areaList.county_list){
              if(self.areaList.county_list[key] == self.area){
                self.adcode = key
@@ -251,6 +345,7 @@ export default {
         }
       });
     },
+    // 定位出错，调用ip定位
     getLngLatLocation() {
         this.$toast.fail('定位失败！');
         // return
@@ -294,6 +389,7 @@ export default {
                         cat.area = result.geocodes[0].addressComponent.district
                         cat.city = result.geocodes[0].addressComponent.city
                         cat.apiGetlist()
+                        cat.finished = false
                         for(let key in cat.areaList.city_list){
                           // console.log(cat.areaList.county_list[key]);
                           if(cat.areaList.city_list[key] == cat.city){
@@ -313,7 +409,7 @@ export default {
             }
           })
         })
-      }
+    }
   }
 }
 </script>

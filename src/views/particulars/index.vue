@@ -177,7 +177,6 @@ export default {
                 // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
                 city: thiss.city
             })
-
             geocoder.getLocation( address, function(status, result) {
                 if (status === 'complete' && result.info === 'OK') {
                    // result中对应详细地理坐标信息

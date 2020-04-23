@@ -2,7 +2,8 @@
 import axios from 'axios'
 if(process.env.NODE_ENV==='development'){
   // 开发环境
-  axios.defaults.baseURL = 'http://192.168.0.161:8181/yuyuetrip/'
+  axios.defaults.baseURL = 'yuyuetrip/'
+  // axios.defaults.baseURL = 'http://test2.yuyuetrip.com.cn/'
  }else{
    // 生产环境
   axios.defaults.baseURL = ''
@@ -10,18 +11,18 @@ if(process.env.NODE_ENV==='development'){
 // 2.设置基准路径
 // axios.defaults.baseURL = 'http://a.insoonto.net'
 // localStorage.setItem('heima_39_baseurl', 'http://127.0.0.1:3000')
-
+// Set-Cookie: widget_session=abc123; SameSite=None; Secure
 // 3.添加请求拦截器
 // 只要使用这个封装的axios发送请求就会经过它的拦截器
 // config:就是传说中的请求报文
 // axios.interceptors.request.use(function (config) {
 //   // 在发送请求之前做些什么
 //   // 获取token
-//   let token = localStorage.getItem('heima_39_Authorization')
+//   // let token = localStorage.getItem('heima_39_Authorization')
 //   // 如果有token，则通过请求头的方式进行传递
-//   if (token) {
-//     config.headers.Authorization = token
-//   }
+//   // if (token) {
+//   //   config.headers.Authorization = token
+//   // }
 //   return config
 // }, function (error) {
 //   // 对请求错误做些什么

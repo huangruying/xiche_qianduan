@@ -5,22 +5,22 @@
     </van-tabs>
     <div>
       <div class="card_box">
-        <div class="volume">
+        <div class="volume" v-for="(value,index) in dataList" :key="index">
           <div class="img">
             <img src="@/assets/cardVolume/bgdjuan2.png" alt v-if="bgdleft"/>
             <img src="@/assets/cardVolume/bgdjuan.png" alt v-if="!bgdleft"/>
-            <div>快洗</div>
-            <span>洗车券</span>
+            <div>{{value.dotType}}</div>
+            <span>{{value.alias}}</span>
           </div>
           <div class="box">
             <div class="top">
               <div class="left_text">
-                <div>仅限快速洗车使用</div>
-                <span>2020-05-21前有效</span>
+                <div>{{value.couponName}}</div>
+                <span>{{value.failureTime}}前有效</span>
               </div>
               <div class="right_img" v-if="bgdleft">
                 <img src="@/assets/cardVolume/即将过期@2x.png" alt />
-                <van-button type="info" class="btn">立即使用</van-button>
+                <van-button type="info" class="btn" @click="useVolume(value.couponCode)">立即使用</van-button>
               </div>
               <div class="right_img" v-if="pastDue">
                 <img src="@/assets/cardVolume/已过期@2x.png" alt class="img"/>
@@ -29,7 +29,7 @@
                 <img src="@/assets/cardVolume/已使用.png" alt class="img"/>
               </div>
             </div>
-            <div class="bottom">优惠券码：Q7DRXU8SG6DF5D</div>
+            <div class="bottom">优惠券码：{{value.couponCode}}</div>
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@
       </div>
     </div>
     <!-- 无数据 -->
-    <div class="nodata" v-if="false">
+    <div class="nodata" v-if="nodata">
         <img src="@/assets/cardVolume/提示@2x.png" alt="">
         <span>您还没有任何可使用卡券</span>
     </div>
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import api from '@/api/cardVolume'
 export default {
   data() {
     return {
@@ -70,16 +71,20 @@ export default {
           name: 2
         }
       ],
+      dataList: [],
+      nodata: false,
       activeName: 0,
       bgdleft: true,
       pastDue: false,
-      pastDue2: false
+      pastDue2: false,
+      name: 1
     };
   },
   mounted(){
-    
+    this.apiList()
   },
   methods: {
+    // 头部优惠状态
     onClick(name, title) {
         if(name === 0){
             this.bgdleft = true
@@ -94,6 +99,24 @@ export default {
             this.pastDue = false
             this.pastDue2 = true
         }
+        this.apiList()
+    },
+    // 获取数据
+    apiList(){
+      api.findGeneralCouponByUserId({
+        userId: 1,
+        status: this.activeName
+      }).then(res=>{
+        if(res.data.data && res.data.data.length > 0){
+          this.dataList = res.data.data
+        }else{
+          this.nodata = true
+        }
+      })
+    },
+    // 使用优惠卷
+    useVolume(use){
+      this.$router.push({name: 'cardParticulars',puery: {use}})
     }
   }
 };

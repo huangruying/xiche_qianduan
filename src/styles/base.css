@@ -134,3 +134,20 @@ button:enabled:active{
 .van-toast__text{
   line-height: 30px;
 }
+/* 底部版权 */
+.ccc{
+  position: fixed;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  color: #8c8c8c;
+  font-size:24px;
+}
+/* 头部 */
+.title_box{
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background: #21a7fc;
+  color: #fff;
+}
