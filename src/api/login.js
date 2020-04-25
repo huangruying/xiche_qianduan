@@ -9,3 +9,21 @@ export const userLogin = data => {
     data
   })
 }
+
+//  短信验证码
+export const sendMsg = data => {
+  return axios({
+    method: 'post',
+    url: '/sendMsg',
+    data
+  })
+}
+
+//  普通用户登录或注册
+export const signUpOrLogIn = data => {
+  return axios({
+    method: 'post',
+    url: '/signUpOrLogIn',
+    data
+  })
+}

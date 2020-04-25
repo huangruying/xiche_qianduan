@@ -25,7 +25,7 @@
           <em>我家</em>
         </div>
       </div>
-      <div class="text_box" style="border-top: 1px solid #ccc; flex-grow: 1; overflow-y: auto;">
+      <div class="text_box" style="border-top: 1px solid #ccc; flex-grow: 1;overflow-y: auto;">
         <div class="text">
           <span>车辆品牌：</span>
           <em></em>
@@ -82,6 +82,10 @@ export default {
     letter-spacing: 8px;
   }
 }
+.oil{
+  width: 100%;
+  height: 100%;
+}
 .van-cell {
   display: flex;
   align-items: center;
@@ -91,8 +95,8 @@ export default {
   }
 }
 .bgdf {
-  background: #333333;
-  height:100vh;
+  // background: #333333;
+  // height:100vh;
   display: flex;
   flex-direction: column;
   .text_box {

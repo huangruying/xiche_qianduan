@@ -3,7 +3,7 @@
     <van-tabs @click="onClick" v-model="activeName" :swipeable="true" style="margin-bottom: 10px;">
       <van-tab :title="tab.title" :name="tab.name" v-for="tab in vanTab" :key="tab.name"></van-tab>
     </van-tabs>
-    <div>
+    <div style="overflow-y: scroll;">
       <div class="card_box">
         <div class="volume" v-for="(value,index) in dataList" :key="index">
           <div class="img">
@@ -40,9 +40,9 @@
         <p>3.车主确认应支付费用后进行支付</p>
         <p>4.支付成功后进店服务。</p>
       </div>
-      <div class="explain_box2" v-if="!bgdleft">
+      <!-- <div class="explain_box2" v-if="bgdleft">
           
-      </div>
+      </div> -->
     </div>
     <!-- 无数据 -->
     <div class="nodata" v-if="nodata">
@@ -81,7 +81,14 @@ export default {
     };
   },
   mounted(){
-    this.apiList()
+    var obj = localStorage.getItem('user')
+    var obj = JSON.parse(obj)
+    if(obj === null){
+        this.$router.push({name: 'index'})
+        this.$parent.login()
+    }else{
+      this.apiList()
+    }
   },
   methods: {
     // 头部优惠状态
@@ -103,34 +110,49 @@ export default {
     },
     // 获取数据
     apiList(){
+      var data
+      if(this.activeName === 0){
+        data = 1
+      }else if(this.activeName  === 1){
+        data = 2
+      }else{
+        data = 0
+      }
       api.findGeneralCouponByUserId({
         userId: 1,
-        status: this.activeName
+        status: data
       }).then(res=>{
         if(res.data.data && res.data.data.length > 0){
           this.dataList = res.data.data
+          this.nodata = false
         }else{
+          this.dataList = []
           this.nodata = true
         }
       })
     },
     // 使用优惠卷
     useVolume(use){
-      this.$router.push({name: 'cardParticulars',puery: {use}})
+      this.$router.push({name: 'cardParticulars',query: {use}})
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
+.cardVolume{
+  height: 100vh;
+  background: #f5f5f9;
+}
 .explain_box2{
     background: #f5f5f9;
     width: 100%;
-    height:  ~"calc(100vh - (90px))";
+    // overflow-y: scroll;
+    // height:  ~"calc(100vh - (90px))";
 }
 .nodata{
     background: #F5F5F9;
-    height:  ~"calc(100vh - (90px))";
+    // height:  ~"calc(100vh - (90px))";
     padding-top: 50px;
     display: flex;
     justify-content: center;
@@ -146,6 +168,8 @@ export default {
     }
 }
 .explain_box {
+  // background: #fff;
+  overflow-y: scroll;
   padding: 24px 36px;
   .title {
     color: #111111;

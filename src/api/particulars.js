@@ -5,7 +5,7 @@ import axios from '@/utils/myaxios'
 const getOfficialDotByDotCode = data => {
   return axios({
     method: 'post',
-    url: 'wash/getOfficialDotByDotCode',
+    url: '/getOfficialDotByDotCode',
     data
   })
 }

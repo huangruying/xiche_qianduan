@@ -17,16 +17,17 @@ import router from './router/index'
 //   v: '1.4.15', // 我也不知道为什么要写这个，不写项目会报错，而且我随便写的，跟我下载的版本对应不了
 //   uiVersion: '1.0.11' // ui版本号，也是需要写
 // })
+// rem 大小屏幕单位适配
+// import 'lib-flexible'
+import rem from './rem/remConfig'
+rem()
+
 // 引入第3方ui库
 import Vant from 'vant';
 import 'vant/lib/index.css';
 Vue.use(Vant);
 import { Toast } from 'vant';
 Vue.use(Toast);
-// rem 大小屏幕单位适配
-// import 'lib-flexible'
-import rem from './rem/remConfig'
-rem()
 
 // 初始化样式库
 import './styles/base.css'

@@ -207,6 +207,7 @@ export default {
         region: this.region,     // 区域名称
         carwashsIds: this.carwashsIds  // 1普通洗车2全套精洗
       }).then(res=>{
+        // console.log(res);
         if(res.data.data.length > 0){
           if(this.pageNum == 1){
                this.shopList = []

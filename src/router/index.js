@@ -106,6 +106,46 @@ let router= new Router({
                 title: '机油查询'
             }
         },
+        {
+            path: '/userAccount',
+            name: 'userAccount',
+            component: ()=>import('@/views/userAccount/index'),
+            meta: {
+                title: '个人账户'
+            }
+        },
+        {
+            path: '/orderManagement',
+            name: 'orderManagement',
+            component: ()=>import('@/views/orderManagement/index'),
+            meta: {
+                title: '订单管理'
+            }
+        },
+        {
+            path: '/redeemCode',
+            name: 'redeemCode',
+            component: ()=>import('@/views/redeemCode/index'),
+            meta: {
+                title: '兑换码核销'
+            }
+        },
+        {
+            path: '/platform',
+            name: 'platform',
+            component: ()=>import('@/views/platform/index'),
+            meta: {
+                title: '平台核销'
+            }
+        },
+        {
+            path: '/orderParticulars',
+            name: 'orderParticulars',
+            component: ()=>import('@/views/orderParticulars/index'),
+            meta: {
+                title: '订单详情'
+            }
+        },
     ]
 })
 

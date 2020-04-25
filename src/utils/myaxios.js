@@ -2,7 +2,7 @@
 import axios from 'axios'
 if(process.env.NODE_ENV==='development'){
   // 开发环境
-  axios.defaults.baseURL = 'yuyuetrip/'
+  axios.defaults.baseURL = 'yuyuetrip/wash/official'
   // axios.defaults.baseURL = 'http://test2.yuyuetrip.com.cn/'
  }else{
    // 生产环境

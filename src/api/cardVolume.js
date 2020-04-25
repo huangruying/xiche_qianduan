@@ -4,7 +4,7 @@ import axios from '@/utils/myaxios'
 const findGeneralCouponByUserId = data => {
   return axios({
     method: 'post',
-    url: 'wash/findGeneralCouponByUserId',
+    url: '/findGeneralCouponByUserId',
     data
   })
 }

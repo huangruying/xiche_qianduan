@@ -5,7 +5,7 @@ import axios from '@/utils/myaxios'
 const saveVehicleUserId = data => {
   return axios({
     method: 'post',
-    url: 'wash/saveVehicleUserId',
+    url: '/saveVehicleUserId',
     data
   })
 }

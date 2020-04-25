@@ -2,16 +2,19 @@
   <div class="cardParticulars">
       <div class="content">
           <div class="top">
-              <div class="title">免费精致洗车</div>
-              <div class="date">有效截止日期：2020.05.29</div>
+              <div class="title">{{dataList.alias}}</div>
+              <div class="date">有效截止日期：{{dataList.failureTime}}</div>
               <div class="barCode">
-                  <img class="bar" src="http://192.168.0.161:8184/yuyuetrip/wash/createBarCode" alt="">
-                  <!-- <div class="bar"></div> -->
+                  <div class="bar">
+                      <barcode :value="use" v-if="use" :options="barCode_options" style="width:100%;">
+                        你的手机条不支持条形码，请扫描以下二维码
+                      </barcode>
+                  </div>
               </div>
               <div class="qrcode">
-                  <div class="qr"></div>
+                  <div class="qr" id="qrcode" ref="ref_qr"></div>
               </div>
-              <div class="conversion">兑换码：132328560493</div>
+              <span class="conversion tag-read" @click="copy" :data-clipboard-text="use">兑换码：{{use}}</span>
               <span>请出示以上券码给网点工作人员</span>
           </div>
           <div class="look_box">
@@ -19,7 +22,7 @@
               <span>使用前请确认网点信息 <van-icon name="arrow" /> </span>
           </div>
       </div>
-      <div class="text-box">
+      <div class="text-box" style="overflow-y: scroll;background: #F2F1F6;">
           <div class="explain_box">
             <div class="title">使用说明：</div>
             <p class="one">1.您可以在礼包列表的网点使用该服务券；</p>
@@ -28,8 +31,9 @@
          </div>
          <div class="explain_box">
             <div class="title">内容介绍：</div>
-            <p class="one">服务内容：针对7座及7座以下客车（深层氧化物无法去除）</p>
-            <p>1. 发动机除尘上光；2. 脚垫深层清洁；3. 蜡水清洁车身；4. 轮胎及轮椅清洁、轮胎护理；5. 车身边缘清洁；6. 车身沥青部分</p>
+            <p v-html="dataList.content">{{dataList.content}}</p>
+            <!-- <p class="one">服务内容：针对7座及7座以下客车（深层氧化物无法去除）</p>
+            <p>1. 发动机除尘上光；2. 脚垫深层清洁；3. 蜡水清洁车身；4. 轮胎及轮椅清洁、轮胎护理；5. 车身边缘清洁；6. 车身沥青部分</p> -->
          </div>
       </div>
   </div>
@@ -37,27 +41,111 @@
 
 <script>
 import api from '@/api/cardParticulars'
+import QRCode  from "qrcodejs2"
+import Clipboard from 'clipboard';
+import Vue from 'vue'
+import VueBarcode from '@xkeshi/vue-barcode';
+Vue.component('barcode', VueBarcode);
 export default {
+    components: { QRCode },
     data(){
         return{
-
+            use: null,
+            timer: null,
+            dataList: {},
+            barCode_options:{
+                width: '1px',
+                height: '50px',
+                fontSize: '18px',
+                displayValue: false
+            }
         }
     },
     mounted(){
-        // api.createBarCode().then(res=>{
-        //     console.log(res);
-        // })
+        var { use } = this.$route.query
+        this.use = use
+        this.apiCardParticulars(use)
+    },
+    // 这里是组件被销毁的声明周期钩子函数
+    destroyed () {
+        // 清理定时器
+        clearTimeout(this.timer)
+    },
+    methods: {
+        apiCardParticulars(use){
+            api.getGeneralCouponByCode({couponCode: use}).then(res=>{
+                this.dataList = res.data.data
+                // console.log(res);
+                if(res.data.status == 'NOT_USED'){  // 未使用
+                    //  注意： 在需要调用的地方  这样必须这样调用  否则会出现  appendChild  null  就是id为qrcode的dom获取不到 返回结果为null
+                        this.$refs.ref_qr.innerHTML = ''
+                    this.$nextTick (function () {
+                        this.qrcode(res.data.data.couponCode);
+                    })
+                    this.timer = setTimeout(() => {
+                        this.apiCardParticulars(this.use)
+                    }, 3000)
+                }else if(res.data.status == 'SUCCESS'){
+                    // 已核销
+                    this.$router.push({name: 'evaluate',query:{
+                        use: this.use
+                    }})
+                }else if(res.data.status == 'OVERDUE'){
+                    // 已过期
+                    this.$toast('该卷已过期！')
+                    this.$router.push({name: 'cardVolume'})
+                }   
+            })
+        },
+        copy() {
+            var clipboard = new Clipboard('.tag-read')
+            clipboard.on('success', e => {
+            this.$toast('复制成功')
+            // 释放内存
+            clipboard.destroy()
+            })
+            clipboard.on('error', e => {
+            // 不支持复制
+            // this.$toast('复制成功')
+            console.log('该浏览器不支持自动复制')
+            // 释放内存
+            clipboard.destroy()
+            })
+        },
+         // 生成二维码
+        qrcode (couponCode) {
+            let that = this;
+            let qrcode = new QRCode('qrcode', {
+                width: 110,
+                height: 110,        // 高度
+                text: couponCode,   // 二维码内容
+                // render: 'canvas' ,   // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+                // background: '#f0f',   // 背景色
+                // foreground: '#ff0'    // 前景色
+            })
+        }
     }
 }
 </script>
 
 <style lang="less" scoped>
+/* 消息提示 */
+// .van-toast{
+// //  width: 200px;
+//  min-height: 90px !important;
+//  max-width: 80% !important;
+//  border-radius: 10px !important;
+// }
+// .van-toast__text{
+//   line-height: 20px !important;
+// }
 .cardParticulars{
     width: 100%;
     background: #F2F1F6;
-    // height: 100vh;
+    height: 100vh;
     padding: 30px;
     .explain_box {
+       background: #F2F1F6;
        padding: 24px 36px 0px;
         .title {
             color: #111111;
@@ -108,13 +196,14 @@ export default {
                 text-align: center;
                 font-size:34px;
                 font-weight:bold;
+                color: #000;
             }
             .barCode{
                 // background: #000;
-                >img{
+                .bar{
                     width: 340px;
                     height: 92px;
-                    margin: 50px auto 0;
+                    margin: 40px auto 0;
                 }
                 
             }

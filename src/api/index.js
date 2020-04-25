@@ -5,7 +5,7 @@ import axios from '@/utils/myaxios'
 const indexInfo = data => {
   return axios({
     method: 'post',
-    url: 'wash/findOfficialDotInfos',
+    url: '/findOfficialDotInfos',
     data
   })
 }
@@ -13,7 +13,7 @@ const indexInfo = data => {
 const findCarwashTypeInfos = data => {
   return axios({
     method: 'post',
-    url: 'wash/findCarwashTypeInfos',
+    url: '/findCarwashTypeInfos',
     data
   })
 }

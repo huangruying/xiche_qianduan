@@ -2,10 +2,10 @@
   <div class="evaluate">
       <div class="bgdfff">
         <div class="user_box">
-            <img src="@/assets/cardVolume/bgdjuan.png" alt="">
+            <img :src="dataList.storeImage" alt="">
             <div class="text_box">
-                <div>普洗轿车</div>
-                <span>美容养护</span>
+                <div>{{dataList.dotName}}</div>
+                <span>{{dataList.alias}}</span>
             </div>
         </div>
         <div class="xin">门店环境： <van-rate v-model="value1" size="22px" void-icon="star" /></div>
@@ -32,7 +32,7 @@
             />
       </div>
       <div class="uploader">
-          <van-uploader v-model="fileList" multiple :max-count="4" preview-size="60">
+          <van-uploader v-model="fileList" multiple :max-count="4" preview-size="60" @delete="deletefile">
               <div class="uploadder_box">
                   <img src="@/assets/上传照片@2x.png" alt="">
                   <span>上传照片</span>
@@ -43,16 +43,18 @@
           <van-checkbox v-model="checked" checked-color="#0F8FFF" shape="square">匿名</van-checkbox>
           <span>您的评价将以匿名的形式展示</span>
       </div>
-      <div class="btn_box"><van-button type="info" block>提交</van-button></div>
+      <div class="btn_box"><van-button type="info" block @click="submit" :loading="loading" loading-text="提交中...">提交</van-button></div>
   </div>
 </template>
 
 <script>
+import { getDotNameImage , officialOssUpload , saveDotEvaluate } from '@/api/evaluate'
 export default {
     data () {
         return{
             message: "",
             checked: false,
+            loading: false,
             value1: 0,
             value2: 0,
             value3: 0,
@@ -62,13 +64,16 @@ export default {
                 id3: false,
                 id4: false,
             },
-            fileList: [
-
-            ]
+            fileList: [],
+            dataList: {},
+            fileAdd: [],
+            id: null
         }
     },
     mounted () {
-
+        var { use } = this.$route.query
+        this.apiGetDotNameImage(use)
+        // AU8936UISJ
     },
     methods: {
         qingjia(index){
@@ -81,6 +86,67 @@ export default {
             }else if(index === 3){
                 this.index.id4 = !this.index.id4
             }
+        },
+        apiGetDotNameImage(use){
+            getDotNameImage({couponCode: use}).then(res=>{
+                this.dataList = res.data.data
+                this.id = res.data.data.id
+            })
+        },
+        afterRead(file) {
+            var formData = new FormData()
+            formData.append('file', file.file)
+            officialOssUpload(formData).then(res=>{
+                if(res.data.code == 200){
+                    this.fileAdd.push(res.data.data)
+                }
+            })
+        },
+        deletefile(file){
+        },
+        async submit(){
+           await this.fileList.forEach(v => {
+                this.afterRead(v)
+            });
+            this.loading = true
+            var userId = 1
+            var index = this.index
+            var type = []
+            if(index.id1){
+                type.push("洗的很干净")
+            }
+            if(index.id2){
+                type.push("操作专业")
+            }
+            if(index.id3){
+                type.push("态度热情")
+            }
+            if(index.id4){
+                type.push("服务好")
+            }
+            if(type.length == 0){
+                type = ""
+            }
+            if(this.checked){
+                userId = ""
+            }
+            saveDotEvaluate({
+                userId: userId,  // 用户ID
+                dotId: this.id, // 网点ID
+                content: this.message,  // 评价内容
+                image: this.fileAdd, // 上传照片
+                types: type,
+                science: this.value1,   // 门店环境
+                service: this.value2,   //  服务质量
+                attitude: this.value3,  // 服务态度
+            }).then(res=>{
+                 this.loading = false
+                 if(res.data.data == 200){
+                    this.$router.push({name: 'cardVolume'})
+                 }else{
+                     this.$toast(res.data.msg)
+                 }
+            })
         }
     }
 }
@@ -207,5 +273,6 @@ export default {
 }
 .evaluate{
     background: #F5F4F9;
+    // height: 100vh;;
 }
 </style>

@@ -23,27 +23,27 @@
               <van-button type="default">退出</van-button>
           </div>
           <div class="content_tabs clearfix">
-              <div class="box border">
+              <div class="box border" @click="userContent(0)">
                 <img src="@/assets/merchantIndex/grzh-icon@2x.png" alt="">
                 <span>个人账户</span>
               </div>
-              <div class="box border">
+              <div class="box border" @click="userContent(1)">
                 <img src="@/assets/merchantIndex/ddgl-icon@2x.png" alt="">
                 <span>订单管理</span>
               </div>
-              <div class="box">
+              <div class="box" @click="userContent(2)">
                 <img src="@/assets/merchantIndex/rbhx-icon@2x.png" alt="">
                 <span>人保核销</span>
               </div>
-              <div class="box border">
+              <div class="box border" @click="userContent(3)">
                 <img src="@/assets/merchantIndex/rbhx-icon@2x.png" alt="">
                 <span>国寿核销</span>
               </div>
-              <div class="box border">
+              <div class="box border" @click="userContent(4)">
                 <img src="@/assets/merchantIndex/rbhx-icon@2x.png" alt="">
                 <span>商务核销</span>
               </div>
-              <div class="box">
+              <div class="box" @click="userContent(5)">
                 <img src="@/assets/merchantIndex/rbhx-icon@2x.png" alt="">
                 <span>平台核销</span>
               </div>
@@ -68,6 +68,17 @@ export default {
                 this.$router.push({ name: 'relation' })
             }else if(index === 2){
                 this.$router.push({ name: 'oil' })
+            }
+        },
+        userContent(index){
+            if(index === 0){
+                this.$router.push({name: 'userAccount'})
+            }else if(index === 1){
+                this.$router.push({name: 'orderManagement'})
+            }else if(index === 2){
+                this.$router.push({name: 'redeemCode'})
+            }else if(index === 5){
+                this.$router.push({name: 'platform'})
             }
         }
     }

@@ -2,14 +2,14 @@
 import axios from '@/utils/myaxios'
     
 // 个人中心
-const createBarCode = data => {
+const getGeneralCouponByCode = data => {
   return axios({
-    method: 'get',
-    url: 'wash/createBarCode',
+    method: 'post',
+    url: '/getGeneralCouponByCode',
     data
   })
 }
 
 export default{
-    createBarCode,
+  getGeneralCouponByCode,
 }
