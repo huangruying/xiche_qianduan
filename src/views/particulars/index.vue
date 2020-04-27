@@ -145,15 +145,15 @@ export default {
     },
     methods: {
         payTheBil(){
-            axios({
-                method: 'post',
-                url: 'http://test2.yuyuetrip.com.cn/weChatUnifiedorder',
-                data:{ money: '1' }
-            }).then(res=>{
-                window.location.href = res                      
-            }).catch(err=>{
-                console.log(err);
-            })
+            // axios({
+            //     method: 'post',
+            //     url: 'http://test2.yuyuetrip.com.cn/weChatUnifiedorder',
+            //     data:{ money: '1' }
+            // }).then(res=>{
+            //     window.location.href = res                      
+            // }).catch(err=>{
+            //     console.log(err);
+            // })
         },
         onSelect(option) {
           if(option.name == '百度地图'){

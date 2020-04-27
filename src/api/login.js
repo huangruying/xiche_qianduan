@@ -27,3 +27,12 @@ export const signUpOrLogIn = data => {
     data
   })
 }
+
+//  商家登录
+export const businessUpOrLogIn = data => {
+  return axios({
+    method: 'post',
+    url: '/businessUpOrLogIn',
+    data
+  })
+}

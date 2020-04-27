@@ -134,7 +134,7 @@ export default {
   },
   methods: {
     // 上拉加载
-     onLoad() {
+    onLoad() {
           // this.loading = false;
           this.apiGetlist()
     },
@@ -366,8 +366,14 @@ export default {
                       // city: result.adcode
                       city: result.city
                   })
-
+                  // 经纬度查询地址
                   var lnglat = result.rectangle.split(';')[0].split(',');
+                  // geocoder.getAddress(lnglat, function (status, data) {
+                  //     if (status === 'complete' && data.info === 'OK') {
+                  //         // result为对应的地理位置详细信息
+                  //         console.log(data)
+                  //     }
+                  // })
                   // cat.lng = lnglat[0]
                   // cat.lat = lnglat[1]
                   // cat.area = result.city
@@ -400,12 +406,6 @@ export default {
                        }
                     }
                   })
-                  // geocoder.getAddress(lnglat, function (status, data) {
-                  //     if (status === 'complete' && data.info === 'OK') {
-                  //         // result为对应的地理位置详细信息
-                  //         console.log(data)
-                  //     }
-                  // })
               })
             }
           })

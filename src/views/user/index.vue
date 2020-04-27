@@ -60,7 +60,7 @@
 
 <script>
 import { cardTitle , letter } from '@/utils/plateNumber'
-import api from '@/api/user'
+import {} from '@/api/user'
 export default {
   data (){
     return {
@@ -111,6 +111,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.van-cell:not(:last-child)::after{
+    border-bottom: none;
+}
 /deep/.van-ellipsis{
   font-size: 34px;
 }

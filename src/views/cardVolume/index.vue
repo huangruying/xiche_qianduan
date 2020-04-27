@@ -84,10 +84,10 @@ export default {
     var obj = localStorage.getItem('user')
     var obj = JSON.parse(obj)
     if(obj === null){
-        this.$router.push({name: 'index'})
-        this.$parent.login()
+        // this.$router.push({name: 'index'})
+        this.$parent.login(0)
     }else{
-      this.apiList()
+      this.apiList(obj.id)
     }
   },
   methods: {
@@ -109,7 +109,7 @@ export default {
         this.apiList()
     },
     // 获取数据
-    apiList(){
+    apiList(id){
       var data
       if(this.activeName === 0){
         data = 1
@@ -119,7 +119,7 @@ export default {
         data = 0
       }
       api.findGeneralCouponByUserId({
-        userId: 1,
+        userId: id,  // 1  测试数据
         status: data
       }).then(res=>{
         if(res.data.data && res.data.data.length > 0){

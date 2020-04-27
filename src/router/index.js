@@ -71,7 +71,7 @@ let router= new Router({
             name: 'merchantIndex',
             component: ()=>import('@/views/merchantIndex/index'),
             meta: {
-                title: '个人中心'
+                title: '商家中心'
             }
         },
         {
@@ -142,6 +142,22 @@ let router= new Router({
             path: '/orderParticulars',
             name: 'orderParticulars',
             component: ()=>import('@/views/orderParticulars/index'),
+            meta: {
+                title: '订单详情'
+            }
+        },
+        {
+            path: '/merchantLogin',
+            name: 'merchantLogin',
+            component: ()=>import('@/views/merchantLogin/index'),
+            meta: {
+                title: '商家注册'
+            }
+        },
+        {
+            path: '/tttttttt',
+            name: 'tttttttt',
+            component: ()=>import('@/views/tttttttt/index'),
             meta: {
                 title: '订单详情'
             }
