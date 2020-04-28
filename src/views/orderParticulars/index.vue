@@ -9,60 +9,48 @@
       </div>
       <ul>
           <li>
-              <span>服务订单号：</span>
-              <em>121133213213245</em>
-          </li>
-          <li>
               <span>支付订单号：</span>
-              <em>121133213213245</em>
+              <em>{{listData.orderCode}}</em>
           </li>
           <li>
               <span>服务内容：</span>
-              <em>121133213213245</em>
+              <em>{{listData.projectName}}</em>
           </li>
           <li>
               <span>车牌号：</span>
-              <em>121133213213245</em>
+              <em>{{listData.licensePlate}}</em>
           </li>
           <li>
               <span>下单时间：</span>
-              <em>121133213213245</em>
+              <em>{{listData.placeTime}}</em>
           </li>
           <li>
               <span>完成时间：</span>
-              <em>121133213213245</em>
+              <em>{{listData.completionTime}}</em>
           </li>
           <li>
               <span>服务状态：</span>
-              <em>121133213213245</em>
+              <em>{{listData.orderStatus === 1 ? '已支付' : '未支付' }}</em>
           </li>
           <li>
-              <span>支付状态：</span>
-              <em>121133213213245</em>
+              <span>品牌车系：</span>
+              <em>{{listData.brandCar}}</em>
           </li>
           <li>
-              <span>服务商家：</span>
-              <em>121133213213245</em>
+              <span>车主姓名：</span>
+              <em>{{listData.vehicleName}}</em>
+          </li>
+          <li>
+              <span>车主手机号：</span>
+              <em>{{listData.vehiclePhone}}</em>
           </li>
           <li>
               <span>服务商家地址：</span>
-              <em>121133213213245</em>
+              <em>{{listData.garageAddress}}</em>
           </li>
           <li>
               <span>总金额：</span>
-              <em>121133213213245</em>
-          </li>
-          <li>
-              <span>参与优惠：</span>
-              <em>9999</em>
-          </li>
-          <li>
-              <span>应/实付金额：</span>
-              <em class="col">￥121133213213245</em>
-          </li>
-          <li>
-              <span>结算金额：</span>
-              <em class="col">￥121133213213245</em>
+              <em class="col">{{listData.money}}</em>
           </li>
       </ul>
       <van-button type="default" block @click="routerGo">返回</van-button>
@@ -73,8 +61,12 @@
 export default {
     data(){
         return{
-
+            listData: {}
         }
+    },
+    mounted(){
+        this.listData = this.$store.getters.listData
+        console.log(this.$store.getters.listData)
     },
     methods: {
         routerIndex(index){

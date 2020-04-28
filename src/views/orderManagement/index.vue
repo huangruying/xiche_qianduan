@@ -6,32 +6,51 @@
           <span>订单管理</span>
       </div>
       <div style="overflow-y: scroll;background: #fff;">
-        <div class="order_box" @click="orderParticulars">
-            <div class="index">1.</div>
+        <div class="order_box" @click="orderParticulars(value)" v-for="(value,index) in dataList" :key="index">
+            <div class="index">{{ index + 1 }}.</div>
             <div class="order">
-                    <div class="order_title">商户合作普洗</div>  
-                    <span>服务商家： 千寻汽车服务有限公司</span>
-                    <span>下单时间： 2020-09-03 18：10：19 </span>
-                    <span>车牌号码： qwwee</span>
+                    <div class="order_title">{{value.projectName}}</div>  
+                    <span>服务商家： {{value.garageName}}</span>
+                    <span>下单时间： {{value.placeTime}} </span>
+                    <span>车牌号码： {{value.licensePlate}}</span>
             </div>
             <div class="state">已结算</div>
         </div>
       </div>
+      <div v-if="nodata" class="nodata">暂无数据~</div>
       <van-button type="default" block @click="routerGo">返回</van-button>
   </div>
 </template>
 
 <script>
+import api from '@/api/merchantIndex'
 export default {
     data (){
         return{
-
+            dataList: [],
+            nodata: false
         }
     },
     mounted(){
-
+        var obj = localStorage.getItem("userMerchant");
+        var obj = JSON.parse(obj);
+        if(obj === null){
+            this.$toast('请先登录！')
+            this.$router.push({name: 'merchantIndex'})
+        }else{
+            this.apiGetList(obj)
+        }
     },
     methods: {
+        apiGetList(obj){
+            api.findServiceOrderById({id:obj}).then(res=>{
+                if(res.data.data && res.data.data.length > 0){
+                    this.dataList = res.data.data
+                }else{
+                    this.nodata = true
+                }
+            })
+        },
         routerIndex(index){
             if(index === 0){
                 this.$router.push( { name: 'merchantIndex' } )
@@ -40,7 +59,8 @@ export default {
         routerGo(){
             this.$router.go(-1)
         },
-        orderParticulars(){
+        orderParticulars(value){
+            this.$store.dispatch('alterList',value)
             this.$router.push({name: 'orderParticulars'})
         }
     }
@@ -48,6 +68,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.nodata{
+    text-align: center;
+    margin: 70px 0 30px;
+}
 .orderManagement{
     height: 100vh;
     background: #f8f8f8;
@@ -64,10 +88,11 @@ export default {
                 font-size: 34px;
                 font-weight: 600;
                 margin-bottom: 10px;
+                color: #333;
             }
             >span{
                 display: block;
-                color: #a4a4a4;
+                color: #333;
                 line-height: 40px;
             }
         }
@@ -75,6 +100,7 @@ export default {
             font-weight: bold;
             text-align: right;
             width: 200px;
+            color: '#333';
         }
         .index{
             font-weight: bold;

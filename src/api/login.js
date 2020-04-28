@@ -36,3 +36,21 @@ export const businessUpOrLogIn = data => {
     data
   })
 }
+
+//  查询所属机构
+export const findMechanismName = data => {
+  return axios({
+    method: 'post',
+    url: '/findMechanismName',
+    data
+  })
+}
+
+//  新增注册网点
+export const saveDot = data => {
+  return axios({
+    method: 'post',
+    url: '/saveDot',
+    data
+  })
+}

@@ -18,7 +18,17 @@ const wxUserInfo = data => {
     })
 }
 
+// 订单页数据
+const findServiceOrderById = data => {
+  return axios({
+    method: 'post',
+    url: '/findServiceOrderById',
+    data: data
+  })
+}
+
 export default{
   getParameter,
-  wxUserInfo
+  wxUserInfo,
+  findServiceOrderById
 }

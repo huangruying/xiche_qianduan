@@ -77,7 +77,8 @@ export default {
       bgdleft: true,
       pastDue: false,
       pastDue2: false,
-      name: 1
+      name: 1,
+      id: null
     };
   },
   mounted(){
@@ -87,6 +88,7 @@ export default {
         // this.$router.push({name: 'index'})
         this.$parent.login(0)
     }else{
+      this.id = obj.id
       this.apiList(obj.id)
     }
   },
@@ -106,7 +108,7 @@ export default {
             this.pastDue = false
             this.pastDue2 = true
         }
-        this.apiList()
+        this.apiList(this.id)
     },
     // 获取数据
     apiList(id){
