@@ -87,6 +87,7 @@
 import areaList from "@/utils/area";
 import api from '@/api/index'
 import { location } from "@/utils/LocationUtil";
+import wx from "weixin-js-sdk";
 // import AMap from 'AMap' // 引入高德地图
 export default {
   data(){
@@ -120,19 +121,107 @@ export default {
       activeName: 0,
       duration: 0,
       total: "",
-      pageNum: 1
+      pageNum: 1,
+      noncestr: "",
+      timestamp: "",
+      signature: ""
     }
   },
   mounted (){
     // 此处为调用精确定位之后，调取ip定位，可根据实际情况改写
     this.getLocation();
     this.tabList()
-    // this.getLngLatLocation()
+    // this.wxLocation()
   },
   created() {
     // this.getLocationPop(); // 调用获取地理位置 
   },
+  computed:{
+      // shopList:function(){
+      //     return this.sortByKey(this.shopList,'distance')
+      // }
+  },
   methods: {
+    wxLocation(){
+        api.getParameter({url: window.location.href}).then(res=>{
+            this.noncestr = res.data.noncestr
+            this.timestamp = res.data.timestamp
+            this.signature = res.data.signature
+            this.wxRegister()
+        })
+    },
+    // 排序
+    sortByKey(array,key){
+        return array.sort(function(a,b){
+            var x = a[key];
+            var y = b[key];
+            return((x<y)?-1:((x>y)?1:0));
+        })
+    },
+    // 微信地理位置
+    wxRegister() {
+      var this2 = this
+      // api.getParameter({code: this.code}).then(res => {
+        // var data = res.data;
+        wx.config({
+          debug: false, // true:调试时候弹窗
+          appId: "wx1008eb4c001227c4", // 微信appid
+          timestamp: this.timestamp, // 时间戳
+          nonceStr: this.noncestr, // 随机字符串
+          signature: this.signature, // 签名
+          jsApiList: [
+            // 所有要调用的 API 都要加到这个列表中
+            // 'onMenuShareTimeline', // 分享到朋友圈接口
+            // 'onMenuShareAppMessage', //  分享到朋友接口
+            // 'onMenuShareQQ', // 分享到QQ接口
+            // 'onMenuShareWeibo', // 分享到微博接口
+            "scanQRCode", // 微信扫一扫功能
+            "openLocation" //微信地理位置
+          ]
+        });
+        wx.ready(res => {
+          wx.getLocation({
+            success: function(res) {
+              var pointY = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+              var pointX = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+              // var speed = res.speed; // 速度，以米/每秒计
+              this2.lat = pointY
+              this2.lng = pointX
+              var wxaccuracy = res.accuracy; // 位置精度
+              // 逆向地理编码方法
+              AMap.plugin("AMap.Geocoder", function() {
+                var geocoder = new AMap.Geocoder({
+                  // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+                  city: wxaccuracy
+                });
+                var lnglat = [pointX, pointY];
+                geocoder.getAddress(lnglat, function(status, result) {
+                  if (status === "complete" && result.info === "OK") {
+                    var data = JSON.stringify(result)
+                    // result为对应的地理位置详细信息
+                    var bounds = result.regeocode.addressComponent
+                      this2.city = bounds.city
+                      this2.area = bounds.district
+                      this2.region = bounds.district
+                      this2.pageNum = 1
+                      this2.adcode = bounds.adcode
+                      this2.apiGetlist()
+                  }
+                });
+              });
+            },
+            cancel: function(res) {
+              this.getLocation()
+            }
+          });
+        });
+        /* 处理失败验证 */
+        wx.error(function(res) {
+          // config 信息验证失败会执行error函数,如签名过期导致验证失败,具体错误信息可以打开config的debug模式查看,也可以在返回的res参数中查看,对于SPA可以在这里更新签名
+          // alert("微信sdk配置失败！ " + res.errMsg);
+        });
+      // });
+    },
     // 上拉加载
     onLoad() {
           // this.loading = false;
@@ -222,6 +311,7 @@ export default {
             var distance = this.latLng(v.latitude,v.longitude)
             v.distance = distance
           })
+          this.shopList = this.sortByKey(this.shopList,'distance')
         }else if(res.data.data.length <= 0){
               if(this.pageNum == 1){
                 this.shopList = []
@@ -257,6 +347,7 @@ export default {
       var thiss = this
       this.pickerShow = false
       this.area = e[2].name;
+      this.region = e[2].name;
       this.adcode = e[2].code;  
       this.city = e[1].name;
       AMap.plugin('AMap.DistrictSearch', function () {
@@ -269,7 +360,6 @@ export default {
       })
       district.search(e[2].name, function(status, result) {
             var bounds = result.districtList[0].center
-            console.log(result);
             thiss.lat = bounds.lat
             thiss.lng = bounds.lng
             thiss.pageNum = 1

@@ -15,7 +15,7 @@
         </van-swipe-item>
         <template #indicator>
             <div class="custom-indicator">
-            {{ current + 1 }}/4
+              {{ current + 1 }}/4
             </div>
         </template>
       </van-swipe>
@@ -184,7 +184,7 @@ export default {
                    thiss.lng = result.geocodes[0].location.lng
                    thiss.showShare = true
                 }
-            })
+              })
             })
         },
         onChange(index) {

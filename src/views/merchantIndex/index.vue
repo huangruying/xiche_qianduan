@@ -61,18 +61,18 @@ import api from "@/api/merchantIndex";
 export default {
   data() {
     return {
-      code: ""
+      code: "",
+      noncestr: "",
+      timestamp: "",
+      signature: ""
     };
   },
   created() {
-    // 微信授权
-    const code = this.getUrlParam("code");
-    if(code){
-      this.code = code
-      alert("这是code---" + this.code);
-    }else{
-      // this.authorization()
-    }
+    api.getParameter({url: location.href}).then(res=>{
+            this.noncestr = res.data.noncestr
+            this.timestamp = res.data.timestamp
+            this.signature = res.data.signature
+    })
     this.apiCode(code);
     // 商家登录
     var obj = localStorage.getItem("userMerchant");
@@ -83,40 +83,7 @@ export default {
     }
   },
   methods: {
-    // 登录授权
-    authorization() {
-      //获取url中参数
-      const code = this.getUrlParam("code");
-      if (!code) {
-        // const url = encodeURIComponent(location.href.split("#")[0]); // 获取#之前的当前路径
-        const url = encodeURIComponent(location.href) // 获取#之前的当前路径
-        window.location.href =
-          "http://open.weixin.qq.com/connect/oauth2/authorize?appid=wx1008eb4c001227c4&redirect_uri=" +
-          url + 
-          "&response_type=code&scope=snsapi_userinfo&state=STATE&connect_redirect=1#wechat_redirect";
-      }
-    },
-    apiCode(code) {
-      if (code) {
-        api
-          .wxUserInfo({
-            code: code
-          })
-          .then(res => {
-            // {"msg":"成功", "code":"200", "noncestr":"随机数", "timestamp":"时间戳","signature":"签名"}
-            this.noncestr = res.data.noncestr
-            this.timestamp = res.data.timestamp
-            this.signature = res.data.signature
-            // var data = JSON.stringify(res)
-            // sessionStorage.setItem("wxUserData", data)
-          });
-      }
-    },
     WxAdd() {
-      // api.getParameter({code:this.code}).then(res => {
-        // console.log(res);
-        // var data = res.data;
-        alert('签名--' + this.signature)
         wx.config({
           debug: false, // true:调试时候弹窗
           appId: "wx1008eb4c001227c4", // 微信appid
@@ -135,8 +102,7 @@ export default {
         });
         // config信息验证成功后会执行ready方法,所有接口调用都必须在config接口获得结果之后
         // config 是一个客户端的异步操作,所以如果需要在页面加载时调用相关接口,则须把相关接口放在ready函数中调用来确保正确执行.对于用户触发是才调用的接口,则可以直接调用,不需要放在ready函数中
-        wx.ready(function() {
-         alert("微信sdk配置成功！ " + res);
+        wx.ready(function(res) {
           wx.checkJsApi({
             // 判断当前客户端版本是否支持指定JS接口
             jsApiList: ["scanQRCode"],
@@ -153,97 +119,21 @@ export default {
                     alert(res);
                     const getCode = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
                   }
-                });
+                })
               } else {
-                alert("抱歉，当前客户端版本不支持扫一扫");
+                this.$toast("抱歉，当前客户端版本不支持扫一扫");
               }
             },
             fail: function(res) {
+              this.$toast("扫一扫调用失败！");
               // 检测getNetworkType该功能失败时处理
-              alert("fail" + res);
             }
           });
         });
         /* 处理失败验证 */
         wx.error(function(res) {
+          this.$toast("服务器炸啦！");
           // config 信息验证失败会执行error函数,如签名过期导致验证失败,具体错误信息可以打开config的debug模式查看,也可以在返回的res参数中查看,对于SPA可以在这里更新签名
-          alert("微信sdk配置失败！ " + res.errMsg);
-          // console.log('微信sdk配置失败！');
-        });
-      // });
-    },
-    // 微信扫一扫
-    configWx() {
-      this.WxAdd();
-      // const APPID = 'wx4744f4ba8d477d86';
-      // const MCHID = '1375298702';
-      // const KEY = 'a8GPtczRuH0m8Ntk11zMWQJNuZIPYOsg';
-      // const APPSECRET = '0743d00b723576aeb083fe9296785a88';
-    },
-    // 微信地理位置
-    wxRegister() {
-      // api.getParameter({code: this.code}).then(res => {
-        // var data = res.data;
-        wx.config({
-          debug: false, // true:调试时候弹窗
-          appId: "wx1008eb4c001227c4", // 微信appid
-          timestamp: this.timestamp, // 时间戳
-          nonceStr: this.noncestr, // 随机字符串
-          signature: this.signature, // 签名
-          jsApiList: [
-            // 所有要调用的 API 都要加到这个列表中
-            // 'onMenuShareTimeline', // 分享到朋友圈接口
-            // 'onMenuShareAppMessage', //  分享到朋友接口
-            // 'onMenuShareQQ', // 分享到QQ接口
-            // 'onMenuShareWeibo', // 分享到微博接口
-            "scanQRCode", // 微信扫一扫功能
-            "openLocation" //微信地理位置
-          ]
-        });
-        wx.ready(res => {
-           alert("微信sdk配置成功！ " + res);
-          wx.getLocation({
-            success: function(res) {
-              console.log(res);
-              var pointY = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-              var pointX = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-              // var speed = res.speed; // 速度，以米/每秒计
-              var wxaccuracy = res.accuracy; // 位置精度
-              alert("纬度", pointY);
-              alert("数据", res);
-              // var map = new BMap.Map("allmap");
-              // var point = new BMap.Point(pointX,pointY);
-              // var gc = new BMap.Geocoder();
-              // gc.getLocation(point, function(rs){
-              //    var addComp = rs.addressComponents;
-              //     if(wxaccuracy==30){
-              //         alert(addComp.city);
-              //     }
-              // });
-              // 逆向地理编码方法
-              AMap.plugin("AMap.Geocoder", function() {
-                var geocoder = new AMap.Geocoder({
-                  // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
-                  city: "010"
-                });
-                var lnglat = [116.396574, 39.992706];
-                geocoder.getAddress(lnglat, function(status, result) {
-                  if (status === "complete" && result.info === "OK") {
-                    // result为对应的地理位置详细信息
-                  }
-                });
-              });
-            },
-            cancel: function(res) {
-              alert("用户拒绝授权获取地理位置");
-              console.log("用户拒绝授权获取地理位置");
-            }
-          });
-        });
-        /* 处理失败验证 */
-        wx.error(function(res) {
-          // config 信息验证失败会执行error函数,如签名过期导致验证失败,具体错误信息可以打开config的debug模式查看,也可以在返回的res参数中查看,对于SPA可以在这里更新签名
-          alert("微信sdk配置失败！ " + res.errMsg);
           // console.log('微信sdk配置失败！');
         });
       // });
@@ -263,22 +153,15 @@ export default {
         this.$router.push({ name: "oil" });
       }
     },
-    getUrlParam(name) {
-      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-      var r = window.location.search.substr(1).match(reg);
-      if (r != null) return decodeURI(r[2]);
-      return null;
-    },
     userContent(index) {
       if (index === 0) {
-        this.wxRegister(); // 地理位置调试
         // this.$router.push({name: 'userAccount'})
       } else if (index === 1) {
         this.$router.push({ name: "orderManagement" });
       } else if (index === 2) {
         this.$router.push({ name: "redeemCode" });
       } else if (index === 3) {
-        this.configWx(); // 微信扫一扫
+        this.WxAdd() // 微信扫一扫
       } else if (index === 5) {
         // this.$router.push({name: 'platform'})
       } else {

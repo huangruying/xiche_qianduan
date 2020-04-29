@@ -55,7 +55,7 @@
           name="storePhone"
           label="经理/店长手机号码"
           placeholder="请输入经理/店长手机号码"
-          :rules="[{ required: true, message: '请输入经理/店长手机号码!' }]"
+          :rules="[{ required: true, message: '请输入经理/店长手机号码!' },{ validator: phone , message: '手机号格式不正确!' }]"
         />
         <!-- <van-field
           required
@@ -174,12 +174,16 @@
           />
         </van-popup>
         <van-field
+          @click="dialogAmp"
+          readonly 
           v-model="longitude"
           name="longitude"
           label="经度"
           placeholder="请输入经度"
         />
         <van-field
+          @click="dialogAmp"
+          readonly 
           v-model="latitude"
           name="latitude"
           label="纬度"
@@ -275,6 +279,13 @@
         </div>
       </van-form>
     </div>
+
+    <van-dialog v-model="showDialog" title="点击选取位置" width="300px" show-cancel-button>
+      <div class="ditu">
+
+      </div>
+    </van-dialog>
+
   </div>
 </template>
 
@@ -324,6 +335,7 @@ export default {
       showPicker2: false,
       showArea: false,
       loading: false,
+      showDialog: false,
       defaultDate: new Date,
       minDate: new Date(2015, 0, 1),
       maxDate: new Date(2030, 0, 20),
@@ -344,6 +356,9 @@ export default {
     this.getData()
   },
   methods: {
+    dialogAmp(){
+      this.showDialog = true
+    },
     async getData(){
        var res = await findMechanismName()
        this.mechanismList = res.data.data
@@ -477,10 +492,12 @@ export default {
       values.region = this.region
       values.regionId = this.regionId
       var data =  JSON.stringify(values)
-      console.log(values);
       saveDot(data).then(res => {
         if (res.data.code == 200) {
           console.log(res);
+          var obj = res.data.data
+          var obj = JSON.stringify(obj)
+          localStorage.setItem('userMerchant',obj)
           this.$toast.success("注册成功！");
           this.$router.push({name: 'merchantIndex'})
         } else {
@@ -504,6 +521,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.ditu{
+  padding: 50px 30px;
+}
 .uploader{
     background: #fff;
     padding: 10px 30px 40px;

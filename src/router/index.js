@@ -155,11 +155,11 @@ let router= new Router({
             }
         },
         {
-            path: '/tttttttt',
-            name: 'tttttttt',
-            component: ()=>import('@/views/tttttttt/index'),
+            path: '/accredit',
+            name: 'accredit',
+            component: ()=>import('@/views/accredit/index'),
             meta: {
-                title: '订单详情'
+                title: '授权'
             }
         },
     ]

@@ -95,64 +95,53 @@ export default {
     };
   },
   created() {
-    // this.configWx()
+    // 微信授权
+    // this.wxSQ()
   },
   methods: {
-    configWx(){
-      // const APPID = 'wx4744f4ba8d477d86';
-      // const MCHID = '1375298702';
-      // const KEY = 'a8GPtczRuH0m8Ntk11zMWQJNuZIPYOsg';
-      // const APPSECRET = '0743d00b723576aeb083fe9296785a88';
-
-      wx.config({
-        debug: true, // true:调试时候弹窗
-        appId: 'wx4744f4ba8d477d86', // 微信appid
-        timestamp: '1375298702', // 时间戳
-        nonceStr: 'a8GPtczRuH0m8Ntk11zMWQJNuZIPYOsg', // 随机字符串
-        signature: '0743d00b723576aeb083fe9296785a88', // 签名
-        jsApiList: [
-          // 所有要调用的 API 都要加到这个列表中
-          'onMenuShareTimeline', // 分享到朋友圈接口
-          'onMenuShareAppMessage', //  分享到朋友接口
-          'onMenuShareQQ', // 分享到QQ接口
-          'onMenuShareWeibo', // 分享到微博接口
-          'scanQRCode', // 微信扫一扫功能
-        ]
-      })
-        wx.ready(function () {
-          console.log('微信sdk配置成功！');
-        // config信息验证成功后会执行ready方法,所有接口调用都必须在config接口获得结果之后
-        // config 是一个客户端的异步操作,所以如果需要在页面加载时调用相关接口,则须把相关接口放在ready函数中调用来确保正确执行.对于用户触发是才调用的接口,则可以直接调用,不需要放在ready函数中
-        wx.checkJsApi({ // 判断当前客户端版本是否支持指定JS接口
-          jsApiList: [
-            'scanQRCode'
-          ],
-          success: function (res) { // 以键值对的形式返回，可用true，不可用false。如：{"checkResult":{"scanQRCode":true},"errMsg":"checkJsApi:ok"}
-            if (res.checkResult.scanQRCode === true) {
-              wx.scanQRCode({ // 微信扫一扫接口
-                desc: 'scanQRCode desc',
-                needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-                scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
-                success: function (res) {
-                  const getCode = res.resultStr // 当needResult 为 1 时，扫码返回的结果
-              }
-            })
-          } else {
-            alert('抱歉，当前客户端版本不支持扫一扫')
-            }
-          },
-          fail: function (res) { // 检测getNetworkType该功能失败时处理
-            alert('fail' + res)
-          }
-        })
-      })
-
-      /* 处理失败验证 */
-      wx.error(function (res) {
-      // config 信息验证失败会执行error函数,如签名过期导致验证失败,具体错误信息可以打开config的debug模式查看,也可以在返回的res参数中查看,对于SPA可以在这里更新签名
-        alert('配置验证失败: ' + res.errMsg)
-        console.log('微信sdk配置失败！');
-      })
+     // 登录授权
+    wxSQ(){
+      var wxUserData = localStorage.getItem('wxUserData')
+      if(!wxUserData){
+        const code = this.getUrlParam("code");
+        if(code){
+          this.code = code
+        }else{
+          this.authorization()
+        }
+      }
+    },
+    // 登录授权
+    authorization() {
+      //获取url中参数
+      const code = this.getUrlParam("code");
+      if (!code) {
+        // const url = encodeURIComponent(location.href.split("#")[0]); // 获取#之前的当前路径
+        const url = encodeURIComponent(location.href) // 获取#之前的当前路径
+        window.location.href =
+          "http://open.weixin.qq.com/connect/oauth2/authorize?appid=wx1008eb4c001227c4&redirect_uri=" +
+          url + 
+          "&response_type=code&scope=snsapi_userinfo&state=STATE&connect_redirect=1#wechat_redirect";
+      }
+    },
+    // 登录授权
+    apiCode(code) {
+      if (code) {
+        api
+          .wxUserInfo({
+            code: code
+          })
+          .then(res => {
+            var data = JSON.stringify(res)
+            localStorage.setItem("wxUserData", data)
+          });
+      }
+    },
+    getUrlParam(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) return decodeURI(r[2]);
+      return null;
     },
     reload() {
       //  let url = window.location.href.split('#')[0]
@@ -165,6 +154,9 @@ export default {
       if (index === 0) {
       } else if (index === 1) {
         this.mobileLogin = true;
+      }else if(index === 2){
+        this.$router.push({name: 'merchantLogin'})
+        this.show = false
       }
     },
     login(num){
@@ -302,6 +294,7 @@ export default {
 }
 .btn_box {
   padding: 10px 50px 10px;
+  margin-bottom: 15px;
   .van-button--block {
     height: 80px;
     border-radius: 50px;

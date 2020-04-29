@@ -9,6 +9,7 @@ const getParameter = data => {
     params: data
   })
 }
+
 // 微信授权
 const wxUserInfo = data => {
     return axios({

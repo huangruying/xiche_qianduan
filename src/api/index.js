@@ -18,7 +18,17 @@ const findCarwashTypeInfos = data => {
   })
 }
 
+// 微信配置
+const getParameter = data => {
+  return axios({
+    method: 'get',
+    url: '/getParameter',
+    params: data
+  })
+}
+
 export default{
   indexInfo,
-  findCarwashTypeInfos
+  findCarwashTypeInfos,
+  getParameter
 }
