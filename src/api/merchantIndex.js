@@ -28,8 +28,18 @@ const findServiceOrderById = data => {
   })
 }
 
+// 扫码核销
+const useGeneralCoupon = data => {
+  return axios({
+    method: 'post',
+    url: '/useGeneralCoupon',
+    data: data
+  })
+}
+
 export default{
   getParameter,
   wxUserInfo,
-  findServiceOrderById
+  findServiceOrderById,
+  useGeneralCoupon
 }

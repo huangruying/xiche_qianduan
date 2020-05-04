@@ -304,13 +304,15 @@ export default {
           }
            ++this.pageNum
           // this.nodata = false
-          this.shopList = [...this.shopList , ...res.data.data]
-          this.total = res.data.total
-          this.loading = false
-          this.shopList.map(v=>{
+          res.data.data.map(v=>{
+            var img = JSON.parse(v.storeImage)
+            v.storeImage = img[0]
             var distance = this.latLng(v.latitude,v.longitude)
             v.distance = distance
           })
+          this.shopList = [...this.shopList , ...res.data.data]
+          this.total = res.data.total
+          this.loading = false
           this.shopList = this.sortByKey(this.shopList,'distance')
         }else if(res.data.data.length <= 0){
               if(this.pageNum == 1){

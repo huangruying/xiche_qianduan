@@ -1,21 +1,12 @@
 <template>
   <div class="particulars">
       <van-swipe @change="onChange">
-        <van-swipe-item>
-            <img src="@/assets/particulars/门店banner@2x.png" alt="">
-        </van-swipe-item>
-        <van-swipe-item>
-            <img src="@/assets/particulars/门店banner@2x.png" alt="">
-        </van-swipe-item>
-        <van-swipe-item>
-            <img src="@/assets/particulars/门店banner@2x.png" alt="">
-        </van-swipe-item>
-        <van-swipe-item>
-            <img src="@/assets/particulars/门店banner@2x.png" alt="">
+        <van-swipe-item v-for="( item , index) in imgArr" :key="index">
+            <img :src="item" alt="">
         </van-swipe-item>
         <template #indicator>
             <div class="custom-indicator">
-              {{ current + 1 }}/4
+              {{ current + 1 }}/ {{length}}
             </div>
         </template>
       </van-swipe>
@@ -97,9 +88,11 @@ import axios from 'axios'
 export default {
     data () {
         return {
+            imgArr: [],
             rate: 4.5,
             current: 0,
             index: 0,
+            length: "",
             activeName: 0,
             showShare: false,
             options: [
@@ -168,7 +161,12 @@ export default {
         async apiGetList(dotCode,city,region){
             var res = await api.getOfficialDotByDotCode({dotCode,city,region})
             this.dataList = res.data.data
-            console.log(res);
+            var imgArr = JSON.parse(this.dataList.storeImage)
+            let imgArr2 = imgArr.filter((num) => {
+            return num != 'null';
+            });
+            this.length = imgArr2.length
+            this.imgArr = imgArr2
         },
         navigation(address){
             var thiss = this

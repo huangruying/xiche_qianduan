@@ -1,13 +1,14 @@
 <template>
   <div class="redeemCode">
+    <van-form @submit="useGeneralCoupon" :show-error="false">
       <div class="title_box" style="margin-bottom: 2px;">
           <span @click="routerIndex(0)">首页</span>
           <van-icon name="arrow" />
           <span>兑换码核销</span>
       </div>
       <van-cell-group>
-         <van-field label="兑换码" type="number" v-model="redeemCode" placeholder="请输入兑换码" />
-         <img src="@/assets/merchantIndex/rbhx-icon@2x.png" alt="" class="img">
+         <van-field label="兑换码" v-model="redeemCode" placeholder="请输入兑换码" :rules="[{ required: true, message: '请输入兑换码!' }]"/>
+         <img src="@/assets/merchantIndex/rbhx-icon@2x.png" alt="" class="img" @click="WxAdd">
      </van-cell-group>
      <van-cell-group>
         <van-field
@@ -15,6 +16,7 @@
             label="车牌号"
             placeholder="请输入车牌号"
             class="input"
+            :rules="[{ required: true, message: '请输入车牌号!' }]"
         />
         <div class="cardTitle" @click="show = true">
             <span>{{plate}}</span>
@@ -23,8 +25,8 @@
     </van-cell-group>
     <div class="btn_box">
       <van-button type="default" block @click="routerGo" style="margin-right:30px;">返回</van-button>
-      <van-button type="info" block>
-        <span style="color:#fff;" @click="useGeneralCoupon">立即核销</span>
+      <van-button type="info" block native-type="submit">
+        <span style="color:#fff;">立即核销</span>
       </van-button>
     </div>
     <div class="explain_box">
@@ -36,16 +38,21 @@
     <van-popup v-model="show" position="bottom">
       <van-picker show-toolbar title="车牌选择" :columns="columns" @cancel="onCancel" @confirm="onConfirm"/>
     </van-popup>
+    </van-form>
   </div>
 </template>
 
 <script>
 import { cardTitle , letter } from '@/utils/plateNumber'
+import api from "@/api/merchantIndex";
 export default {
     data (){
         return{
             redeemCode: "",
             licensePlate: "",
+            signature: "",
+            timestamp: "",
+            noncestr: "",
             plate: "粤A",
             show: false,
             columns: [
@@ -62,8 +69,26 @@ export default {
             ],
         }
     },
+    created() {
+      api.getParameter({url: location.href}).then(res=>{
+              this.noncestr = res.data.noncestr
+              this.timestamp = res.data.timestamp
+              this.signature = res.data.signature
+      })
+    },
     mounted(){
-
+      var { use } = this.$route.query
+      this.redeemCode = use
+      // 商家登录
+      var obj = localStorage.getItem("userMerchant");
+      if(obj === 'undefined'){
+      }else{
+        var obj = JSON.parse(obj);
+        if (obj === null) {
+          this.$parent.login(1);
+        } else {
+        }
+      }
     },
     methods: {
         routerIndex(index){
@@ -82,8 +107,81 @@ export default {
            this.plate = value[0] + value[1]
         },
         useGeneralCoupon(){
-          
-        }
+          api.useGeneralCoupon({
+            couponCode: this.redeemCode,
+            licensePlate: this.plate + this.licensePlate
+          }).then(res=>{
+             if(res.data.code == 200){
+               this.$toast('核销成功！')
+               this.$router.push({name: 'merchantIndex'})
+             }else{
+               this.$toast(res.data.msg)
+             }
+          })
+        },
+        WxAdd() {
+          var this3 = this
+          alert('时间戳' + this.timestamp)
+          alert('随机字符串' + this.noncestr)
+          alert('签名' + this.signature)
+          wx.config({
+            debug: false, // true:调试时候弹窗
+            appId: "wx1008eb4c001227c4", // 微信appid
+            timestamp: this.timestamp, // 时间戳
+            nonceStr: this.noncestr, // 随机字符串
+            signature: this.signature, // 签名
+            jsApiList: [
+              // 所有要调用的 API 都要加到这个列表中
+              // 'onMenuShareTimeline', // 分享到朋友圈接口
+              // 'onMenuShareAppMessage', //  分享到朋友接口
+              // 'onMenuShareQQ', // 分享到QQ接口
+              // 'onMenuShareWeibo', // 分享到微博接口
+              "scanQRCode", // 微信扫一扫功能
+              "openLocation" //微信地理位置
+            ]
+          });
+          // config信息验证成功后会执行ready方法,所有接口调用都必须在config接口获得结果之后
+          // config 是一个客户端的异步操作,所以如果需要在页面加载时调用相关接口,则须把相关接口放在ready函数中调用来确保正确执行.对于用户触发是才调用的接口,则可以直接调用,不需要放在ready函数中
+          wx.ready(function(res) {
+            alert('配置成功' + res)
+            wx.checkJsApi({
+              // 判断当前客户端版本是否支持指定JS接口
+              jsApiList: ["scanQRCode"],
+              success: function(res) {
+                // 以键值对的形式返回，可用true，不可用false。如：{"checkResult":{"scanQRCode":true},"errMsg":"checkJsApi:ok"}
+                // console.log(res);
+                if (res.checkResult.scanQRCode === true) {
+                  wx.scanQRCode({
+                    // 微信扫一扫接口
+                    desc: "scanQRCode desc",
+                    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                    scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                    success: function(res) {
+                      const getCode = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                      this3.$router.push({ name: 'redeemCode', query: {
+                        use: getCode
+                      }})
+                    }
+                  })
+                } else {
+                  this3.$toast("抱歉，当前客户端版本不支持扫一扫");
+                }
+              },
+              fail: function(res) {
+                this3.$toast("扫一扫调用失败！");
+                // 检测getNetworkType该功能失败时处理
+              }
+            });
+          });
+          /* 处理失败验证 */
+          wx.error(function(res) {
+            alert('配置失败' + res)
+            this3.$toast("服务器炸啦！");
+            // config 信息验证失败会执行error函数,如签名过期导致验证失败,具体错误信息可以打开config的debug模式查看,也可以在返回的res参数中查看,对于SPA可以在这里更新签名
+            // console.log('微信sdk配置失败！');
+          });
+        // });
+      },
     }
 }
 </script>

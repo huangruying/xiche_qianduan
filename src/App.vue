@@ -198,6 +198,7 @@ export default {
               this.$toast.success('登录成功！')
               this.mobileLogin = false
               this.show = false
+              this.$forceUpdate()
             }else{
               this.$toast(res.data.msg)
             }
@@ -213,9 +214,10 @@ export default {
               var obj = res.data.data
               var obj = JSON.stringify(obj)
               localStorage.setItem('userMerchant',obj)
-              this.$toast.success('登录成功！')
+              this.$toast.success('登录成功!')
               this.mobileLogin = false
               this.show = false
+              this.$forceUpdate()
             }else{
               this.$toast(res.data.msg)
             }

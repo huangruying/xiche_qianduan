@@ -33,7 +33,7 @@
           </div>
         </div>
       </div>
-      <div class="explain_box" v-if="bgdleft">
+      <div class="explain_box" v-if="!nodata">
         <div class="title">使用规则：</div>
         <p class="one">1.点击右侧立即使用按钮选择可使用商家；</p>
         <p>2.商家详情界面选择服务项目右侧支付按钮，平台自动计算 应支付费用；</p>

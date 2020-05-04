@@ -129,7 +129,7 @@
         <van-popup v-model="showTime" position="bottom">
             <van-datetime-picker
               v-model="contractTime2"
-              type="year-month"
+              type="date"
               :min-date="minDate"
               :max-date="maxDate"
               :formatter="formatter"
@@ -454,12 +454,14 @@ export default {
         return `${val}年`;
       } else if (type === 'month') {
         return `${val}月`;
+      }else if (type === 'day') {
+        return `${val}日`;
       }
       return val
     },
     formatter2(date){
       var year = date.getFullYear();       //年
-      this.contractTime = `${year}-${date.getMonth() + 1}`;
+      this.contractTime = `${year}-${date.getMonth() + 1}-${date.getDate()}`;
       this.showTime = false;
     },
     onConfirmHours(time) {
@@ -491,10 +493,12 @@ export default {
       values.city = this.city
       values.region = this.region
       values.regionId = this.regionId
-      var data =  JSON.stringify(values)
+      delete values.area  
+      delete values.businessHours1
+      delete values.businessHours2
+      var data = values
       saveDot(data).then(res => {
         if (res.data.code == 200) {
-          console.log(res);
           var obj = res.data.data
           var obj = JSON.stringify(obj)
           localStorage.setItem('userMerchant',obj)

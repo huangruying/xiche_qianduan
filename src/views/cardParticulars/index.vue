@@ -84,12 +84,13 @@ export default {
                     })
                     this.timer = setTimeout(() => {
                         this.apiCardParticulars(this.use)
-                    }, 3000)
+                    }, 5000)
                 }else if(res.data.status == 'SUCCESS'){
                     // 已核销
                     this.$router.push({name: 'evaluate',query:{
                         use: this.use
                     }})
+                    this.$toast('核销成功！')
                 }else if(res.data.status == 'OVERDUE'){
                     // 已过期
                     this.$toast('该卷已过期！')

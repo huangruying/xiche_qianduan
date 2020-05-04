@@ -32,10 +32,10 @@
           <img src="@/assets/merchantIndex/ddgl-icon@2x.png" alt />
           <span>订单管理</span>
         </div>
-        <div class="box" @click="userContent(2)">
+        <!-- <div class="box" @click="userContent(2)">
           <img src="@/assets/merchantIndex/rbhx-icon@2x.png" alt />
           <span>手动核销</span>
-        </div>
+        </div> -->
         <div class="box border" @click="userContent(3)">
           <img src="@/assets/merchantIndex/rbhx-icon@2x.png" alt />
           <span>扫码核销</span>
@@ -73,7 +73,6 @@ export default {
             this.timestamp = res.data.timestamp
             this.signature = res.data.signature
     })
-    this.apiCode(code);
     // 商家登录
     var obj = localStorage.getItem("userMerchant");
     var obj = JSON.parse(obj);
@@ -84,6 +83,7 @@ export default {
   },
   methods: {
     WxAdd() {
+        var this2 = this
         wx.config({
           debug: false, // true:调试时候弹窗
           appId: "wx1008eb4c001227c4", // 微信appid
@@ -116,16 +116,18 @@ export default {
                   needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
                   scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
                   success: function(res) {
-                    alert(res);
                     const getCode = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                    this2.$router.push({ name: 'redeemCode', query: {
+                      use: getCode
+                    }})
                   }
                 })
               } else {
-                this.$toast("抱歉，当前客户端版本不支持扫一扫");
+                this2.$toast("抱歉，当前客户端版本不支持扫一扫");
               }
             },
             fail: function(res) {
-              this.$toast("扫一扫调用失败！");
+              this2.$toast("扫一扫调用失败！");
               // 检测getNetworkType该功能失败时处理
             }
           });
