@@ -71,15 +71,15 @@ export default {
 <style lang="less" scoped>
 .btn_box {
   display: flex;
-  padding: 30px;
+  padding: 15px;
   background: #f7f7f7;
   /deep/.van-button--block {
-    height: 70px;
+    height: 35px;
     color: #079fd5;
-    font-size: 32px;
-    border-radius: 10px;
+    font-size: 16px;
+    border-radius: 5px;
     font-weight: bold;
-    letter-spacing: 8px;
+    letter-spacing: 4px;
   }
 }
 .oil{
@@ -89,9 +89,9 @@ export default {
 .van-cell {
   display: flex;
   align-items: center;
-  padding: 20px 20px;
+  padding: 10px 10px;
   /deep/.van-field__body {
-    padding-left: 50px;
+    padding-left: 25px;
   }
 }
 .bgdf {
@@ -100,13 +100,13 @@ export default {
   display: flex;
   flex-direction: column;
   .text_box {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     .text {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 15px 30px;
+      padding: 7.5px 15px;
       > span {
         color: #858585;
         display: block;

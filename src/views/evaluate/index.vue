@@ -32,7 +32,7 @@
             />
       </div>
       <div class="uploader">
-          <van-uploader v-model="fileList" multiple :max-count="4" preview-size="60" @delete="deletefile">
+          <van-uploader v-model="fileList" multiple :max-count="4" preview-size="60" @delete="deletefile" :after-read="afterRead">
               <div class="uploadder_box">
                   <img src="@/assets/上传照片@2x.png" alt="">
                   <span>上传照片</span>
@@ -98,18 +98,20 @@ export default {
             formData.append('file', file.file)
             officialOssUpload(formData).then(res=>{
                 if(res.data.code == 200){
+                    this.$toast('上传成功!')
                     this.fileAdd.push(res.data.data)
                 }
             })
         },
-        deletefile(file){
+        deletefile(file,fileIndex){
+            this.fileAdd.splice(fileIndex.index,1)
+            this.$toast('已删除该照片!')
         },
-        async submit(){
-           await this.fileList.forEach(v => {
-                this.afterRead(v)
-            });
+        submit(){
             this.loading = true
-            var userId = 1
+            var obj = localStorage.getItem('user')
+            var obj = JSON.parse(obj)
+            var userId = obj.id
             var index = this.index
             var type = []
             if(index.id1){
@@ -130,6 +132,8 @@ export default {
             if(this.checked){
                 userId = ""
             }
+            type = JSON.stringify(type)
+            this.fileAdd = JSON.stringify(this.fileAdd)
             saveDotEvaluate({
                 userId: userId,  // 用户ID
                 dotId: this.id, // 网点ID
@@ -141,8 +145,9 @@ export default {
                 attitude: this.value3,  // 服务态度
             }).then(res=>{
                  this.loading = false
-                 if(res.data.data == 200){
-                    this.$router.push({name: 'cardVolume'})
+                 if(res.data.code == 200){
+                     this.$toast("操作成功")
+                     this.$router.push({name: 'cardVolume'})
                  }else{
                      this.$toast(res.data.msg)
                  }
@@ -155,20 +160,20 @@ export default {
 <style lang="less" scoped>
 // :active
 .btn_box{
-    padding: 76px 60px 30px;
+    padding: 38px 30px 15px;
     .van-button--block{
-        height: 80px;
-        border-radius: 50px;
+        height: 40px;
+        border-radius: 25px;
         .van-button__text{
-            font-size: 32px;
-            letter-spacing: 15px;
+            font-size: 16px;
+            letter-spacing: 6px;
         }
     }
 }
 .cell_box{
     background: #fff;
-    padding: 29px 30px;
-    margin:  20px 0;
+    padding: 15px 15px;
+    margin:  10px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -177,52 +182,52 @@ export default {
     }
     >span{
         color: #808080;
-        font-size:26px;
+        font-size: 13px;
     }
 }
 .uploader{
     background: #fff;
-    padding: 10px 30px 40px;
+    padding: 5px 15px 20px;
     .uploadder_box{
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px 15px 25px;
+        padding: 10px 7.5px 12.5px;
         border: 1px solid #808080;
-        border-radius: 10px;
+        border-radius: 5px;
         >img{
-            width: 39px;
-            height: 32px;
+            width: 20px;
+            height: 16px;
         }
         >span{
             display: block;
-            margin-top: 10px;
-            font-size:24px;
+            margin-top: 5px;
+            font-size: 12px;
             color: #666;
         }
     }
 }
 .qingjia_input{
     background: #fff;
-    padding: 0px 30px 30px;
+    padding: 0px 15px 15px;
     /deep/.van-field{
     background: #F6F7FB;
     }
 }
 .qingjia{ 
     background: #fff;
-    margin: 20px 0 0;
-    padding: 39px 30px;
+    margin: 10px 0 0;
+    padding: 20px 15px;
     .btn{
         float: left;
         width: 28%;
-        height: 60px;
-        line-height: 60px;
+        height: 30px;
+        line-height: 30px;
         text-align: center;
         border: 1px solid #CCCCCC;
-        border-radius: 30px;
-        margin-left: 20px;
-        margin-top: 20px;
+        border-radius: 15px;
+        margin-left: 10px;
+        margin-top: 10px;
         &:active{
             background: #F6F7FB;
         }
@@ -234,42 +239,42 @@ export default {
     }
     .biao{
         color: #0F8FFF;
-        font-size:28px;
-        padding-bottom: 10px;
+        font-size: 14px;
+        padding-bottom: 5px;
     }
 }
 .xin{
     display: flex;
     align-items: center;
-    font-size:28px;
+    font-size: 14px;
     font-weight:400;
     color:rgba(1,1,1,1);
-    margin: 35px 0;
+    margin: 17.5px 0;
 }
 .user_box{
     display: flex;
     .text_box{
         >span{
             color: #A3A3A3;
-            font-size: 24px;
+            font-size: 12px;
         }
         >div{
-            font-size:30px;
+            font-size: 15px;
             font-weight:bold;
             color:rgba(1,1,1,1);
-            padding-bottom: 12px;
+            padding-bottom: 6px;
         }
     }
     >img{
-        width: 82px;
-        height: 82px;
-        margin-right: 18px;
-        border-radius: 8px;
+        width: 41px;
+        height: 41px;
+        margin-right: 9px;
+        border-radius: 4px;
     }
 }
 .bgdfff{
     background: #fff;
-    padding: 30px;
+    padding: 15px;
 }
 .evaluate{
     background: #F5F4F9;

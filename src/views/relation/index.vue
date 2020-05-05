@@ -44,17 +44,17 @@ export default {
     height: 100vh;
 }
 .phone{
-    padding-left: 30px;
-    margin-top: 30px;
+    padding-left: 15px;
+    margin-top: 15px;
     >div{
-        font-size: 32px;
-        line-height: 60px;
+        font-size: 16px;
+        line-height: 30px;
         font-weight: bold;
         display: flex;
         align-items: center;
         >span{
             color: #079fd5;
-            font-size: 35px;
+            font-size: 17.5px;
             &:active{
                 color: #00ff00;
             }
@@ -63,12 +63,12 @@ export default {
 }
 /deep/.van-button--block{
     width: 80%;
-    height: 80px;
+    height: 40px;
     color: #079fd5;
-    font-size: 32px;
-    margin: 80px auto;
-    border-radius: 10px;
+    font-size: 18px;
+    margin: 40px auto;
+    border-radius: 5px;
     font-weight: bold;
-    letter-spacing: 8px;
+    letter-spacing: 4px;
 }
 </style>

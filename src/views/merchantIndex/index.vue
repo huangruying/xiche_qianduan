@@ -75,7 +75,7 @@ export default {
     })
     // 商家登录
     var obj = localStorage.getItem("userMerchant");
-    var obj = JSON.parse(obj);
+    var obj = JSON.parse(obj)
     if (obj === null) {
       this.$parent.login(1);
     } else {
@@ -182,77 +182,77 @@ export default {
     display: flex;
     flex-wrap: wrap;
     .box {
-      margin: 12px 0;
+      margin: 6px 0;
       display: flex;
       // float: left;
       flex-direction: column;
       align-items: center;
-      padding: 33px 0;
+      padding: 16px 0;
       width: 33.3%;
       &.border {
         border-right: 1px solid #efefef;
       }
       > img {
-        width: 87px;
-        height: 87px;
+        width: 43px;
+        height: 43px;
       }
       > span {
-        font-size: 24px;
+        font-size: 12px;
         color: #000;
         display: block;
-        margin-top: 13px;
+        margin-top: 7px;
       }
     }
   }
   .title_box_box {
     display: flex;
-    padding: 5px 0;
+    padding: 2.5px 0;
     justify-content: space-between;
     align-items: center;
     .title {
-      height: 40px;
-      line-height: 40px;
-      padding-left: 22px;
-      border-left: 10px solid #2f7ffa;
+      height: 20px;
+      line-height: 20px;
+      padding-left: 11px;
+      border-left: 5px solid #2f7ffa;
     }
     /deep/.van-button--normal {
-      margin-right: 10px;
-      padding: 8px 30px;
-      height: 60px;
-      border-radius: 10px;
+      margin-right: 5px;
+      padding: 4px 15px;
+      height: 30px;
+      border-radius: 5px;
       .van-button__text {
-        font-size: 24px;
+        font-size: 12px;
       }
     }
   }
 }
 .tabs {
   background: #fff;
-  height: 195px;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  height: 98px;
+  margin-top: 15px;
+  margin-bottom: 15px;
   .box {
     float: left;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 33px 0;
+    padding: 16px 0;
     width: 25%;
     > img {
-      width: 87px;
-      height: 87px;
+      width: 44px;
+      height: 44px;
     }
     > span {
-      font-size: 24px;
+      font-size: 12px;
       color: #000;
       display: block;
-      margin-top: 13px;
+      margin-top: 7px;
     }
   }
 }
 .slideshow {
   width: 100%;
-  height: 364px;
+  height: 182px;
 }
 .merchantIndex {
   background: #f7f7f7;

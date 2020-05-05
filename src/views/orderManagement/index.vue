@@ -70,7 +70,7 @@ export default {
 <style lang="less" scoped>
 .nodata{
     text-align: center;
-    margin: 70px 0 30px;
+    margin: 35px 0 15px;
 }
 .orderManagement{
     height: 100vh;
@@ -80,42 +80,42 @@ export default {
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #eee;
-        padding-bottom: 10px;
-        margin: 18px 14px 0 12px;
+        padding-bottom: 5px;
+        margin: 9px 7px 0 6px;
         .order{
             flex: 1;
             .order_title{
-                font-size: 34px;
+                font-size: 17px;
                 font-weight: 600;
-                margin-bottom: 10px;
+                margin-bottom: 5px;
                 color: #333;
             }
             >span{
                 display: block;
                 color: #333;
-                line-height: 40px;
+                line-height: 20px;
             }
         }
         .state{
             font-weight: bold;
             text-align: right;
-            width: 200px;
+            width: 100px;
             color: '#333';
         }
         .index{
             font-weight: bold;
-            width: 55px;
+            width: 27.5px;
         }
     }
 }
 /deep/.van-button--block{
     width: 80%;
-    height: 80px;
+    height: 40px;
     color: #079fd5;
-    font-size: 32px;
-    margin: 80px auto;
-    border-radius: 10px;
+    font-size: 16px;
+    margin: 40px auto;
+    border-radius: 5px;
     font-weight: bold;
-    letter-spacing: 8px;
+    letter-spacing: 4px;
 }
 </style>

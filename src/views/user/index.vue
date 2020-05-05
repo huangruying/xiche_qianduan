@@ -45,7 +45,7 @@
           </div>
         </div>
         <div style="margin: 16px;">
-          <van-button round block type="info" native-type="submit" size="large" style="height:40px;">
+          <van-button round block type="info" native-type="submit" size="large" style="height:40px; line-height: 40px;">
             绑定
           </van-button>
         </div>
@@ -115,61 +115,64 @@ export default {
     border-bottom: none;
 }
 /deep/.van-ellipsis{
-  font-size: 34px;
+  font-size: 17px;
 }
 /deep/.van-picker__toolbar{
-    height: 80px;
-    line-height: 80px;
+    height: 40px;
+    line-height: 40px;
     .van-picker__cancel,.van-picker__title,.van-picker__confirm{
-      font-size: 28px;
+      font-size: 14px;
     }
   }
 .che_pai{
   position: relative;
   /deep/.van-field__control {
-    padding-left: 60px;
+    padding-left: 30px;
   }
   /deep/.van-field__error-message{
-    padding-left: 60px;
+    padding-left: 30px;
   }
   .cardTitle{
-    width:100px;
-    height:48px;
-    line-height: 48px;
+    width: 50px;
+    height: 24px;
+    line-height: 24px;
     text-align: center;
     background:rgba(243,243,243,1);
-    border-radius:10px;
+    border-radius: 5px;
     position: absolute;
     top: 12px;
-    left: 140px;
+    left: 70px;
   }
 }
+/deep/.van-cell--required::before {
+  left: 0;
+}
 /deep/.van-cell{
-  padding: 20px;
+  padding: 10px;
 }
 .input_box{
-  padding-top: 20px;
+  padding-top: 10px;
 }
 .xinche{
   color: #0F8FFF;
-  font-size: 28px;
-  margin: 40px auto 0;
+  font-size: 14px;
+  margin: 20px auto 0;
   text-align: center;
 }
 .user{
   height: 100vh;
   background: #f7f7f7;
-  padding: 25px;
+  padding: 12.5px;
   .title_details{
     color: #808080;
-    margin: 21px 0;
-    font-size:26px;
+    margin: 10.5px 0;
+    font-size: 13px;
   }
   .title{
     font-weight: 600;
-    font-size: 40px;
+    font-size: 20px;
     color: #010101;
-    margin-top: 50px;
+    margin-top: 25px;
   }
 }
 </style> 

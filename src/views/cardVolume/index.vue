@@ -20,7 +20,7 @@
               </div>
               <div class="right_img" v-if="bgdleft">
                 <img src="@/assets/cardVolume/即将过期@2x.png" alt />
-                <van-button type="info" class="btn" @click="useVolume(value.couponCode)">立即使用</van-button>
+                <van-button type="info" class="btn" @click="useVolume(value.couponCode)" size="small">立即使用</van-button>
               </div>
               <div class="right_img" v-if="pastDue">
                 <img src="@/assets/cardVolume/已过期@2x.png" alt class="img"/>
@@ -81,15 +81,31 @@ export default {
       id: null
     };
   },
-  mounted(){
+  created(){
     var obj = localStorage.getItem('user')
     var obj = JSON.parse(obj)
+    console.log(obj);
     if(obj === null){
         // this.$router.push({name: 'index'})
         this.$parent.login(0)
     }else{
       this.id = obj.id
       this.apiList(obj.id)
+    }
+  },
+  watch: {
+    $route: {
+          handler() {
+              var login = this.$route.query.login;
+              if(login){
+                  var obj = localStorage.getItem('user')
+                  var obj = JSON.parse(obj)
+                  this.id = obj.id
+                  this.apiList(obj.id)
+              }
+              // 深度监听，同时也可监听到param参数变化
+        },
+        deep: true,
     }
   },
   methods: {
@@ -155,69 +171,69 @@ export default {
 .nodata{
     background: #F5F5F9;
     // height:  ~"calc(100vh - (90px))";
-    padding-top: 50px;
+    padding-top: 25px;
     display: flex;
     justify-content: center;
     >span{
         display: block;
-        margin-top: 13px;
+        margin-top: 6.5px;
     }
     // align-items: center;
     >img{
-        width: 50px;
-        height: 50px;
-        margin-right: 12px;
+        width: 25px;
+        height: 25px;
+        margin-right: 6px;
     }
 }
 .explain_box {
   // background: #fff;
   overflow-y: scroll;
-  padding: 24px 36px;
+  padding: 12px 18px;
   .title {
     color: #111111;
-    font-size: 34px;
+    font-size: 17px;
     font-weight: bold;
   }
   > p {
     color: #5e5e5e;
-    line-height: 50px;
+    line-height: 25px;
     // margin-top: 23px;
     &.one {
-      margin-top: 10px;
+      margin-top: 5px;
     }
   }
 }
 .card_box {
   background: #f5f5f9;
-  padding: 36px 30px 1px;
+  padding: 18px 15px 1px;
   .volume {
     background: #fff;
-    height: 190px;
-    border-radius: 10px;
+    // height: 95px;
+    border-radius: 5px;
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     .box {
       flex: 1;
-      padding: 29px;
+      padding: 10px 10px 0 10px;
       .bottom {
-        margin-top: 15px;
+        padding: 7px 0 7px;
       }
       .top {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-bottom: 24px;
+        padding-bottom: 12px;
         border-bottom: 1px solid #e4e4e4;
         .left_text {
           > div {
-            font-size: 30px;
+            font-size: 15px;
             color: #111111;
             font-weight: 500;
           }
           > span {
             color: #999999;
             display: block;
-            margin-top: 16px;
+            margin-top: 8px;
           }
         }
         .right_img {
@@ -225,34 +241,40 @@ export default {
           flex-direction: column;
           align-items: center;
           > img {
-            width: 105px;
-            height: 30px;
+            width: 53px;
+            height: 15px;
           }
           .img{
-              width: 74px;
-              height: 74px;
+              width: 37px;
+              height: 37px;
           }
+          /deep/.van-button--small{
+              font-size: 13px;
+            }
           .btn {
-            border-radius: 10px;
-            margin-top: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
           }
         }
       }
     }
     .img {
       height: 100%;
-      width: 210px;
+      width: 105px;
       color: #fff;
       position: relative;
+      >img{
+        height: 105px;
+      }
       > div {
-        font-size: 52px;
+        font-size: 26px;
         position: absolute;
         top: 20%;
         left: 50%;
         transform: translateX(-50%);
       }
       > span {
-        font-size: 28px;
+        font-size: 14px;
         position: absolute;
         top: 60%;
         left: 50%;
@@ -262,10 +284,10 @@ export default {
   }
 }
 /deep/.van-tabs--line .van-tabs__wrap {
-  height: 72px;
+  height: 36px;
   /deep/.van-tab__text {
     color: #666666;
-    font-size: 30px;
+    font-size: 15px;
     font-weight: 500;
   }
   /deep/.van-tab--active {
@@ -277,7 +299,7 @@ export default {
     background: #fff;
   }
   /deep/.van-tab {
-    line-height: 72px;
+    line-height: 36px;
   }
 }
 </style>

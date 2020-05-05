@@ -1,7 +1,7 @@
 <template>
   <div class="particulars">
       <van-swipe @change="onChange">
-        <van-swipe-item v-for="( item , index) in imgArr" :key="index">
+        <van-swipe-item v-for="( item , index) in dataList.storeImages" :key="index">
             <img :src="item" alt="">
         </van-swipe-item>
         <template #indicator>
@@ -160,13 +160,14 @@ export default {
         },
         async apiGetList(dotCode,city,region){
             var res = await api.getOfficialDotByDotCode({dotCode,city,region})
+            console.log(res.data.data);
             this.dataList = res.data.data
-            var imgArr = JSON.parse(this.dataList.storeImage)
-            let imgArr2 = imgArr.filter((num) => {
-            return num != 'null';
-            });
-            this.length = imgArr2.length
-            this.imgArr = imgArr2
+            // var imgArr = JSON.parse(this.dataList.storeImage)
+            // let imgArr2 = imgArr.filter((num) => {
+            // return num != 'null';
+            // });
+            this.length = this.dataList.storeImages.length
+            // this.imgArr = imgArr2
         },
         navigation(address){
             var thiss = this
@@ -199,40 +200,47 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/.van-share-sheet__options{
-    padding: 40px 30px;
-    /deep/.van-share-sheet__icon{
-        width: 100px;
-        height: 100px;
-        border-radius: 20px;
+// /deep/.van-share-sheet__options{
+//     padding: 40px 30px;
+//     /deep/.van-share-sheet__icon{
+//         width: 100px;
+//         height: 100px;
+//         border-radius: 20px;
+//     }
+// }
+// /deep/.van-share-sheet__cancel{
+//     height: 80px;
+//     line-height: 80px;
+// }
+/deep/.van-swipe-item{
+    height: 220px;
+    >img{
+        width: 100%;
+        height: 100%;
     }
-}
-/deep/.van-share-sheet__cancel{
-    height: 80px;
-    line-height: 80px;
 }
 .price_box{
     background: #fff;
-    padding: 0 23px;
+    padding: 0 12px;
     .price{
-        margin-top: 22px;
+        margin-top: 11px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 30px 50px;
-        border:1px solid rgba(0, 0, 0, 0.04);
-        box-shadow:0px 5px 0px 0px rgba(0, 0, 0, 0.1);
+        padding: 15px 25px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        box-shadow:0px 2.5px 0px 0px rgba(0, 0, 0, 0.1);
         border-radius:6px;
         >span{
-            font-size:30px;
+            font-size: 15px;
         }
         >div{
             color: #FE0006;
-            font-size: 30px;
+            font-size: 15px;
             font-weight: bold;
             >span{
                 color: #666666;
-                font-size: 24px;
+                font-size: 12px;
                 font-weight: 400;
             }
         }
@@ -240,10 +248,10 @@ export default {
 }
 /deep/.van-tabs--line .van-tabs__wrap {
   background: #F8F8F8;
-  height: 72px;
+  height: 36px;
   /deep/.van-tab__text{
     color: #666666;
-    font-size:25px;
+    font-size: 12.5px;
   }
   /deep/.van-tab--active{
     >span{
@@ -254,35 +262,35 @@ export default {
      background: #F8F8F8;
   }
   /deep/.van-tab{
-    line-height: 72px;
+    line-height: 36px;
   }
 }
 .bgd_box{
     background: #f7f7f7;
-    padding-top: 23px;
+    padding-top: 12px;
     .service{
         background: #fff;
         .service_text{
             color: #666666;
             display: flex;
             align-items: center;
-            font-size: 24px;
-            height: 110px;
-            padding: 0 23px;
+            font-size: 12px;
+            height: 55px;
+            padding: 0 12px;
             &.color{
                 color: #F62A2A;
                 font-weight:bold;
             }
             >i{
-                font-size: 26px;
-                margin-right: 10px;
+                font-size: 13px;
+                margin-right: 5px;
             }
         }
     }
     .navigation{
-        margin-bottom: 23px;
+        margin-bottom: 12px;
         background: #fff;
-        padding: 23px 23px;
+        padding: 12px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -290,40 +298,40 @@ export default {
             display: flex;
             >div{
                 background: #0F8FFF;
-                border-radius: 6px 0 0 6px;
+                border-radius: 3px 0 0 3px;
                 display: flex;
                 align-items: center;
-                height: 55px;
-                padding: 0 13px;
+                height: 27px;
+                padding: 0 6.5px;
                 color: #fff;
                 >img{
-                    width: 21px;
-                    height: 22px;
+                    width: 10px;
+                    height: 11px;
                 }
             }
             >span{
                 display: block;
                 color: #0F8FFF;
-                width: 120px;
-                font-size:24px;
-                height: 55px;
+                width: 60px;
+                font-size: 12px;
+                height: 27px;
                 text-align: center;
-                line-height: 55px;
+                line-height: 27px;
                 border: 1px solid #0F8FFF;
-                border-radius: 0 6px 6px 0;
+                border-radius: 0 3px 3px 0;
             }
         }
         .nav{
             display: flex;
             align-items: center;
             >img{
-                width: 27px;
-                height: 35px;
-                margin-right: 10px;
+                width: 14px;
+                height: 17.5px;
+                margin-right: 5px;
             }
             >span{
                 color: #333333;
-                font-size: 24px;
+                font-size: 12px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 display: -webkit-box;
@@ -344,14 +352,14 @@ export default {
     color: #fff;
 }
 .title{
-    padding-left: 23px;
+    padding-left: 12px;
     color: #010101;
-    font-size: 28px;
-    margin-top: 45px;
+    font-size: 14px;
+    margin-top: 22.5px;
 }
 .bottom_address{
-    margin-top: 18px;
-    padding: 16px 23px 35px;
+    margin-top: 9px;
+    padding: 8px 12px 17.5px;
     display: flex;
     justify-content: space-between;
     >div{
@@ -359,19 +367,19 @@ export default {
       align-items: center;
       >span{
         color: #666666;
-        font-size:23px;
+        font-size: 12px;
         >span{
-            font-size:23px;
+            font-size: 12px;
             color: #0f8fff;
         }
       }
       >img{
-        width: 20px;
-        height: 22px;
-        margin-right: 10px;
+        width: 10px;
+        height: 11px;
+        margin-right: 5px;
         &.img{
-          width: 23px;
-          height: 23px;
+          width: 12px;
+          height: 12px;
         }
       }
     }
@@ -379,16 +387,16 @@ export default {
 .rate_box{
     display: flex;
     align-items: center;
-    margin-top: 24px;
-    padding-left: 23px;
+    margin-top: 12px;
+    padding-left: 12px;
     >span{
         display: block;
-        margin-left: 18px;
+        margin-left: 9px;
         color: #666666;
     }
     .rate{
         >span{
-            margin-left: 9px;
+            margin-left: 4.5px;
             color: #F62A2A;
         }
     }

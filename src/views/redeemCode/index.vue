@@ -78,7 +78,12 @@ export default {
     },
     mounted(){
       var { use } = this.$route.query
-      this.redeemCode = use
+      if(use.indexOf(",") == -1){
+        this.redeemCode = use
+      }else{
+        var as = use.split(',')
+        this.redeemCode = as[1]
+      }
       // 商家登录
       var obj = localStorage.getItem("userMerchant");
       if(obj === 'undefined'){
@@ -121,9 +126,9 @@ export default {
         },
         WxAdd() {
           var this3 = this
-          alert('时间戳' + this.timestamp)
-          alert('随机字符串' + this.noncestr)
-          alert('签名' + this.signature)
+          // alert('时间戳' + this.timestamp)
+          // alert('随机字符串' + this.noncestr)
+          // alert('签名' + this.signature)
           wx.config({
             debug: false, // true:调试时候弹窗
             appId: "wx1008eb4c001227c4", // 微信appid
@@ -143,7 +148,7 @@ export default {
           // config信息验证成功后会执行ready方法,所有接口调用都必须在config接口获得结果之后
           // config 是一个客户端的异步操作,所以如果需要在页面加载时调用相关接口,则须把相关接口放在ready函数中调用来确保正确执行.对于用户触发是才调用的接口,则可以直接调用,不需要放在ready函数中
           wx.ready(function(res) {
-            alert('配置成功' + res)
+            // alert('配置成功' + res)
             wx.checkJsApi({
               // 判断当前客户端版本是否支持指定JS接口
               jsApiList: ["scanQRCode"],
@@ -175,7 +180,7 @@ export default {
           });
           /* 处理失败验证 */
           wx.error(function(res) {
-            alert('配置失败' + res)
+            // alert('配置失败' + res)
             this3.$toast("服务器炸啦！");
             // config 信息验证失败会执行error函数,如签名过期导致验证失败,具体错误信息可以打开config的debug模式查看,也可以在返回的res参数中查看,对于SPA可以在这里更新签名
             // console.log('微信sdk配置失败！');
@@ -188,70 +193,71 @@ export default {
 
 <style lang="less" scoped>
 .explain_box {
-  padding: 24px 36px;
+  padding: 12px 18px;
   .title {
     color: #111111;
-    font-size: 34px;
+    font-size: 17px;
     font-weight: bold;
   }
   > p {
     color: #5e5e5e;
-    line-height: 50px;
+    line-height: 25px;
     // margin-top: 23px;
     &.one {
-      margin-top: 10px;
+      margin-top: 5px;
     }
   }
 }
 .btn_box {
   display: flex;
-  padding: 60px 30px;
+  padding: 30px 15px;
   /deep/.van-button--block {
-    height: 70px;
+    height: 35px;
+    line-height: 34px;
     color: #079fd5;
-    font-size: 32px;
-    border-radius: 10px;
+    font-size: 16px;
+    border-radius: 5px;
     font-weight: bold;
-    letter-spacing: 8px;
+    letter-spacing: 4px;
   }
 }
 /deep/.van-ellipsis{
-  font-size: 34px;
+  font-size: 17px;
 }
 /deep/.van-picker__toolbar{
-    height: 80px;
-    line-height: 80px;
+    height: 40px;
+    line-height: 40px;
     .van-picker__cancel,.van-picker__title,.van-picker__confirm{
-      font-size: 28px;
+      font-size: 14px;
     }
   }
 .cardTitle{
-    width:100px;
-    height:48px;
-    line-height: 48px;
+    width: 50px;
+    height: 24px;
+    line-height: 24px;
     text-align: center;
     background:rgba(243,243,243,1);
-    border-radius:10px;
+    border-radius: 5px;
     position: absolute;
     top: 12px;
-    left: 140px;
+    left: 70px;
   }
 .van-field{
     display: flex;
     align-items: center;
-    padding: 20px 25px;
+    padding: 10px 12.5px;
 }
 /deep/.van-cell__value{
-    padding-left: 20px;
+    padding-left: 10px;
 }
 .input /deep/.van-cell__value{
-    padding-left: 140px;
+    padding-left: 70px;
 }
 .img{
-    width: 55px;
-    height: 55px;
+    width: 27.5px;
+    height: 27.5px;
     position: absolute;
-    right: 28px;
-    top: 13px;
+    right: 14px;
+    top: 6.5px;
 }
 </style>

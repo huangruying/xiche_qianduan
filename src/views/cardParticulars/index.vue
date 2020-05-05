@@ -144,106 +144,106 @@ export default {
     width: 100%;
     background: #F2F1F6;
     height: 100vh;
-    padding: 30px;
+    padding: 15px;
     .explain_box {
        background: #F2F1F6;
-       padding: 24px 36px 0px;
+       padding: 12px 18px 0px;
         .title {
             color: #111111;
-            font-size: 34px;
+            font-size: 17px;
             font-weight: bold;
         }
         > p {
             color: #5e5e5e;
-            line-height: 40px;
+            line-height: 20px;
             // margin-top: 23px;
             &.one {
-            margin-top: 10px;
+            margin-top: 5px;
             }
         }
     }
     .content{
         background: #fff;
-        border-radius: 30px;
-        margin-bottom: 15px;
+        border-radius: 15px;
+        margin-bottom: 7.5px;
         .look_box{
             display: flex;
             justify-content: space-between;
             border-top: 1px solid #F2F1F6;
             align-items: center;
-            height: 100px;
+            height: 50px;
             >span{
                 display: flex;
                 align-items: center;
                 color: #999999;
-                padding-right: 40px;
+                padding-right: 20px;
             }
             .look{
                 color: #0F8FFF;
-                padding-left: 40px;
+                padding-left: 20px;
                 font-weight: bold;
             }
         }
         .top{
-            padding: 60px 40px 50px;
+            padding: 30px 20px 25px;
             >span{
                 display: block;
-                margin: 22px 0 0px;
+                margin: 11px 0 0px;
                 text-align: center;
-                font-size:24px;
+                font-size: 12px;
                 color:rgba(153,153,153,1);
             }
             .conversion{
                 text-align: center;
-                font-size:34px;
+                font-size: 17px;
                 font-weight:bold;
                 color: #000;
             }
             .barCode{
                 // background: #000;
                 .bar{
-                    width: 340px;
-                    height: 92px;
-                    margin: 40px auto 0;
+                    width: 170px;
+                    height: 46px;
+                    margin: 20px auto 0;
                 }
                 
             }
             .qrcode{
                 // background: #000;
-                width: 210px;
-                height: 202px;
-                margin: 28px auto;
+                width: 105px;
+                height: 101px;
+                margin: 14px auto;
             }
             .title{
-                font-size: 46px;
+                font-size: 23px;
                 font-weight:bold;
-                margin-bottom: 23px;
+                margin-bottom: 11.5px;
             }
             .date{
                 color: #333333;
-                font-size: 30px;
-                padding-bottom: 70px;
+                font-size: 15px;
+                padding-bottom: 35px;
                 border-bottom: 1px dotted #333333;
                 position: relative;
                 &::after{
                     content: "";
-                    width: 33px;
-                    height: 33px;
+                    width: 17px;
+                    height: 17px;
                     border-radius: 50%;
                     background: #F2F1F6;
                     position: absolute;
-                    left: -55px;
-                    bottom: -15px;
+                    left: -27.5px;
+                    bottom: -7.5px;
                 }
                 &::before{
                     content: "";
-                    width: 33px;
-                    height: 33px;
+                    width: 16.5px;
+                    height: 16.5px;
                     border-radius: 50%;
                     background: #F2F1F6;
                     position: absolute;
-                    right: -55px;
-                    bottom: -15px;
+                    right: -27.5px;
+                    bottom: -7.5px;
                 }
             }
         }

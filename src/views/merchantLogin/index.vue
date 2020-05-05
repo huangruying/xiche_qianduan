@@ -1,5 +1,7 @@
 <template>
   <div class="merchantLogin">
+    <div class="boxboxbox"></div>
+
     <div class="input_box">
       <van-form @submit="onSubmit" :show-error="false" label-width="150px">
         <div class="title">基本信息</div>
@@ -273,7 +275,6 @@
             type="info"
             native-type="submit"
             size="large"
-            style="height:40px;"
             loading-text="注册中..."
           >注册</van-button>
         </div>
@@ -526,86 +527,90 @@ export default {
 
 <style lang="less" scoped>
 .ditu{
-  padding: 50px 30px;
+  padding: 25px 15px;
 }
 .uploader{
     background: #fff;
-    padding: 10px 30px 40px;
+    padding: 5px 15px 20px;
     .uploadder_box{
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 20px 15px 20px;
-        width: 250px;
-        border: 1px solid #808080;
-        border-radius: 10px;
+        padding: 10px 8px 10px;
+        width: 125px;
+        border: .5px solid #808080;
+        border-radius: 5px;
         >img{
-            width: 39px;
-            height: 32px;
+            width: 20px;
+            height: 16px;
         }
         >span{
             display: block;
-            margin-top: 10px;
-            font-size:24px;
+            margin-top: 5px;
+            font-size: 12px;
             color: #666;
         }
     }
 }
 .title{
-  padding-left: 20px;
-  padding-top: 20px;
-  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 5px;
   color: #1989fa;
   font-weight: bold;
 }
-/deep/.van-picker__toolbar{
-  height: 80px;
-  >button{
-    font-size: 30px;
-  }
-}
-/deep/.van-calendar__confirm {
-  height: 80px;
-}
+// /deep/.van-picker__toolbar{
+//   height: 80px;
+//   >button{
+//     font-size: 30px;
+//   }
+// }
+// /deep/.van-calendar__confirm {
+//   height: 80px;
+// }
 .item{
   // /deep/.van-cell__title, /deep/.van-cell__value{
   //   // padding-left: 100px;
   // }
 }
+/deep/.van-dropdown-menu {
+  height: 18px;
+}
 /deep/.van-hairline--top-bottom::after{
     border: none;
 }
 /deep/.van-cell {
-  padding: 20px;
+  // padding: 10px 0;
   display: flex;
   align-items: center;
+  // line-height: 0;
 }
 /deep/.van-dropdown-menu__title::after{
-    margin-top: -5px;
-    right: -20px;
-    border: 5px solid;
-    border-color: transparent transparent currentColor currentColor;
+    // margin-top: -2.5px;
+    // right: -20px;
+    // border: 2.5px solid;
+    // border-color: transparent transparent currentColor currentColor;
 }
-/deep/.van-dropdown-menu__title {
-    line-height: 55px;
-}
+// /deep/.van-dropdown-menu__title {
+//     line-height: 25px;
+// }
 .input_box {
-  padding-top: 20px;
+  padding-top: 10px;
 }
 .user {
   height: 100vh;
   background: #f7f7f7;
-  padding: 25px;
+  padding: 13px;
   .title_details {
     color: #808080;
-    margin: 21px 0;
-    font-size: 26px;
+    margin: 11px 0;
+    font-size: 13px;
   }
   .title {
     font-weight: 600;
-    font-size: 40px;
+    font-size: 20px;
     color: #010101;
-    margin-top: 50px;
+    margin-top: 25px;
   }
 }
 .van-cell:not(:last-child)::after {

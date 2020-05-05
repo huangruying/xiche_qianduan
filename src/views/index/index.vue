@@ -129,9 +129,9 @@ export default {
   },
   mounted (){
     // 此处为调用精确定位之后，调取ip定位，可根据实际情况改写
-    this.getLocation();
+    // this.getLocation();
     this.tabList()
-    // this.wxLocation()
+    this.wxLocation()
   },
   created() {
     // this.getLocationPop(); // 调用获取地理位置 
@@ -219,6 +219,7 @@ export default {
         wx.error(function(res) {
           // config 信息验证失败会执行error函数,如签名过期导致验证失败,具体错误信息可以打开config的debug模式查看,也可以在返回的res参数中查看,对于SPA可以在这里更新签名
           // alert("微信sdk配置失败！ " + res.errMsg);
+          this2.$toast('获取地理位置失败，请点击左上角手动获取当前位置！')
         });
       // });
     },
@@ -305,8 +306,7 @@ export default {
            ++this.pageNum
           // this.nodata = false
           res.data.data.map(v=>{
-            var img = JSON.parse(v.storeImage)
-            v.storeImage = img[0]
+            v.storeImage = v.storeImages[0]
             var distance = this.latLng(v.latitude,v.longitude)
             v.distance = distance
           })
@@ -508,36 +508,45 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/.van-tabs__line{
+  height: 2px;
+}
 .nodata{
   text-align: center;
-  margin-top: 30px;
+  margin-top: 15px;
 }
-.cell{
-  /deep/.van-cell{
-    padding: 20px;
-  }
-  /deep/.van-ellipsis{
-  font-size: 30px;
-}
-/deep/.van-picker__toolbar{
-    height: 80px;
-    line-height: 80px;
-    .van-picker__cancel,.van-picker__title,.van-picker__confirm{
-      font-size: 28px;
-    }
-  }
-}
+// .cell{
+//   /deep/.van-cell{
+//     padding: 20px;
+//   }
+//   /deep/.van-ellipsis{
+//   font-size: 30px;
+// }
+// /deep/.van-picker__toolbar{
+//     height: 80px;
+//     line-height: 80px;
+//     .van-picker__cancel,.van-picker__title,.van-picker__confirm{
+//       font-size: 28px;
+//     }
+//   }
+// }
 .search_input{
   flex: 1;
   display: flex;
   align-items: center;
+  padding: 10px 0;
   /deep/.van-search {
     width: 100%;
-    margin: 20px;
-    border-radius: 30px;
+    height: 100%;
+    background: none;
+    // margin: 0 10px;
+    // border-radius: 20px;
+    /deep/.van-search__content{
+      border-radius: 20px;
+    }
     .van-field__left-icon .van-icon{
-      margin: 5px 0 0 3px;
-      font-size: 32px;
+      margin: 0px 0 0 1.5px;
+      font-size: 16px;
       color: #999;
     }
     .van-cell{
@@ -555,11 +564,11 @@ export default {
   color: #fff;
   display: flex;
   align-items: center;
-  margin-left: 12px;
+  margin-left: 6px;
   >img{
-    width: 23px;
-    height: 16px;
-    margin-left: 6px;
+    width: 12px;
+    height: 8px;
+    margin-left: 3px;
   }
 }
 /deep/.van-cell{
@@ -571,10 +580,10 @@ export default {
 }
 /deep/.van-tabs--line .van-tabs__wrap {
   // background: #F8F8F8;
-  height: 72px;
+  height: 36px;
   /deep/.van-tab__text{
     color: #666666;
-    font-size:25px;
+    font-size: 12.5px;
   }
   /deep/.van-tab--active{
     >span{
@@ -585,20 +594,20 @@ export default {
      background: #F8F8F8;
   }
   /deep/.van-tab{
-    line-height: 72px;
+    line-height: 36px;
   }
 }
 .commodity_box{
-  padding: 0px 20px;
+  padding: 0px 10px;
   .commodity{
-    padding: 16px 0;
+    padding: 8px 0;
     display: flex;
     border-bottom: 1px solid #E7E7E7;
     .text_box{
-      padding-top: 30px;
+      padding-top: 15px;
       flex: 1;
       .bottom_address{
-        margin-top: 18px;
+        margin-top: 9px;
         display: flex;
         justify-content: space-between;
         >div{
@@ -608,19 +617,19 @@ export default {
             color: #666666;
           }
           >img{
-            width: 15px;
-            height: 20px;
-            margin-right: 10px;
+            width: 7.5px;
+            height: 10px;
+            margin-right: 5px;
             &.img{
-              width: 20px;
+              width: 10px;
             }
           }
         }
       }
       .rate{
-        margin-top: 14px;
+        margin-top: 7px;
         >span{
-          margin-left: 9px;
+          margin-left: 4.5px;
           color: #F62A2A;
         }
       }
@@ -630,9 +639,9 @@ export default {
         >span{
           flex: 1;
           display: block;
-          height: 26px;
-          line-height:30px;
-          font-size:26px;
+          height: 13px;
+          line-height: 15px;
+          font-size: 13px;
           overflow: hidden;
           text-overflow: ellipsis;
           display: -webkit-box;
@@ -642,61 +651,61 @@ export default {
         >em{
           display: block;
           text-align: right;
-          margin-top: 10px;
-          width: 160px;
-          font-size:18px;
+          margin-top: 5px;
+          width: 80px;
+          font-size: 9px;
           font-family:Microsoft YaHei;
           color:rgba(51,51,51,1);
         }
       }
     }
     >img{
-      width: 200px;
-      height: 165px;
-      border-radius: 4px;
-      margin-right: 19px;
+      width: 100px;
+      height: 82px;
+      border-radius: 2px;
+      margin-right: 9px;
     }
   }
 }
 .tabs{
-  margin: -30px 25px 0;
+  margin: -15px 13px 0;
   background: #fff;
-  border-radius: 15px;
+  border-radius: 7.5px;
   .grid{
     float: left;
     width: 25%;
-    padding: 30px 0;
+    padding: 15px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     >span{
-      font-size: 24px;
+      font-size: 7px;
     }
   }
   .imgtab{
-    width: 80px;
-    height: 80px;
-    margin-bottom: 8px;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 4px;
   }
 }
 .img_box{
-  height: 320px;
+  height: 160px;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   .search_box{
     // opacity:  0.5;
     background-color: rgba(0, 0, 0, 0.3);
-    height: 70px;
+    height: 35px;
     display: flex;
     justify-content: space-between;
     .text{
       color: #fff;
-      font-size: 25px;
+      font-size: 13px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-right: 13px;
-      margin-left: 10px;
+      margin-right: 7px;
+      margin-left: 5px;
     }
     .search{
       flex: 1;
@@ -704,18 +713,18 @@ export default {
       align-items: center;
       justify-content: space-between;
       background: #fff;
-      border-radius: 20px; 
+      border-radius: 10px; 
       color: #808080;
-      margin: 12px;
+      margin: 6px;
       >span{
         display: block;
-        margin-left: 18px;
-        font-size: 20px;
+        margin-left: 9px;
+        font-size: 10px;
       }
       >img{
-        width: 26px;
-        height: 26px;
-        margin-right: 19px;
+        width: 13px;
+        height: 13px;
+        margin-right: 9px;
       }
     }
     .address{
@@ -739,9 +748,9 @@ export default {
         }
       }
       >img{
-        width: 23px;
-        height: 37px;
-        margin-left: 24px;
+        width: 12px;
+        height: 19px;
+        margin-left: 12px;
       }
     }
   }

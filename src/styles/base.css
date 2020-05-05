@@ -15,7 +15,7 @@ time, mark, audio, video, input {
     padding: 0;
     border: 0;
     color: inherit;
-    font-size: 27px;
+    font-size: 14px;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     /*点击高亮效果的清除*/
@@ -23,9 +23,9 @@ time, mark, audio, video, input {
     -webkit-tap-highlight-color: transparent;
 }
 html,body {
-  line-height: 1;
+  /* line-height: 1; */
   font-family: "Microsoft YaHei",sans-serif;
-  font-size: 27px;
+  font-size: 14px;
   height: 100%;
   width: 100%;
   outline: none;
@@ -125,7 +125,7 @@ button:enabled:active{
   background-color: transparent;
 }
 /* 消息提示 */
-.van-toast{
+/* .van-toast{
  width: 200px;
  min-height: 130px;
  max-width: 80%;
@@ -133,21 +133,21 @@ button:enabled:active{
 }
 .van-toast__text{
   line-height: 30px;
-}
+} */
 /* 底部版权 */
 .ccc{
   position: fixed;
   left: 50%;
-  bottom: 10px;
+  bottom: 5px;
   transform: translateX(-50%);
   color: #8c8c8c;
-  font-size:24px;
+  font-size: 12px;
 }
 /* 头部 */
 .title_box{
   display: flex;
   align-items: center;
-  padding: 15px 20px;
+  padding: 7.5px 10px;
   background: #21a7fc;
   color: #fff;
 }

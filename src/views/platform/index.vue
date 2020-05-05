@@ -49,71 +49,71 @@ export default {
 <style lang="less" scoped>
 /deep/.van-button--block{
     width: 80%;
-    height: 80px;
+    height: 40px;
     color: #079fd5;
-    font-size: 32px;
-    margin: 80px auto;
-    border-radius: 10px;
+    font-size: 16px;
+    margin: 40px auto;
+    border-radius: 5px;
     font-weight: bold;
-    letter-spacing: 8px;
+    letter-spacing: 4px;
 }
 .explain_box {
-  padding: 24px 36px;
+  padding: 12px 18px;
   .title {
     color: #111111;
-    font-size: 34px;
+    font-size: 17px;
     font-weight: bold;
   }
   > p {
     color: #5e5e5e;
-    line-height: 50px;
+    line-height: 25px;
     // margin-top: 23px;
     &.one {
-      margin-top: 10px;
+      margin-top: 5px;
     }
   }
 }
 /deep/.van-field__label{
-    width: 130px;
-    font-size: 25px;
+    width: 65px;
+    font-size: 12.5px;
 }
 /deep/.van-ellipsis{
-  font-size: 34px;
+  font-size: 17px;
 }
 /deep/.van-picker__toolbar{
-    height: 80px;
-    line-height: 80px;
+    height: 40px;
+    line-height: 40px;
     .van-picker__cancel,.van-picker__title,.van-picker__confirm{
-      font-size: 28px;
+      font-size: 14px;
     }
   }
 .cardTitle{
-    width:100px;
-    height:48px;
-    line-height: 48px;
+    width: 50px;
+    height: 24px;
+    line-height: 24px;
     text-align: center;
     background:rgba(243,243,243,1);
-    border-radius:10px;
+    border-radius: 5px;
     position: absolute;
-    top: 12px;
-    left: 140px;
+    top: 6px;
+    left: 70px;
   }
 .van-field{
     display: flex;
     align-items: center;
-    padding: 20px 25px;
+    padding: 10px 12.5px;
 }
 /deep/.van-cell__value{
-    padding-left: 20px;
+    padding-left: 10px;
 }
 .input /deep/.van-cell__value{
-    padding-left: 140px;
+    padding-left: 70px;
 }
 .img{
-    width: 55px;
-    height: 55px;
+    width: 27.5px;
+    height: 27.5px;
     position: absolute;
-    right: 28px;
-    top: 13px;
+    right: 14px;
+    top: 7px;
 }
 </style>

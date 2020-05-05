@@ -18,9 +18,9 @@ import router from './router/index'
 //   uiVersion: '1.0.11' // ui版本号，也是需要写
 // })
 // rem 大小屏幕单位适配
-// import 'lib-flexible'
-import rem from './rem/remConfig'
-rem()
+import 'lib-flexible'
+// import rem from './rem/remConfig'
+// rem()
 
 // 引入第3方ui库
 import Vant from 'vant';

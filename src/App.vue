@@ -96,7 +96,7 @@ export default {
   },
   created() {
     // 微信授权
-    // this.wxSQ()
+    this.wxSQ()
   },
   methods: {
      // 登录授权
@@ -105,7 +105,7 @@ export default {
       if(!wxUserData){
         const code = this.getUrlParam("code");
         if(code){
-          this.code = code
+          // this.code = code
         }else{
           this.authorization()
         }
@@ -134,7 +134,7 @@ export default {
           .then(res => {
             var data = JSON.stringify(res)
             localStorage.setItem("wxUserData", data)
-          });
+          })
       }
     },
     getUrlParam(name) {
@@ -190,6 +190,7 @@ export default {
             code: this.code,
             name: this.userName
           }).then(res=>{
+            // console.log(res);
             this.onSale = false
             if(res.data.code == 200){
               var obj = res.data.data
@@ -198,9 +199,14 @@ export default {
               this.$toast.success('登录成功！')
               this.mobileLogin = false
               this.show = false
-              this.$forceUpdate()
+              this.$router.push({name: 'cardVolume',query: {login: 1}})
+              // this.$router.replace('/cardVolume')
+              // this.$forceUpdate()
             }else{
               this.$toast(res.data.msg)
+              this.$router.push({name: 'user'})
+              this.mobileLogin = false
+              this.show = false
             }
           })
       }else{
@@ -268,7 +274,7 @@ export default {
 
 <style lang="less" scoped>
 /deep/.van-button--primary{
-  border: 3px solid #07c160;
+  border: 1.5px solid #07c160;
 }
 /deep/.van-field--error /deep/.van-field__control {
   color: #323233;
@@ -276,43 +282,43 @@ export default {
 .bottom_text {
   text-align: center;
   color: #ccc;
-  font-size: 19px;
-  padding-bottom: 30px;
+  font-size: 9px;
+  padding-bottom: 15px;
 }
 .title {
   text-align: center;
-  font-size: 31px;
+  font-size: 15px;
   font-weight: bold;
-  padding: 25px 0;
+  padding: 12.5px 0;
 }
 .van-action-sheet__content {
   // height: 200px;
 }
 .van-action-sheet__cancel {
-  font-size: 30px;
-  height: 90px;
-  line-height: 80px;
+  font-size: 15px;
+  height: 45px;
+  line-height: 40px;
   color: #000;
 }
 .btn_box {
-  padding: 10px 50px 10px;
-  margin-bottom: 15px;
+  padding: 5px 25px 5px;
+  margin-bottom: 7.5px;
   .van-button--block {
-    height: 80px;
-    border-radius: 50px;
+    height: 40px;
+    border-radius: 25px;
     .van-button__text {
-      font-size: 32px;
-      letter-spacing: 5px;
+      font-size: 16px;
+      letter-spacing: 2.5px;
     }
   }
 }
 .van-dialog {
-  padding: 0 30px;
+  padding: 0 15px;
 }
 .margin {
-  margin-bottom: 20px;
-  border-radius: 5px;
-  padding: 0 50px;
+  margin-bottom: 10px;
+  border-radius: 2.5px;
+  padding: 0 25px;
   &.code {
     padding: 0;
   }
@@ -324,7 +330,7 @@ export default {
   width: 100%;
   display: flex;
   .margin_border {
-    padding-left: 60px;
+    padding-left: 40px;
   }
   .border_ad {
     border-radius: 0.1rem;
@@ -334,12 +340,12 @@ export default {
   }
   .bule {
     width: 40%;
-    height: 60px;
+    height: 30px;
     background: #08a0ff;
     border-radius: 0.1rem;
     color: #fff;
     text-align: center;
-    line-height: 60px;
+    line-height: 30px;
     &.hui {
       background: #999999;
     }
