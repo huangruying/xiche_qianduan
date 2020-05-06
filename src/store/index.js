@@ -5,6 +5,7 @@ import VueXAlong from 'vuex-along'
 Vue.use(Vuex)
 
 import valueList from './modules/valueList'
+import lnglat from './modules/lnglat'
 import getters from './getters'
 export default new Vuex.Store({
   state: {
@@ -14,7 +15,8 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    valueList
+    valueList,
+    lnglat
   },
   getters,
   plugins: [ VueXAlong({

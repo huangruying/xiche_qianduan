@@ -1,6 +1,16 @@
 <template>
   <div id="app">
-    <router-view v-if="isRouterAlive"></router-view>
+    <!-- <router-view v-if="isRouterAlive"></router-view> -->
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive && isRouterAlive">
+          <!-- 这里是会被缓存的视图组件 -->
+      </router-view>
+    </keep-alive>
+    
+    <router-view v-if="!$route.meta.keepAlive && isRouterAlive">
+        <!-- 这里是不被缓存的视图组件 -->
+    </router-view>
+
     <!-- 登录提示 -->
     <van-action-sheet v-model="show" title cancel-text="取消" @close="closeLogin">
       <div class="title">为了你的账号安全，请绑定手机号</div>
@@ -96,7 +106,7 @@ export default {
   },
   created() {
     // 微信授权
-    this.wxSQ()
+    // this.wxSQ()
   },
   methods: {
      // 登录授权

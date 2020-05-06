@@ -127,7 +127,8 @@ let router= new Router({
             name: 'redeemCode',
             component: ()=>import('@/views/redeemCode/index'),
             meta: {
-                title: '兑换码核销'
+                title: '兑换码核销',
+                keepAlive: true, //此组件需要被缓存
             }
         },
         {
@@ -143,7 +144,8 @@ let router= new Router({
             name: 'orderParticulars',
             component: ()=>import('@/views/orderParticulars/index'),
             meta: {
-                title: '订单详情'
+                title: '订单详情',
+                keepAlive: false, //此组件不需要被缓存
             }
         },
         {
@@ -151,7 +153,9 @@ let router= new Router({
             name: 'merchantLogin',
             component: ()=>import('@/views/merchantLogin/index'),
             meta: {
-                title: '商家注册'
+                title: '商家注册',
+                keepAlive: true, // 此组件需要被缓存
+                isBack:false, //用于判断上一个页面是哪个
             }
         },
         {
@@ -162,15 +166,28 @@ let router= new Router({
                 title: '授权'
             }
         },
+        {
+            path: '/location',
+            name: 'location',
+            component: ()=>import('@/views/location/index'),
+            meta: {
+                title: '选择位置',
+            }
+        },
     ]
 })
 
 router.beforeEach((to, from, next) => {
 	// Vue.prototype.$hideLoading();
   if (to.meta.title) {
-    document.title = to.meta.title
+    document.title = to.meta.title // 设置当前页面的title
   }
-	next();
+  if(from.name=='location'){
+    to.meta.keepAlive = true;
+    //判断是从哪个路由过来的，
+    //如果是location过来的，表明当前页面不需要刷新获取新数据，直接用之前缓存的数据即可
+  }
+  next();
 })
 
 export default router

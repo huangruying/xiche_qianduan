@@ -177,20 +177,22 @@
         </van-popup>
         <van-field
           @click="dialogAmp"
+          required
           readonly 
-          v-model="longitude"
-          name="longitude"
-          label="经度"
-          placeholder="请输入经度"
+          v-model="lnglat"
+          name="lnglat"
+          label="经度/纬度"
+          placeholder="点击选择经纬度"
+          :rules="[{ required: true, message: '请选择经纬度!' }]"
         />
-        <van-field
+        <!-- <van-field
           @click="dialogAmp"
           readonly 
-          v-model="latitude"
+          v-model="latitude" longitude
           name="latitude"
           label="纬度"
           placeholder="请输入纬度"
-        />
+        /> -->
         <van-field
           v-model="rescueCall"
           name="rescueCall"
@@ -281,11 +283,12 @@
       </van-form>
     </div>
 
-    <van-dialog v-model="showDialog" title="点击选取位置" width="300px" show-cancel-button>
+    <!-- 改新页面获取位置 -->
+    <!-- <van-dialog v-model="showDialog" title="点击选取位置" width="300px" show-cancel-button>
       <div class="ditu">
-
+        <div id="container"></div> 
       </div>
-    </van-dialog>
+    </van-dialog> -->
 
   </div>
 </template>
@@ -293,8 +296,11 @@
 <script>
 import { cardTitle, letter } from "@/utils/plateNumber";
 import { findMechanismName , saveDot } from '@/api/login'
+import api from '@/api/index'
 import areaList from '@/utils/area'
 import { officialOssUpload } from '@/api/evaluate'
+import wx from "weixin-js-sdk";
+// import AMap from "@/utils/AMap"
 export default {
   data() {
     return {
@@ -304,6 +310,8 @@ export default {
       fileList4: [],
       fileList5: [],
       fileList6: [],
+      center: [116.42792, 39.902896], //经度+纬度
+      lnglat: "",
       account: "",
       openingBank: "",
       accountName: "",
@@ -355,10 +363,70 @@ export default {
   },
   mounted() {
     this.getData()
+    this.wxLocation()
+    // var lnglat = this.$store.getters.lngLat
+    // this.lnglat = lnglat[0] + "/" + lnglat[1]
+    // console.log(lnglat);
+  },
+  watch: {
+    $route: {
+          handler() {
+              var { lng , lat } = this.$route.query;
+              if(lng && lat){
+                  this.lnglat = lng + "/" + lat
+                  this.latitude = lat
+                  this.longitude = lng
+              }
+              // 深度监听，同时也可监听到param参数变化
+        },
+        deep: true,
+    }
   },
   methods: {
     dialogAmp(){
-      this.showDialog = true
+      this.$router.push({name: 'location'})
+      // this.showDialog = true
+    },
+    wxLocation(){
+        api.getParameter({url: window.location.href}).then(res=>{
+            this.wxRegister(res.data.noncestr,res.data.timestamp,res.data.signature)
+        })
+    },
+     // 微信地理位置
+    wxRegister(noncestr,timestamp,signature) {
+      var this2 = this
+        wx.config({
+          debug: false, // true:调试时候弹窗
+          appId: "wx1008eb4c001227c4", // 微信appid
+          timestamp: timestamp, // 时间戳
+          nonceStr: noncestr, // 随机字符串
+          signature: signature, // 签名
+          jsApiList: [
+            // 所有要调用的 API 都要加到这个列表中
+            "scanQRCode", // 微信扫一扫功能
+            "openLocation" //微信地理位置
+          ]
+        });
+        wx.ready(res => {
+          wx.getLocation({
+            success: function(res) {
+              var pointY = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+              var pointX = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+              // var speed = res.speed; // 速度，以米/每秒计
+              var wxaccuracy = res.accuracy; // 位置精度
+              var lnglat = [pointX, pointY];
+              this2.$store.dispatch('disCenter',lnglat) // vuex存起来
+            },
+            cancel: function(res) {
+              // this.getLocation()
+            }
+          });
+        });
+        /* 处理失败验证 */
+        wx.error(function(res) {
+          // config 信息验证失败会执行error函数,如签名过期导致验证失败,具体错误信息可以打开config的debug模式查看,也可以在返回的res参数中查看,对于SPA可以在这里更新签名
+          // alert("微信sdk配置失败！ " + res.errMsg);
+        });
     },
     async getData(){
        var res = await findMechanismName()
@@ -494,9 +562,12 @@ export default {
       values.city = this.city
       values.region = this.region
       values.regionId = this.regionId
+      values.latitude = this.latitude
+      values.longitude = this.longitude
       delete values.area  
       delete values.businessHours1
       delete values.businessHours2
+      delete values.lnglat
       var data = values
       saveDot(data).then(res => {
         if (res.data.code == 200) {
@@ -526,6 +597,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+#container {
+  width:300px;
+  height: 180px; 
+}  
 .ditu{
   padding: 25px 15px;
 }

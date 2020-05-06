@@ -129,9 +129,9 @@ export default {
   },
   mounted (){
     // 此处为调用精确定位之后，调取ip定位，可根据实际情况改写
-    // this.getLocation();
+    this.getLocation();
     this.tabList()
-    this.wxLocation()
+    // this.wxLocation()
   },
   created() {
     // this.getLocationPop(); // 调用获取地理位置 
@@ -195,6 +195,7 @@ export default {
                   city: wxaccuracy
                 });
                 var lnglat = [pointX, pointY];
+                this2.$store.dispatch('disCenter',lnglat) // vuex存起来
                 geocoder.getAddress(lnglat, function(status, result) {
                   if (status === "complete" && result.info === "OK") {
                     var data = JSON.stringify(result)
@@ -415,6 +416,7 @@ export default {
           self.duration = 1
           self.lng = data.position.lng
           self.lat = data.position.lat
+          self.$store.dispatch('disCenter',[self.lng,self.lat]) // vuex存起来
           self.area = data.addressComponent.district
           self.city = data.addressComponent.city
           self.region = data.addressComponent.district
@@ -485,6 +487,7 @@ export default {
                         // console.log(result.geocodes[0].addressComponent);
                         cat.lng = location.lng
                         cat.lat = location.lat
+                        cat.$store.dispatch('disCenter',[cat.lng,cat.lat]) // vuex存起来
                         cat.area = result.geocodes[0].addressComponent.district
                         cat.city = result.geocodes[0].addressComponent.city
                         cat.apiGetlist()
