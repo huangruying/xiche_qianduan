@@ -13,10 +13,10 @@
         <img src="@/assets/merchantIndex/icon-2@2x.png" alt />
         <span>联系我们</span>
       </div>
-      <!-- <div class="box" @click="tabsIndex(2)">
-              <img src="@/assets/merchantIndex/icon-3@2x.png" alt="">
-              <span>机油检查</span>
-      </div>-->
+      <div class="box" @click="haha">
+          <img src="@/assets/merchantIndex/icon-3@2x.png" alt="">
+          <span>机油检查</span>
+      </div>
     </div>
     <div class="shan_hu">
       <div class="title_box_box">
@@ -77,11 +77,13 @@ export default {
     var obj = localStorage.getItem("userMerchant");
     var obj = JSON.parse(obj)
     if (obj === null) {
-      this.$parent.login(1);
-    } else {
+      this.$parent.login(1)
     }
   },
   methods: {
+    haha(){
+       localStorage.removeItem("userMerchant")
+    },
     WxAdd() {
         var this2 = this
         wx.config({
@@ -163,7 +165,14 @@ export default {
       } else if (index === 2) {
         this.$router.push({ name: "redeemCode" });
       } else if (index === 3) {
-        this.WxAdd() // 微信扫一扫
+        // 商家登录
+        var obj = localStorage.getItem("userMerchant");
+        var obj = JSON.parse(obj)
+        if (obj === null) {
+          this.$parent.login(1)
+        }else{
+          this.WxAdd() // 微信扫一扫
+        }
       } else if (index === 5) {
         // this.$router.push({name: 'platform'})
       } else {

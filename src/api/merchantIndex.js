@@ -20,10 +20,10 @@ const wxUserInfo = data => {
 }
 
 // 订单页数据
-const findServiceOrderById = data => {
+const findWriteoffOrderByDotUserId = data => {
   return axios({
     method: 'post',
-    url: '/findServiceOrderById',
+    url: '/findWriteoffOrderByDotUserId',
     data: data
   })
 }
@@ -40,6 +40,6 @@ const useGeneralCoupon = data => {
 export default{
   getParameter,
   wxUserInfo,
-  findServiceOrderById,
+  findWriteoffOrderByDotUserId,
   useGeneralCoupon
 }

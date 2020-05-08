@@ -9,9 +9,9 @@
         <div class="order_box" @click="orderParticulars(value)" v-for="(value,index) in dataList" :key="index">
             <div class="index">{{ index + 1 }}.</div>
             <div class="order">
-                    <div class="order_title">{{value.projectName}}</div>  
-                    <span>服务商家： {{value.garageName}}</span>
-                    <span>下单时间： {{value.placeTime}} </span>
+                    <div class="order_title">{{value.companyName}}</div>  
+                    <span>服务商家： {{value.dotName}}</span>
+                    <span>核销时间： {{value.destructionTime}} </span>
                     <span>车牌号码： {{value.licensePlate}}</span>
             </div>
             <div class="state">已结算</div>
@@ -43,7 +43,7 @@ export default {
     },
     methods: {
         apiGetList(obj){
-            api.findServiceOrderById({id:obj}).then(res=>{
+            api.findWriteoffOrderByDotUserId({dotUserId:obj.id}).then(res=>{
                 if(res.data.data && res.data.data.length > 0){
                     this.dataList = res.data.data
                 }else{

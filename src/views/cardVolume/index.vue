@@ -19,24 +19,24 @@
                 <span>{{value.failureTime}}前有效</span>
               </div>
               <div class="right_img" v-if="bgdleft">
-                <img src="@/assets/cardVolume/即将过期@2x.png" alt />
+                <img src="@/assets/cardVolume/即将过期@2x.png" alt v-if="value.bol"/>
                 <van-button type="info" class="btn" @click="useVolume(value.couponCode)" size="small">立即使用</van-button>
               </div>
-              <div class="right_img" v-if="pastDue">
+              <div class="right_img" v-if="pastDue2">
                 <img src="@/assets/cardVolume/已过期@2x.png" alt class="img"/>
               </div>
-              <div class="right_img" v-if="pastDue2">
+              <div class="right_img" v-if="pastDue">
                 <img src="@/assets/cardVolume/已使用.png" alt class="img"/>
               </div>
             </div>
-            <div class="bottom">优惠券码：{{value.couponCode}}</div>
+            <div class="bottom">优惠券码：<span style="color: #999999;">{{value.couponCode}}</span></div>
           </div>
         </div>
       </div>
       <div class="explain_box" v-if="!nodata">
         <div class="title">使用规则：</div>
         <p class="one">1.点击右侧立即使用按钮选择可使用商家；</p>
-        <p>2.商家详情界面选择服务项目右侧支付按钮，平台自动计算 应支付费用；</p>
+        <p>2.商家详情界面选择服务项目右侧支付按钮，平台自动计算应付支付费用；</p>
         <p>3.车主确认应支付费用后进行支付</p>
         <p>4.支付成功后进店服务。</p>
       </div>
@@ -84,7 +84,7 @@ export default {
   created(){
     var obj = localStorage.getItem('user')
     var obj = JSON.parse(obj)
-    console.log(obj);
+    // console.log(obj);
     if(obj === null){
         // this.$router.push({name: 'index'})
         this.$parent.login(0)
@@ -126,6 +126,11 @@ export default {
         }
         this.apiList(this.id)
     },
+    timeAgo(timeA, timeB) {
+        var stamp = new Date(timeA).getTime() - new Date(timeB).getTime();
+        var time = Math.floor((stamp / 1000) / 24 / 60 / 60);
+        return time
+    },
     // 获取数据
     apiList(id){
       var data
@@ -142,6 +147,18 @@ export default {
       }).then(res=>{
         if(res.data.data && res.data.data.length > 0){
           this.dataList = res.data.data
+          var date = new Date()
+          var dateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`
+          var str = dateStr.split("-")
+          this.dataList.map(v=>{
+            var strs = v.failureTime.split("-")
+            var aa = this.timeAgo(v.failureTime,dateStr)
+            if(aa < 15){
+              v.bol = true
+            }else{
+              v.bol = false
+            }
+          })
           this.nodata = false
         }else{
           this.dataList = []
@@ -208,7 +225,7 @@ export default {
   padding: 18px 15px 1px;
   .volume {
     background: #fff;
-    // height: 95px;
+    height: 120px;
     border-radius: 5px;
     display: flex;
     margin-bottom: 10px;
@@ -264,7 +281,7 @@ export default {
       color: #fff;
       position: relative;
       >img{
-        height: 105px;
+        height: 100%;
       }
       > div {
         font-size: 26px;

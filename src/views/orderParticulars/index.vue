@@ -9,48 +9,56 @@
       </div>
       <ul>
           <li>
-              <span>支付订单号：</span>
-              <em>{{listData.orderCode}}</em>
+              <span>订单号</span>
+              <em>{{listData.orderNo}}</em>
           </li>
           <li>
-              <span>服务内容：</span>
-              <em>{{listData.projectName}}</em>
+              <span>卷码号</span>
+              <em>{{listData.couponCode}}</em>
           </li>
           <li>
               <span>车牌号：</span>
               <em>{{listData.licensePlate}}</em>
           </li>
           <li>
-              <span>下单时间：</span>
-              <em>{{listData.placeTime}}</em>
+              <span>是否对账</span>
+              <em>{{listData.reconciliation == 1? "已对账" : "未对账"}}</em>
           </li>
           <li>
-              <span>完成时间：</span>
-              <em>{{listData.completionTime}}</em>
+              <span>省</span>
+              <em>{{listData.province}}</em>
           </li>
           <li>
-              <span>服务状态：</span>
-              <em>{{listData.orderStatus === 1 ? '已支付' : '未支付' }}</em>
+              <span>市</span>
+              <em>{{listData.city }}</em>
           </li>
           <li>
-              <span>品牌车系：</span>
-              <em>{{listData.brandCar}}</em>
+              <span>区</span>
+              <em>{{listData.region}}</em>
           </li>
           <li>
-              <span>车主姓名：</span>
-              <em>{{listData.vehicleName}}</em>
+              <span>核销时间</span>
+              <em>{{listData.destructionTime}}</em>
           </li>
           <li>
-              <span>车主手机号：</span>
-              <em>{{listData.vehiclePhone}}</em>
+              <span>所属服务商</span>
+              <em>{{listData.companyName}}</em>
           </li>
           <li>
-              <span>服务商家地址：</span>
-              <em>{{listData.garageAddress}}</em>
+              <span>车牌号</span>
+              <em>{{listData.licensePlate}}</em>
+          </li>
+          <li>
+              <span>网点名称</span>
+              <em>{{listData.dotName}}</em>
+          </li>
+          <li>
+              <span>手机号</span>
+              <em>{{listData.phone}}</em>
           </li>
           <li>
               <span>总金额：</span>
-              <em class="col">{{listData.money}}</em>
+              <em class="col">{{listData.couponMoney}}</em>
           </li>
       </ul>
       <van-button type="default" block @click="routerGo">返回</van-button>
@@ -66,7 +74,7 @@ export default {
     },
     mounted(){
         this.listData = this.$store.getters.listData
-        console.log(this.$store.getters.listData)
+        // console.log(this.$store.getters.listData)
     },
     methods: {
         routerIndex(index){

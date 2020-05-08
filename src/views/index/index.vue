@@ -129,9 +129,9 @@ export default {
   },
   mounted (){
     // 此处为调用精确定位之后，调取ip定位，可根据实际情况改写
-    this.getLocation();
+    // this.getLocation();
     this.tabList()
-    // this.wxLocation()
+    this.wxLocation()
   },
   created() {
     // this.getLocationPop(); // 调用获取地理位置 
@@ -682,7 +682,7 @@ export default {
     flex-direction: column;
     align-items: center;
     >span{
-      font-size: 7px;
+      font-size: 13px;
     }
   }
   .imgtab{

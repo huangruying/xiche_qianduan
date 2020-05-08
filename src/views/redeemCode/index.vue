@@ -112,9 +112,13 @@ export default {
            this.plate = value[0] + value[1]
         },
         useGeneralCoupon(){
+          var obj = localStorage.getItem("userMerchant");
+          var obj = JSON.parse(obj)
           api.useGeneralCoupon({
             couponCode: this.redeemCode,
-            licensePlate: this.plate + this.licensePlate
+            licensePlate: this.plate + this.licensePlate,
+            dotUserId: obj.id,
+            dotId: obj.dotId
           }).then(res=>{
              if(res.data.code == 200){
                this.$toast('核销成功！')
