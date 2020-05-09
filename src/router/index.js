@@ -47,7 +47,7 @@ let router= new Router({
             name: 'cardVolume',
             component: ()=>import('@/views/cardVolume/index'),
             meta: {
-                title: '我的卡卷'
+                title: '我的卡券'
             }
         },
         {
@@ -55,7 +55,7 @@ let router= new Router({
             name: 'cardParticulars',
             component: ()=>import('@/views/cardParticulars/index'),
             meta: {
-                title: '卡卷详情'
+                title: '卡券详情'
             }
         },
         {

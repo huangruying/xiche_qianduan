@@ -20,7 +20,7 @@
               </div>
               <div class="right_img" v-if="bgdleft">
                 <img src="@/assets/cardVolume/即将过期@2x.png" alt v-if="value.bol"/>
-                <van-button type="info" class="btn" @click="useVolume(value.couponCode)" size="small">立即使用</van-button>
+                <van-button type="info" class="btn" @click="useVolume(value.couponCode,value.licensePlate)" size="small">立即使用</van-button>
               </div>
               <div class="right_img" v-if="pastDue2">
                 <img src="@/assets/cardVolume/已过期@2x.png" alt class="img"/>
@@ -29,7 +29,7 @@
                 <img src="@/assets/cardVolume/已使用.png" alt class="img"/>
               </div>
             </div>
-            <div class="bottom">优惠券码：<span style="color: #999999;">{{value.couponCode}}</span></div>
+            <div class="bottom">优惠券码：<em class="xian" v-if="value.licensePlate">限粤A12345使用</em><span style="color: #999999;">{{value.couponCode}}</span></div>
           </div>
         </div>
       </div>
@@ -145,6 +145,7 @@ export default {
         userId: id,  // 1  测试数据
         status: data
       }).then(res=>{
+        console.log(res);
         if(res.data.data && res.data.data.length > 0){
           this.dataList = res.data.data
           var date = new Date()
@@ -167,8 +168,38 @@ export default {
       })
     },
     // 使用优惠卷
-    useVolume(use){
-      this.$router.push({name: 'cardParticulars',query: {use}})
+    useVolume(use,licensePlate){
+      if(licensePlate == undefined){
+        this.$router.push({name: 'cardParticulars',query: {use}})
+      }else{
+        var obj = localStorage.getItem('user')
+        var obj = JSON.parse(obj)
+        if(obj === null){
+          this.$dialog.confirm({
+            title: '',
+            message: '该券码需指定' + licensePlate + '使用！',
+          })
+          .then(() => {
+            this.$router.push({name: 'user'})
+          })
+          .catch(() => {
+          })
+        }else{
+          if(obj.licensePlate == licensePlate){
+              this.$router.push({name: 'cardParticulars',query: {use}})
+          }else{
+            this.$dialog.confirm({
+                title: '',
+                message: '该券码需指定' + licensePlate + '使用！',
+              })
+              .then(() => {
+                this.$router.push({name: 'user'})
+              })
+              .catch(() => {
+              })
+          }
+        }
+      }
     }
   }
 };
@@ -234,6 +265,10 @@ export default {
       padding: 10px 10px 0 10px;
       .bottom {
         padding: 7px 0 7px;
+        .xian{
+          color: #f86363;
+          font-size: 10px;
+        }
       }
       .top {
         display: flex;

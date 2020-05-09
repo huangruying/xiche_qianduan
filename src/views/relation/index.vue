@@ -7,7 +7,7 @@
       </div>
       <div class="phone">
           <div>我的养车客服电话</div>
-          <div>客服座机： <span @click="phone('13729014409')">13729014409</span></div>
+          <div>客服座机： <span @click="phone('13823149585')">13823149585</span></div>
       </div>
       <van-button type="default" block @click="routerGo">返回</van-button>
       <span class="ccc">版权所有</span>

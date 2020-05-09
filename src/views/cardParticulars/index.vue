@@ -17,7 +17,7 @@
               <span class="conversion tag-read" @click="copy" :data-clipboard-text="use">兑换码：{{use}}</span>
               <span>请出示以上券码给网点工作人员</span>
           </div>
-          <div class="look_box">
+          <div class="look_box" @click="indexGo">
               <div class="look">查看适用网点</div>
               <span>使用前请确认网点信息 <van-icon name="arrow" /> </span>
           </div>
@@ -72,6 +72,9 @@ export default {
         clearTimeout(this.timer)
     },
     methods: {
+        indexGo(){
+            this.$router.push({name: 'index'})
+        },
         apiCardParticulars(use){
             api.getGeneralCouponByCode({couponCode: use}).then(res=>{
                 this.dataList = res.data.data

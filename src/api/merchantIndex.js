@@ -37,9 +37,19 @@ const useGeneralCoupon = data => {
   })
 }
 
+// 扫码核销券码信息查询
+const getDotsTypeInfo = data => {
+  return axios({
+    method: 'post',
+    url: '/getDotsTypeInfo',
+    data: data
+  })
+}
+
 export default{
   getParameter,
   wxUserInfo,
   findWriteoffOrderByDotUserId,
-  useGeneralCoupon
+  useGeneralCoupon,
+  getDotsTypeInfo
 }

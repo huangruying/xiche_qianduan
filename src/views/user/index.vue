@@ -27,8 +27,8 @@
         <van-field
           v-model="frame"
           name= "frame"
-          label="车驾号"
-          placeholder="请输入车驾号"
+          label="车架号"
+          placeholder="请输入车架号"
         />
         <div class="che_pai">
           <van-field
@@ -60,7 +60,7 @@
 
 <script>
 import { cardTitle , letter } from '@/utils/plateNumber'
-import {} from '@/api/user'
+import api from '@/api/user'
 export default {
   data (){
     return {
@@ -85,12 +85,28 @@ export default {
       ],
     }
   },
+  created(){
+    // var obj = localStorage.getItem('user')
+    // var obj = JSON.parse(obj)
+    // console.log(obj);
+    // if(obj === null){
+    //     // this.$router.push({name: 'index'})
+    //     // this.$parent.login(0)
+    // }else{
+    //   this.$router.push({name: 'cardVolume'})
+    // }
+  },
   methods: {
      onSubmit(values) {
        values.licensePlate = this.plate + values.licensePlate
        api.saveVehicleUserId(values).then(res=>{
+         console.log(res);
          if(res.data.code == 200){
             this.$toast.success("绑定成功！")
+            var obj = res.data.data
+            var obj = JSON.stringify(obj)
+            localStorage.setItem('user',obj)
+            this.$router.push({name: 'cardVolume'})
          }else{
            this.$toast(res.data.msg)
          }

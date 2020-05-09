@@ -13,10 +13,10 @@
         <img src="@/assets/merchantIndex/icon-2@2x.png" alt />
         <span>联系我们</span>
       </div>
-      <div class="box" @click="haha">
+      <!-- <div class="box" @click="haha">
           <img src="@/assets/merchantIndex/icon-3@2x.png" alt="">
           <span>机油检查</span>
-      </div>
+      </div> -->
     </div>
     <div class="shan_hu">
       <div class="title_box_box">
@@ -68,6 +68,10 @@ export default {
     };
   },
   created() {
+     api.getDotsTypeInfo({couponCode: "YYVSPAM539M98TU80BJ5Z"}).then(res=>{
+       console.log(res);
+                        
+                    })
     api.getParameter({url: location.href}).then(res=>{
             this.noncestr = res.data.noncestr
             this.timestamp = res.data.timestamp
@@ -82,7 +86,7 @@ export default {
   },
   methods: {
     haha(){
-       localStorage.removeItem("userMerchant")
+      //  localStorage.removeItem("userMerchant")
     },
     WxAdd() {
         var this2 = this
@@ -119,9 +123,49 @@ export default {
                   scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
                   success: function(res) {
                     const getCode = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-                    this2.$router.push({ name: 'redeemCode', query: {
-                      use: getCode
-                    }})
+                    if(getCode.indexOf(",") == -1){
+                    }else{
+                      var as = getCode.split(',')
+                      getCode = as[1]
+                    }
+                    api.getDotsTypeInfo({couponCode: getCode}).then(res=>{
+                         if(res.data.code == 200){
+                            this2.$dialog.confirm({
+                              title: '券码信息',
+                              message: res.data.data + '优惠卷',
+                            }).then(() => {
+                              this2.$toast.loading({
+                                message: '加载中...',
+                                forbidClick: true,
+                              });
+                              var obj = localStorage.getItem("userMerchant");
+                              var obj = JSON.parse(obj)
+                              api.useGeneralCoupon({
+                                  couponCode: getCode,
+                                  // licensePlate: this.plate + this.licensePlate,
+                                  dotUserId: obj.id,
+                                  dotId: obj.dotId
+                                }).then(res=>{
+                                  if(res.data.code == 200){
+                                    this2.$toast.success('核销成功！')
+                                  }else{
+                                    this2.$toast.fail(res.data.msg)
+                                  }
+                                })
+                            }).catch(() => {
+                               this2.$toast.fail('您已取消核销该券码')
+                            })
+                         }else{
+                           this2.$dialog.alert({
+                              message: '券码查询失败！',
+                            }).then(() => {
+                              // on close
+                            })
+                         }
+                    })
+                    // this2.$router.push({ name: 'redeemCode', query: {
+                    //   use: getCode
+                    // }})
                   }
                 })
               } else {
