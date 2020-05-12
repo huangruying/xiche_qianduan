@@ -3,9 +3,9 @@
     <van-tabs @click="onClick" v-model="activeName" :swipeable="true" style="margin-bottom: 10px;">
       <van-tab :title="tab.title" :name="tab.name" v-for="tab in vanTab" :key="tab.name"></van-tab>
     </van-tabs>
-    <div style="overflow-y: scroll;">
+    <div style="overflow-y: scroll; background: #f5f5f9;">
       <div class="card_box">
-        <div class="volume" v-for="(value,index) in dataList" :key="index">
+        <div class="volume" v-for="(value,index) in dataList" :key="index" @click="order(value.couponCode)">
           <div class="img">
             <img src="@/assets/cardVolume/bgdjuan2.png" alt v-if="bgdleft"/>
             <img src="@/assets/cardVolume/bgdjuan.png" alt v-if="!bgdleft"/>
@@ -29,7 +29,7 @@
                 <img src="@/assets/cardVolume/已使用.png" alt class="img"/>
               </div>
             </div>
-            <div class="bottom">优惠券码：<em class="xian" v-if="value.licensePlate">限粤A12345使用</em><span style="color: #999999;">{{value.couponCode}}</span></div>
+            <div class="bottom">优惠券码：<em class="xian" v-if="value.licensePlate">（限{{value.licensePlate}}使用）</em><span style="color: #999999;">{{value.couponCode}}</span></div>
           </div>
         </div>
       </div>
@@ -89,8 +89,8 @@ export default {
         // this.$router.push({name: 'index'})
         this.$parent.login(0)
     }else{
-      this.id = obj.id
-      this.apiList(obj.id)
+      this.id = obj.userId
+      this.apiList(obj.userId)
     }
   },
   watch: {
@@ -100,8 +100,8 @@ export default {
               if(login){
                   var obj = localStorage.getItem('user')
                   var obj = JSON.parse(obj)
-                  this.id = obj.id
-                  this.apiList(obj.id)
+                  this.id = obj.userId
+                  this.apiList(obj.userId)
               }
               // 深度监听，同时也可监听到param参数变化
         },
@@ -131,6 +131,13 @@ export default {
         var time = Math.floor((stamp / 1000) / 24 / 60 / 60);
         return time
     },
+    order(couponCode){
+      if(this.pastDue){
+        this.$router.push({name: 'orderDetails',query:{
+          couponCode
+        }})
+      }
+    },
     // 获取数据
     apiList(id){
       var data
@@ -145,7 +152,7 @@ export default {
         userId: id,  // 1  测试数据
         status: data
       }).then(res=>{
-        console.log(res);
+        // console.log(res);
         if(res.data.data && res.data.data.length > 0){
           this.dataList = res.data.data
           var date = new Date()
@@ -185,18 +192,19 @@ export default {
           .catch(() => {
           })
         }else{
-          if(obj.licensePlate == licensePlate){
-              this.$router.push({name: 'cardParticulars',query: {use}})
-          }else{
+          var noPlate = obj.licensePlates.indexOf(licensePlate)
+          if(noPlate == -1){
             this.$dialog.confirm({
-                title: '',
-                message: '该券码需指定' + licensePlate + '使用！',
-              })
-              .then(() => {
-                this.$router.push({name: 'user'})
-              })
-              .catch(() => {
-              })
+              title: '',
+              message: '该券码需指定' + licensePlate + '使用！',
+            })
+            .then(() => {
+              this.$router.push({name: 'user'})
+            })
+            .catch(() => {
+            })
+          }else{
+            this.$router.push({name: 'cardParticulars',query: {use}})
           }
         }
       }
@@ -217,8 +225,9 @@ export default {
     // height:  ~"calc(100vh - (90px))";
 }
 .nodata{
+    // height: 100vh;
     background: #F5F5F9;
-    // height:  ~"calc(100vh - (90px))";
+    // height:  ~"calc(100vh - (45px))";
     padding-top: 25px;
     display: flex;
     justify-content: center;
@@ -319,7 +328,7 @@ export default {
         height: 100%;
       }
       > div {
-        font-size: 26px;
+        font-size: 23px;
         position: absolute;
         top: 20%;
         left: 50%;

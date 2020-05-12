@@ -68,10 +68,6 @@ export default {
     };
   },
   created() {
-     api.getDotsTypeInfo({couponCode: "YYVSPAM539M98TU80BJ5Z"}).then(res=>{
-       console.log(res);
-                        
-                    })
     api.getParameter({url: location.href}).then(res=>{
             this.noncestr = res.data.noncestr
             this.timestamp = res.data.timestamp
@@ -87,6 +83,64 @@ export default {
   methods: {
     haha(){
       //  localStorage.removeItem("userMerchant")
+      // api.weChatUnifiedorder({
+      //   money: 1
+      // }).then(res=>{
+      //   alert(res.data)
+      //   window.location.href = res.data
+      // })
+      // api.wxOfficialPay()
+      var this2 = this
+      var openId = this.$store.getters.openId
+      api.wxOfficialPay({openId: openId}).then(res=>{
+        wx.config({
+          debug: false, // true:调试时候弹窗
+          appId: "wx1008eb4c001227c4", // 微信appid
+          timestamp: this.timestamp, // 时间戳
+          nonceStr: this.noncestr, // 随机字符串
+          signature: this.signature, // 签名
+          jsApiList: [
+            // 所有要调用的 API 都要加到这个列表中
+            // 'onMenuShareTimeline', // 分享到朋友圈接口
+            // 'onMenuShareAppMessage', //  分享到朋友接口
+            // 'onMenuShareQQ', // 分享到QQ接口
+            // 'onMenuShareWeibo', // 分享到微博接口
+            "scanQRCode", // 微信扫一扫功能
+            "openLocation", //微信地理位置
+            "chooseWXPay" // 微信支付
+          ]
+        })
+        wx.error(function(res) {
+          this.$toast("服务器炸啦！")
+          // console.log('微信sdk配置失败！');
+        });
+         wx.ready(function(){
+             wx.chooseWXPay({
+               appId: res.data.data.appid,
+               timestamp: res.data.data.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+               nonceStr: res.data.data.nonce_str, // 支付签名随机串，不长于 32 
+               package: res.data.data.packageStr, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+               signType: res.data.data.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+               paySign: res.data.data.sign, // 支付签名
+               success: function (res) {
+                  //  跳转到支付成功页面有这个页面
+                  //  $this.$router.push({
+                  //      path: "/success_page",
+                  //      name:"success_page"
+                  //  })
+                  var res = JSON.stringify(res)
+                  alert('支付成功' + res)
+                   console.log(res)
+               },
+               cancel: function (res) { //提示引用的是mint-UI里toast
+                   this2.$toast('已取消支付');
+               },
+               fail: function (res) {
+                   this2.$toast('支付失败，请重试');
+               }
+             })
+         })
+      })
     },
     WxAdd() {
         var this2 = this

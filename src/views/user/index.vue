@@ -1,14 +1,16 @@
 <template>
   <div class="user">
-    <div class="title">绑定后享受车住服务</div>
+    <div class="title">绑定后享受车后服务</div>
     <div class="title_details">支持小/大型汽车、新能源车、教练车、港澳入境车</div>
     <div class="input_box">
       <van-form @submit="onSubmit" :show-error="false" label-width="100px">
         <van-field
+          required
           v-model="name"
           name= "name"
           label="姓名"
           placeholder="请输入姓名"
+          :rules="[{ required: true, message: '请输入姓名' }]"
         />
         <van-field
           required
@@ -32,12 +34,10 @@
         />
         <div class="che_pai">
           <van-field
-            required
             v-model="licensePlate"
             name= "licensePlate"
             label="车牌号码"
             placeholder="请输入车牌号码"
-            :rules="[{ required: true, message: '请输入车牌号码' }]"
           />
           <div class="cardTitle" @click="show = true">
                <span>{{plate}}</span>
@@ -51,7 +51,7 @@
         </div>
       </van-form>
     </div>
-    <div class="xinche">新车无正式车牌></div>
+    <!-- <div class="xinche">新车无正式车牌></div> -->
     <van-popup v-model="show" position="bottom">
       <van-picker show-toolbar title="车牌选择" :columns="columns" @cancel="onCancel" @confirm="onConfirm"/>
     </van-popup>

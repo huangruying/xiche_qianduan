@@ -46,10 +46,40 @@ const getDotsTypeInfo = data => {
   })
 }
 
+// 测试
+const weChatUnifiedorder = data => {
+  return axios({
+    method: 'get',
+    url: '/weChatUnifiedorder',
+    params: data
+  })
+}
+
+// 支付测试 获取openId
+const getOpenId = data => {
+  return axios({
+    method: 'get',
+    url: '/getOpenId',
+    params: data
+  })
+}
+
+// 支付测试 返回页面需要的参数进行微信公众号支付
+const wxOfficialPay = data => {
+  return axios({
+    method: 'get',
+    url: '/wxOfficialPay',
+    params: data
+  })
+}
+
 export default{
   getParameter,
   wxUserInfo,
   findWriteoffOrderByDotUserId,
   useGeneralCoupon,
-  getDotsTypeInfo
+  getDotsTypeInfo,
+  weChatUnifiedorder,
+  wxOfficialPay,
+  getOpenId
 }

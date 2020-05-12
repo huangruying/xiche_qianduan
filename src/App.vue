@@ -79,6 +79,7 @@
 import Vue from "vue";
 import { ActionSheet } from "vant";
 import { sendMsg , signUpOrLogIn , businessUpOrLogIn } from "@/api/login";
+import api from '@/api/merchantIndex'
 Vue.use(ActionSheet);
 export default {
   name: "app",
@@ -106,20 +107,21 @@ export default {
   },
   created() {
     // 微信授权
-    // this.wxSQ()
+    this.wxSQ()
   },
   methods: {
      // 登录授权
     wxSQ(){
-      var wxUserData = localStorage.getItem('wxUserData')
-      if(!wxUserData){
+        // var wxUserData = localStorage.getItem('wxUserData')
         const code = this.getUrlParam("code");
         if(code){
-          // this.code = code
-        }else{
-          this.authorization()
+          // this.apiCode(code)
+          // 获取openId
+          api.getOpenId({code: code}).then(res=>{
+              this.$store.dispatch('alterOpenId',res.data.data)
+          })
         }
-      }
+        this.authorization()
     },
     // 登录授权
     authorization() {

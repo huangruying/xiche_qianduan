@@ -174,6 +174,14 @@ let router= new Router({
                 title: '选择位置',
             }
         },
+        {
+            path: '/orderDetails',
+            name: 'orderDetails',
+            component: ()=>import('@/views/orderDetails/index'),
+            meta: {
+                title: '订单详情',
+            }
+        },
     ]
 })
 

@@ -2,15 +2,15 @@
 import axios from 'axios'
 if(process.env.NODE_ENV==='development'){
   // 开发环境
-  axios.defaults.baseURL = 'yuyuetrip/wash/official'
-  // axios.defaults.baseURL = 'http://test2.yuyuetrip.com.cn/wash/official'
+  // axios.defaults.baseURL = 'yuyuetrip/wash/official'
+  axios.defaults.baseURL = 'http://test2.yuyuetrip.com.cn/wash/official'
  }else{
    // 生产环境
   axios.defaults.baseURL = 'http://test2.yuyuetrip.com.cn/wash/official'
 }
 // 2.设置基准路径
 // axios.defaults.baseURL = 'http://a.insoonto.net'
-// localStorage.setItem('heima_39_baseurl', 'http://127.0.0.1:3000')
+// localStorage.setItem('_baseurl', 'http://127.0.0.1:3000')
 // Set-Cookie: widget_session=abc123; SameSite=None; Secure
 // 3.添加请求拦截器
 // 只要使用这个封装的axios发送请求就会经过它的拦截器

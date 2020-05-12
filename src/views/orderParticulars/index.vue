@@ -57,6 +57,10 @@
               <em>{{listData.phone}}</em>
           </li>
           <li>
+              <span>详细地址</span>
+              <em>{{listData.dotAddress}}</em>
+          </li>
+          <li>
               <span>总金额：</span>
               <em class="col">{{listData.couponMoney}}</em>
           </li>
