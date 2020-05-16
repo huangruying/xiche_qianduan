@@ -184,9 +184,15 @@ export default {
                     }
                     api.getDotsTypeInfo({couponCode: getCode}).then(res=>{
                          if(res.data.code == 200){
+                           var text = res.data.data
+                           if(!text){
+                             text = "无法识别~"
+                           }else{
+                             text = text + '优惠券'
+                           }
                             this2.$dialog.confirm({
                               title: '券码信息',
-                              message: res.data.data + '优惠卷',
+                              message: text,
                             }).then(() => {
                               this2.$toast.loading({
                                 message: '加载中...',

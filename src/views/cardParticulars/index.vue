@@ -96,7 +96,7 @@ export default {
                     this.$toast('核销成功！')
                 }else if(res.data.status == 'OVERDUE'){
                     // 已过期
-                    this.$toast('该卷已过期！')
+                    this.$toast('该券已过期！')
                     this.$router.push({name: 'cardVolume'})
                 }   
             })

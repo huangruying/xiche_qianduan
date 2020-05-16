@@ -13,7 +13,7 @@
               <em>{{listData.orderNo}}</em>
           </li>
           <li>
-              <span>卷码号</span>
+              <span>券码号</span>
               <em>{{listData.couponCode}}</em>
           </li>
           <li>
