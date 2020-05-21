@@ -107,7 +107,7 @@ export default {
   },
   created() {
     // 微信授权
-    this.wxSQ()
+    // this.wxSQ()
   },
   methods: {
      // 登录授权

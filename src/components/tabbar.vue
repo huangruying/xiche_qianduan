@@ -1,14 +1,9 @@
 <template>
   <div>
-    <van-tabbar v-model="active" active-color="#000" inactive-color="#969696">
-      <van-tabbar-item replace to="/index">
-        <span>首页</span>
-        <template #icon="props">
-          <img :src="props.active ? icon.active : icon.inactive" style="width:27px;heigth:27px" />
-        </template>
-      </van-tabbar-item>
-      <van-tabbar-item icon="search">我的</van-tabbar-item>
-      <van-tabbar-item icon="setting-o" replace to="/station">站点</van-tabbar-item>
+    <van-tabbar v-model="ifactive" active-color="#000" inactive-color="#969696" @change="onChange">
+      <van-tabbar-item icon="wap-home-o">首页</van-tabbar-item>
+      <van-tabbar-item icon="user-o">我的</van-tabbar-item>
+      <van-tabbar-item icon="flag-o">站点</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
@@ -22,31 +17,45 @@ export default {
     },
   },
   computed: {
-    
+      ifactive:{
+          get(){
+            return this.active
+          },
+          set(val){
+             this.$emit('update:active', val)
+          }
+      }
   },
+  watch:{
+    // active(newV,oldV){
+    //   // this.$emit('update:active', newV)
+    //   // return newV
+    // }
+ },
   mounted(){
-    //   console.log(this.active);
-    //   this.active2 = this.active
   },
   data() {
     return {
-      icon: {
-        active: "https://img.yzcdn.cn/vant/user-active.png",
-        inactive: "https://img.yzcdn.cn/vant/user-inactive.png"
-        // inactive: require('../') "https://img.yzcdn.cn/vant/user-inactive.png"
-      },
+      // active: 0
     };
   },
   methods: {
     onChange(index) {
-      if (index === 2) {
-        //   this.active = this.active
-        // this.$router.push({name:'station'})
+      if(index == 0){
+        this.$router.push({name: "yuyueIndex"})
+      }else if(index == 1){
+        this.$router.push({name: "yuyueUser"})
       }
-    }
+    },
   }
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+/deep/.van-tabbar-item__icon{
+  font-size: 23px;
+}
+/deep/.van-tabbar-item__text{
+  font-size: 13px;
+}
 </style>

@@ -14,8 +14,9 @@ import 'lib-flexible'
 import Vant from 'vant';
 import 'vant/lib/index.css';
 Vue.use(Vant);
-import { Toast } from 'vant';
+import { Toast , Lazyload } from 'vant';
 Vue.use(Toast);
+Vue.use(Lazyload);
 
 // 初始化样式库
 import './styles/base.css'

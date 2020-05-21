@@ -182,6 +182,22 @@ let router= new Router({
                 title: '订单详情',
             }
         },
+        {
+            path: '/yuyueIndex',
+            name: 'yuyueIndex',
+            component: ()=>import('@/views/yuyueIndex/index'),
+            meta: {
+                title: '愉悦商旅',
+            }
+        },
+        {
+            path: '/yuyueUser',
+            name: 'yuyueUser',
+            component: ()=>import('@/views/yuyueUser/index'),
+            meta: {
+                title: '会员中心',
+            }
+        },
     ]
 })
 
