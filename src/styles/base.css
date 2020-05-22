@@ -151,3 +151,23 @@ button:enabled:active{
   background: #21a7fc;
   color: #fff;
 }
+/* 头部返回 */
+.cell_box{
+  padding: 10px 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #3f3f3f;
+  color: #fff;
+}
+.cell_box >span{
+  font-size: 15px;
+}
+.cell_box >div{
+  width: 20px;
+  height: 20px;
+}
+.cell_box >div >i{
+  display: block;
+  font-size: 20px;
+}

@@ -198,6 +198,38 @@ let router= new Router({
                 title: '会员中心',
             }
         },
+        {
+            path: '/yuyueSite',
+            name: 'yuyueSite',
+            component: ()=>import('@/views/yuyueSite/index'),
+            meta: {
+                title: '服务网点',
+            }
+        },
+        {
+            path: '/yuyueNodeDetails',
+            name: 'yuyueNodeDetails',
+            component: ()=>import('@/views/yuyueNodeDetails/index'),
+            meta: {
+                title: '网点详情',
+            }
+        },
+        {
+            path: '/yuyueGoodsDetails',
+            name: 'yuyueGoodsDetails',
+            component: ()=>import('@/views/yuyueGoodsDetails/index'),
+            meta: {
+                title: '网点详情',
+            }
+        },
+        {
+            path: '/yuyueUserData',
+            name: 'yuyueUserData',
+            component: ()=>import('@/views/yuyueUserData/index'),
+            meta: {
+                title: '修改资料',
+            }
+        },
     ]
 })
 

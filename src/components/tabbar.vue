@@ -45,6 +45,8 @@ export default {
         this.$router.push({name: "yuyueIndex"})
       }else if(index == 1){
         this.$router.push({name: "yuyueUser"})
+      }else if(index == 2){
+        this.$router.push({name: "yuyueSite"})
       }
     },
   }

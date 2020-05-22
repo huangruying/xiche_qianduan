@@ -33,7 +33,7 @@
        </van-grid>
        <div class="title">礼享特惠权益</div>
        <div class="img_box">
-           <div class="goods_box">
+           <div class="goods_box" @click="goodsNode">
                <div class="top">
                    <img src="@/assets/yuyueIndex/yuyueIndex.png" alt="">
                    <div class="info_text">
@@ -108,6 +108,11 @@ export default {
             images: [
                 require('@/assets/yuyueIndex/yuyueIndex.png')
             ],
+        }
+    },
+    methods: {
+        goodsNode(){
+            this.$router.push({name: "yuyueGoodsDetails"})
         }
     }
 }
