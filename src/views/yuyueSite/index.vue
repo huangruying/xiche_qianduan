@@ -1,6 +1,6 @@
 <template>
   <div class="yuyueSite">
-      <div class="cell_box" @click="showPopup = true">
+      <div class="cell_boxs" @click="showPopup = true">
           <span>选择城市</span>
           <div>
               <div>{{text}}</div>
@@ -161,7 +161,7 @@ export default {
 .yuyueSite{
      background: #f0f0f0;
      height: 100vh;
-    .cell_box{
+    .cell_boxs{
         display: flex;
         justify-content: space-between;
         align-items: center;

@@ -2,8 +2,9 @@
   <div class="yuyueUser">
       <div class="title_top">会员中心</div>
       <div class="boxbgd">
-          <div class="box"></div>
-          <div class="user_box">
+          <!-- 空盒子背景图 -->
+          <div class="box"></div>   
+          <div class="user_box" v-if="false">
               <div class="user_img_box">
                   <img src="@/assets/yuyueIcon/default_user_portrait.png" alt="">
                   <div class="text_box">
@@ -23,6 +24,66 @@
                   协助取票  |  引导进站  |  优先登车  |  全流程服务
               </div>
           </div>
+          <div class="card_box">
+              <van-swipe :autoplay="3000" height="200" @change="onChange">
+                <van-swipe-item v-for="(image, index) in images" :key="index">
+                <img v-lazy="image" />
+                </van-swipe-item>
+                <template #indicator>
+                    <div class="custom-indicator">
+                    {{ current + 1 }} / 4
+                    </div>
+                </template>
+              </van-swipe>
+          </div>
+      </div>
+      <div class="my_equity">
+          <div class="top">尊享权益</div>
+          <van-grid :column-num="5" class="equity_box" :border="false">
+                <van-grid-item>
+                   <div class="equity_img">
+                       <img src="@/assets/yuyueIcon/16.png" alt="">
+                       <span>贵宾休息</span>
+                   </div>
+                </van-grid-item>
+                <van-grid-item>
+                    <div class="equity_img">
+                        <img src="@/assets/yuyueIcon/13.png" alt="">
+                        <span>精美茶点</span>
+                    </div>
+                </van-grid-item>
+                <van-grid-item>
+                   <div class="equity_img">
+                        <img src="@/assets/yuyueIcon/18.png" alt="">
+                        <span>书籍</span>
+                    </div>
+                </van-grid-item>
+                <van-grid-item>
+                   <div class="equity_img">
+                        <img src="@/assets/yuyueIcon/07.png" alt="">
+                        <span>WiFi上网</span>
+                    </div>
+                </van-grid-item>
+                <van-grid-item>
+                   <div class="equity_img">
+                        <img src="@/assets/yuyueIcon/partner.png" alt="">
+                        <span>手机充电</span>
+                    </div>
+                </van-grid-item>
+                <van-grid-item>
+                   <div class="equity_img">
+                        <img src="@/assets/yuyueIcon/partner.png" alt="">
+                        <span>视听娱乐</span>
+                    </div>
+                </van-grid-item>
+                <van-grid-item>
+                   <div class="equity_img">
+                        <img src="@/assets/yuyueIcon/partner.png" alt="">
+                        <span>携伴优惠</span>
+                    </div>
+                </van-grid-item>
+            </van-grid>
+          <div class="look">查看权益说明</div>
       </div>
       <div class="class_my">
           <span>常用功能</span>
@@ -73,19 +134,30 @@ export default {
     },
     data(){
         return{
-            active: 1
+            active: 1,
+            current: 0,
+            images: [
+                require('@/assets/yuyueIndex/yuyueIndex.png'),
+                require('@/assets/yuyueIndex/yuyueIndex.png'),
+                require('@/assets/yuyueIndex/yuyueIndex.png'),
+                require('@/assets/yuyueIndex/yuyueIndex.png'),
+            ],
         }
     },
     methods: {
+        onChange(index) {
+          this.$toast('当前 Swipe 索引：' + index);
+          this.current = index
+        },
         userTab(index){
             if(index === 0){
 
             }else if(index === 1){
-
+                this.$router.push({name: "yuyueMyTicket"})
             }else if(index === 2){
                 this.$router.push({name: "yuyueUserData"})
             }else if(index === 3){
-                
+                this.$router.push({name: "yuyueMyCoupon"})
             }else if(index === 4){
                 
             }
@@ -95,8 +167,60 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.custom-indicator {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    padding: 3px 6px;
+    font-size: 12px;
+    background: rgba(37, 37, 37, 0.1);
+    border-radius: 5px;
+}
+/deep/.van-swipe__track{
+    height: 0px;
+}
+/deep/.van-swipe-item{
+    img{
+        height: 152px;
+        border-radius: 8px;
+    }
+}
+.my_equity{
+    margin-bottom: 10px;
+    .equity_img{
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        >img{
+            width: 25px;
+            height: 25px;
+        }
+        >span{
+            font-size: 11px;
+            color: #777;
+            display: block;
+            margin-top: 3px;
+        }
+    }
+    .equity_box{
+        background: #fff;
+    }
+    .look{
+        background: #fff;
+        text-align: right;
+        color: #999999;
+        padding: 0 13px 13px 0;
+        font-size: 13px;
+    }
+    .top{
+        text-align: center;
+        padding-bottom: 8px;
+        color: #555;
+    }
+}
 .class_my{
     background: #fff;
+    margin-bottom: 50px;
     // /deep/.van-grid-item__content::after{
     //     // border-width: 0 1px 1px 0;
     //     // border: 1px solid #999;
@@ -147,6 +271,14 @@ export default {
             background: #d1ae84;
             height: 130px;
             border-radius: 0 0 40px 40px;
+        }
+        .card_box{
+            // 轮播卡片
+            // background: #000;
+            height: 152px;
+            width: 90%;
+            margin: -115px auto 15px;
+            border-radius: 8px;
         }
         .user_box{
             background: #000;

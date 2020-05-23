@@ -89,7 +89,7 @@ input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
 }
 
 input::-moz-placeholder { /* Mozilla Firefox 19+ */
-  color: #B9B9B9;
+  color: #B9B9B9 !important;
 }
 
 input:-ms-input-placeholder { /* Internet Explorer 10+ */

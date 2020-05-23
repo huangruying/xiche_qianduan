@@ -6,25 +6,25 @@
         </van-swipe-item>
        </van-swipe>
        <van-grid :border="false" :column-num="4">
-        <van-grid-item>
+        <van-grid-item @click="gridItem(0)">
             <div class="tabText">
                <img src="@/assets/yuyueIndex/高铁.png" alt="">
                <span>高铁休息厅</span>
             </div>
         </van-grid-item>
-        <van-grid-item>
+        <van-grid-item @click="gridItem(1)">
             <div class="tabText">
               <img src="@/assets/yuyueIndex/机场.png" alt="">
               <span>机场休息厅</span>
             </div>
         </van-grid-item>
-        <van-grid-item>
+        <van-grid-item @click="gridItem(2)">
             <div class="tabText">
               <img src="@/assets/yuyueIndex/火车.png" alt="">
               <span>12306订餐</span>
             </div>
         </van-grid-item>
-        <van-grid-item>
+        <van-grid-item @click="gridItem(3)">
             <div class="tabText">
               <img src="@/assets/yuyueIndex/酒店.png" alt="">
               <span>酒店</span>
@@ -42,12 +42,11 @@
                             <span>￥75/人</span>
                             <van-button round type="info" color="#de9c4a" size="mini" >立即购买</van-button>
                        </div>
-                       <div><span class="bottom">高铁贵宾服务券</span></div>
+                       <div class="text">
+                            <img src="@/assets/yuyueIndex/ico.png" alt="">
+                            <span>仅老衲尊享</span>
+                        </div>
                    </div>
-               </div>
-               <div class="text">
-                   <img src="@/assets/yuyueIndex/ico.png" alt="">
-                   <span>仅老衲尊享</span>
                </div>
            </div>
            <div class="goods_box">
@@ -59,12 +58,11 @@
                             <span>￥75/人</span>
                             <van-button round type="info" color="#de9c4a" size="mini" >立即购买</van-button>
                        </div>
-                       <div><span class="bottom">高铁贵宾服务券</span></div>
+                       <div class="text">
+                            <img src="@/assets/yuyueIndex/ico.png" alt="">
+                            <span>仅老衲尊享</span>
+                        </div>
                    </div>
-               </div>
-               <div class="text">
-                   <img src="@/assets/yuyueIndex/ico.png" alt="">
-                   <span>仅老衲尊享</span>
                </div>
            </div>
            <div class="goods_box">
@@ -76,12 +74,11 @@
                             <span>￥75/人</span>
                             <van-button round type="info" color="#de9c4a" size="mini" >立即购买</van-button>
                        </div>
-                       <div><span class="bottom">高铁贵宾服务券</span></div>
+                       <div class="text">
+                            <img src="@/assets/yuyueIndex/ico.png" alt="">
+                            <span>仅老衲尊享</span>
+                        </div>
                    </div>
-               </div>
-               <div class="text">
-                   <img src="@/assets/yuyueIndex/ico.png" alt="">
-                   <span>仅老衲尊享</span>
                </div>
            </div>
            <div class="bottom_img">
@@ -113,6 +110,19 @@ export default {
     methods: {
         goodsNode(){
             this.$router.push({name: "yuyueGoodsDetails"})
+        },
+        gridItem(index){
+            if(index === 0){
+                this.$router.push({name: "yuyueSite"})
+            }else if(index === 1){
+                this.$router.push({name: "yuyueSite"})
+            }else if(index === 2){
+                window.location.href = "https://wx.17u.cn/michelin/?code=021kt0Hr0S3Pch1FrRHr0lZ6Hr0kt0Hf&state=7%40%E6%9C%AA%E7%9F%A5%40%40ts%7C#/cross/index"
+                // this.$router.push({name: ""})
+            }else if(index === 3){
+                window.location.href = "https://mebcenter.bestwehotel.com/v/H5UnitaryAccredit/index.html#/?version=JJ%3FlogOrRegTicket%3D0a6d9ba7-f4ad-44da-a12f-7c606a91a24c"
+                // this.$router.push({name: ""})
+            }
         }
     }
 }
@@ -153,8 +163,8 @@ export default {
         .text{
             display: flex;
             align-items: center;
-            margin-left: 45%;
-            margin-top: 3px;
+            // margin-left: 45%;
+            // margin-top: 3px;
             >span{
                 font-size: 12px;
                 font-weight: 600;
@@ -174,7 +184,7 @@ export default {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                border-bottom: 1px solid #ccc;
+                // border-bottom: 1px solid #ccc;
                 .bottom{
                     background: #fcf3e1;
                     color: #999;
@@ -187,7 +197,7 @@ export default {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    margin-bottom: 24px;
+                    margin-bottom: 20px;
                     /deep/.van-button__text{
                         display: block;
                         font-size: 12px;

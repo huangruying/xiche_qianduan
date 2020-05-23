@@ -230,6 +230,22 @@ let router= new Router({
                 title: '修改资料',
             }
         },
+        {
+            path: '/yuyueMyTicket',
+            name: 'yuyueMyTicket',
+            component: ()=>import('@/views/yuyueMyTicket/index'),
+            meta: {
+                title: '我的券包',
+            }
+        },
+        {
+            path: '/yuyueMyCoupon',
+            name: 'yuyueMyCoupon',
+            component: ()=>import('@/views/yuyueMyCoupon/index'),
+            meta: {
+                title: '我的优惠券',
+            }
+        },
     ]
 })
 
