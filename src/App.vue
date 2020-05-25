@@ -115,11 +115,13 @@ export default {
         // var wxUserData = localStorage.getItem('wxUserData')
         const code = this.getUrlParam("code");
         if(code){
-          // this.apiCode(code)
+          // 登录授权
+          this.apiCode(code)
           // 获取openId
-          api.getOpenId({code: code}).then(res=>{
-              this.$store.dispatch('alterOpenId',res.data.data)
-          })
+          // api.getOpenId({code: code}).then(res=>{
+          //     this.$store.dispatch('alterOpenId',res.data.data)
+          //     alert("这是openId——-" + res.data.data)
+          // })
         }
         this.authorization()
     },
@@ -144,7 +146,8 @@ export default {
             code: code
           })
           .then(res => {
-            var data = JSON.stringify(res)
+            this.$store.dispatch('alterOpenId',res.data.openid)
+            var data = JSON.stringify(res.data)
             localStorage.setItem("wxUserData", data)
           })
       }

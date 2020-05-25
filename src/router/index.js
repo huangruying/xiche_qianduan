@@ -246,6 +246,30 @@ let router= new Router({
                 title: '我的优惠券',
             }
         },
+        {
+            path: '/yuyueMyBuy',
+            name: 'yuyueMyBuy',
+            component: ()=>import('@/views/yuyueMyBuy/index'),
+            meta: {
+                title: '购买记录',
+            }
+        },
+        {
+            path: '/yuyueMyExplain',
+            name: 'yuyueMyExplain',
+            component: ()=>import('@/views/yuyueMyExplain/index'),
+            meta: {
+                title: '权益说明',
+            }
+        },
+        {
+            path: '/yuyuePurchase',
+            name: 'yuyuePurchase',
+            component: ()=>import('@/views/yuyuePurchase/index'),
+            meta: {
+                title: '愉悦商旅44',
+            }
+        },
     ]
 })
 

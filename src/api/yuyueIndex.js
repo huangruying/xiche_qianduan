@@ -2,14 +2,14 @@
 import axios from '@/utils/myaxios'
     
 // 愉悦首页
-const saveVehicleUserId = data => {
+const findOfficialYyProduct = data => {
   return axios({
     method: 'post',
-    url: '/saveVehicleUser',
+    url: '/findOfficialYyProduct',
     data
   })
 }
 
 export default{
-  saveVehicleUserId,
+  findOfficialYyProduct,
 }

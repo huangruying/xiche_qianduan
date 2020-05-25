@@ -7,10 +7,10 @@
           <div class="user_box" v-if="false">
               <div class="user_img_box">
                   <img src="@/assets/yuyueIcon/default_user_portrait.png" alt="">
-                  <div class="text_box">
+                  <div class="text_box" v-if="false">
                       <span>点击登录</span>
                   </div>
-                  <div class="text_user"  v-if="false">
+                  <div class="text_user"  >
                       <span>13729014409</span>
                       <div>胡椒粉</div>
                   </div>
@@ -25,7 +25,7 @@
               </div>
           </div>
           <div class="card_box">
-              <van-swipe :autoplay="3000" height="200" @change="onChange">
+              <van-swipe autoplay="rf" height="200" @change="onChange">
                 <van-swipe-item v-for="(image, index) in images" :key="index">
                 <img v-lazy="image" />
                 </van-swipe-item>
@@ -35,6 +35,8 @@
                     </div>
                 </template>
               </van-swipe>
+              <van-icon name="arrow-left" class="arrow_left"/>
+              <van-icon name="arrow" class="arrow_right"/>
           </div>
       </div>
       <div class="my_equity">
@@ -83,7 +85,7 @@
                     </div>
                 </van-grid-item>
             </van-grid>
-          <div class="look">查看权益说明</div>
+          <div class="look" @click="yuyueMyExplain">查看权益说明</div>
       </div>
       <div class="class_my">
           <span>常用功能</span>
@@ -98,7 +100,7 @@
                 <van-grid-item @click="userTab(1)">
                     <div class="tab_img">
                         <img src="@/assets/yuyueIcon/13.png" alt="">
-                        <span>我的券包</span>
+                        <span>我的卡包</span>
                     </div>
                 </van-grid-item>
                 <van-grid-item @click="userTab(2)">
@@ -144,6 +146,14 @@ export default {
             ],
         }
     },
+    mounted(){
+        this.$store.dispatch('alterOpenId', 'o2mJowp-PE2-xcdFlbu6-DDHA8tY') // 我的openid
+        var openId = this.$store.getters.openId
+        if(!openId){
+            this.$parent.wxSQ()
+        }
+        // console.log(this.$store.getters.openId);
+    },
     methods: {
         onChange(index) {
           this.$toast('当前 Swipe 索引：' + index);
@@ -151,7 +161,7 @@ export default {
         },
         userTab(index){
             if(index === 0){
-
+                this.$router.push({name: "yuyueMyBuy"})
             }else if(index === 1){
                 this.$router.push({name: "yuyueMyTicket"})
             }else if(index === 2){
@@ -161,6 +171,9 @@ export default {
             }else if(index === 4){
                 
             }
+        },
+        yuyueMyExplain(){
+            this.$router.push({name: "yuyueMyExplain"})
         }
     }
 }
@@ -268,7 +281,7 @@ export default {
             }
         }
         .box{
-            background: #d1ae84;
+            background: #dec389;
             height: 130px;
             border-radius: 0 0 40px 40px;
         }
@@ -279,6 +292,26 @@ export default {
             width: 90%;
             margin: -115px auto 15px;
             border-radius: 8px;
+            position: relative;
+            .arrow_left{
+                font-size: 26px;
+                position: absolute;
+                top: 50%;
+                left: 2px;
+                transform: translateY(-50%);
+                background: #ccc;
+                color: #fff;
+                display: block;
+                padding: 3PX;
+                border-radius: 50%;
+            }
+            .arrow_right{
+                font-size: 26px;
+                position: absolute;
+                top: 50%;
+                right: 2px;
+                transform: translateY(-50%);
+            }
         }
         .user_box{
             background: #000;

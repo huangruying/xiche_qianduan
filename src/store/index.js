@@ -6,6 +6,7 @@ Vue.use(Vuex)
 
 import valueList from './modules/valueList'
 import lnglat from './modules/lnglat'
+import yuyue from './modules/yuyue'
 import getters from './getters'
 export default new Vuex.Store({
   state: {
@@ -16,7 +17,8 @@ export default new Vuex.Store({
   },
   modules: {
     valueList,
-    lnglat
+    lnglat,
+    yuyue
   },
   getters,
   plugins: [ VueXAlong({

@@ -5,50 +5,66 @@
           <span>愉悦机场贵宾卡</span>
           <div></div>
       </div>
-      <div class="content"><img src="@/assets/yuyueIndex/yuyueIndex.png" alt=""></div>
+      <div class="content"><img :src="dataList.picfilepath" alt=""></div>
       <div class="cell_price">
-          <span><i>￥</i>90000</span>
-          <van-button round type="info" color="#de9c4a" size="mini" >立即购买</van-button>
+          <span><i>￥</i>{{dataList.price}}</span>
+          <van-button round type="info" color="#de9c4a" size="mini" @click="purchase">立即购买</van-button>
       </div>
       <div class="serve_box">
           <div class="serve_title">
               <img src="@/assets/yuyueIcon/card_tab_01.png" alt="">
               <span>愉悦机场贵宾卡</span>
           </div>
-          <div class="text">
-              <p>寺大家发士大夫建瓯市都放假的书法家打发时间佛i圣诞节佛山的积分多少佛的时间佛但是的时间佛山地方就是都i发九分电视剧佛i技术的佛山的肌肤佛挡杀佛i圣诞节佛山地方v今山东覅绝对是佛i将发生就受到佛教是东方时代就发到手机电视机构绝对是送到附近发生的鞠躬三鞠躬建瓯凡事都i官方警方师德师风建设都i发就山东i金佛山地方就告诉对方jog就是东非国家色附件是东方建瓯房价多少发票发生的到附近的破聚集到福建山东颇丰的数据库公婆</p>
+          <div class="text" v-html="dataList.equityBrief">
+              <p>{{dataList.equityBrief}}</p>
           </div>
           <div class="serve_title">
               <img src="@/assets/yuyueIcon/card_tab_01.png" alt="">
               <span>服务内容</span>
           </div>
-          <div class="text">
-              <p>会给认识的人韩国覅低功耗的fig好东颇丰的数据库公婆</p>
+          <div class="text" v-html="dataList.desc">
+              <p>{{dataList.desc}}</p>
           </div>
           <div class="serve_title">
               <img src="@/assets/yuyueIcon/card_tab_01.png" alt="">
               <span>使用说明</span>
           </div>
       </div>
-      <div class="richText">
-           html
+      <div class="richText" v-html="dataList.content">
+           {{dataList.content}}
       </div>
       <div class="nodeBtn">
-          <van-button block round color="linear-gradient(to right, #d2ae6d, #f3dea8)">立即购买</van-button>
+          <van-button block round color="linear-gradient(to right, #d2ae6d, #f3dea8)" @click="purchase">立即购买</van-button>
       </div>
   </div>
 </template>
 
 <script>
+import api from "@/api/yuyueGoodsDetails"
 export default {
     data(){
         return{
-
+            dataList: {}
         }
     },
+    mounted(){
+        var { id } = this.$route.query
+        this.apiGetList(id)
+    },
     methods: {
+        apiGetList(id){
+            api.getYyProductByEquity({id}).then(res=>{
+                if(res.data.code == 200){
+                    this.dataList = res.data.data
+                    console.log(res);
+                }
+            })
+        },
         routerGo(){
             this.$router.go(-1)
+        },
+        purchase(){
+            this.$router.push({name: "yuyuePurchase"})
         }
     }
 }

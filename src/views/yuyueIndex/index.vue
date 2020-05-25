@@ -33,57 +33,26 @@
        </van-grid>
        <div class="title">礼享特惠权益</div>
        <div class="img_box">
-           <div class="goods_box" @click="goodsNode">
+           <div class="goods_box" @click="goodsNode(value.id)" v-for="(value , index) in dataList" :key="index">
                <div class="top">
-                   <img src="@/assets/yuyueIndex/yuyueIndex.png" alt="">
+                   <img :src="value.picfilepath" alt="">
                    <div class="info_text">
-                       <span>悦途高铁蟹棒礼券</span>
+                       <span>{{value.name}}</span>
                        <div class="price">
-                            <span>￥75/人</span>
-                            <van-button round type="info" color="#de9c4a" size="mini" >立即购买</van-button>
+                            <span>￥{{value.price}}/人</span>
+                            <van-button round type="info" color="#de9c4a" size="mini" @click.stop="purchase">立即购买</van-button>
                        </div>
                        <div class="text">
                             <img src="@/assets/yuyueIndex/ico.png" alt="">
-                            <span>仅老衲尊享</span>
+                            <span>{{value.desc}}</span>
                         </div>
                    </div>
                </div>
            </div>
-           <div class="goods_box">
-               <div class="top">
-                   <img src="@/assets/yuyueIndex/yuyueIndex.png" alt="">
-                   <div class="info_text">
-                       <span>悦途高铁蟹棒礼券</span>
-                       <div class="price">
-                            <span>￥75/人</span>
-                            <van-button round type="info" color="#de9c4a" size="mini" >立即购买</van-button>
-                       </div>
-                       <div class="text">
-                            <img src="@/assets/yuyueIndex/ico.png" alt="">
-                            <span>仅老衲尊享</span>
-                        </div>
-                   </div>
-               </div>
-           </div>
-           <div class="goods_box">
-               <div class="top">
-                   <img src="@/assets/yuyueIndex/yuyueIndex.png" alt="">
-                   <div class="info_text">
-                       <span>悦途高铁蟹棒礼券</span>
-                       <div class="price">
-                            <span>￥75/人</span>
-                            <van-button round type="info" color="#de9c4a" size="mini" >立即购买</van-button>
-                       </div>
-                       <div class="text">
-                            <img src="@/assets/yuyueIndex/ico.png" alt="">
-                            <span>仅老衲尊享</span>
-                        </div>
-                   </div>
-               </div>
-           </div>
-           <div class="bottom_img">
+           <div class="bottom_img" @click="phone(4009209966)">
                 <img src="@/assets/yuyueIndex/yuyue.png" alt="">
                 <img src="@/assets/yuyueIndex/zixun.png" alt="">
+                <!-- 400-920-9966 -->
             </div>
             <div class="bottom_record">
                 备案号：<span>粤ICP备19091691号</span>
@@ -95,6 +64,7 @@
 
 <script>
 import tabbar from "@/components/tabbar"
+import api from "@/api/yuyueIndex"
 export default {
     components:{
         tabbar
@@ -105,11 +75,22 @@ export default {
             images: [
                 require('@/assets/yuyueIndex/yuyueIndex.png')
             ],
+            dataList: []
         }
     },
+    mounted(){
+        this.apiList()
+    },
     methods: {
-        goodsNode(){
-            this.$router.push({name: "yuyueGoodsDetails"})
+        apiList(){
+            api.findOfficialYyProduct().then(res=>{
+                if(res.data.code == 200){
+                    this.dataList = res.data.data
+                }
+            })
+        },
+        goodsNode(id){
+            this.$router.push({name: "yuyueGoodsDetails",query: {id}})
         },
         gridItem(index){
             if(index === 0){
@@ -123,6 +104,12 @@ export default {
                 window.location.href = "https://mebcenter.bestwehotel.com/v/H5UnitaryAccredit/index.html#/?version=JJ%3FlogOrRegTicket%3D0a6d9ba7-f4ad-44da-a12f-7c606a91a24c"
                 // this.$router.push({name: ""})
             }
+        },
+        purchase(){
+            this.$router.push({name: "yuyuePurchase"}).catch(err => {})
+        },
+        phone(phoneNumber){
+            window.location.href = 'tel://' + phoneNumber
         }
     }
 }

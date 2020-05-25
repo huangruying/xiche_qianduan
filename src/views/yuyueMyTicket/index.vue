@@ -2,7 +2,7 @@
   <div class="yuyueMyTicket">
       <div class="cell_box">
           <div @click="routerGo"><van-icon name="arrow-left" /></div>
-          <span>我的券包</span>
+          <span>我的卡包</span>
           <div></div>
       </div>
       <van-tabs @click="onClick" color="#e6bb57">
@@ -10,16 +10,6 @@
         <van-tab title="待使用"></van-tab>
         <van-tab title="已使用"></van-tab>
       </van-tabs>
-      <!-- <div class="ticket_box">
-        <div class="ticket_list">
-          <div class="price">￥<span>50</span></div>
-          <div class="left_box">
-            <div class="title">立减5元</div>
-            <div class="content">仅老衲可用</div>
-            <span>有效期：2020-1-30</span>
-          </div>
-        </div>
-      </div> -->
       <div class="card_box">
         <div class="card">
           <img src="@/assets/yuyueIndex/yuyue.png" alt="">

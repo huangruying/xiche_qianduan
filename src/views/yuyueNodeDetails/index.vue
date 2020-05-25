@@ -6,14 +6,14 @@
           <div></div>
       </div>
       <div class="content">
-          <img src="@/assets/yuyueIndex/yuyueIndex.png" alt="">
-          <div class="title">老衲的超级贵宾厅</div>
-          <p>中国大山里拉沙漠哈利啦</p>
+          <img :src="dataList.hallPic" alt="">
+          <div class="title">{{dataList.hallName}}</div>
+          <p>{{dataList.hallLocation}}</p>
           <div class="phone_box">
-              <span>电话：38348548548548</span>
-              <van-icon name="phone" color="#4ad617" size="25"/>
+              <span>电话：{{dataList.servicePhone}}</span>
+              <van-icon name="phone" color="#4ad617" size="25" @click="phone(dataList.servicePhone)"/>
           </div>
-          <div class="time_box">营业时间：周一至周日，09：30-13：30</div>
+          <div class="time_box">营业时间：{{dataList.businessHours}}</div>
       </div>
       <div class="nodeBtn">
           <van-button block round color="linear-gradient(to right, #4ad617, #ade083)">立即使用</van-button>
@@ -25,12 +25,18 @@
 export default {
     data(){
         return{
-
+            dataList: {}
         }
+    },
+    mounted(){
+        this.dataList = this.$store.getters.yuyueSite
     },
     methods: {
         routerGo(){
             this.$router.go(-1)
+        },
+        phone(phoneNumber){
+            window.location.href = 'tel://' + phoneNumber
         }
     }
 }

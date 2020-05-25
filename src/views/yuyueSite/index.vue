@@ -8,32 +8,16 @@
           </div>
       </div>
       <div style="overflow-y: scroll;background: #f0f0f0;">
-          <div class="guest" @click="guestIndex()">
-              <b>广州南站贵宾厅</b>
-              <p>广东大撒撒旦发生的方式房贷首付大师傅士大夫大师傅大师傅犯得上房贷首付</p>
+          <div class="guest" @click="guestIndex(value)" v-for="(value,index) in dataList" :key="index">
+              <b>{{value.hallName}}</b>
+              <p>{{value.hallLocation}}</p>
               <div class="phone">
-                  <span>营业时间: 08:20:33</span>
-                  <van-icon name="phone" color="#4ad617" size="25"/>
-              </div>
-          </div>
-          <div class="guest">
-              <b>广州南站贵宾厅</b>
-              <p>广东大撒撒旦发生的方式房贷首付大师傅士大夫大师傅大师傅犯得上房贷首付</p>
-              <div class="phone">
-                  <span>营业时间: 08:20:33</span>
-                  <van-icon name="phone" color="#4ad617" size="25"/>
-              </div>
-          </div>
-          <div class="guest">
-              <b>广州南站贵宾厅</b>
-              <p>广东大撒撒旦发生的方式房贷首付大师傅士大夫大师傅大师傅犯得上房贷首付</p>
-              <div class="phone">
-                  <span>营业时间: 08:20:33</span>
+                  <span>营业时间: {{value.businessHours}}</span>
                   <van-icon name="phone" color="#4ad617" size="25"/>
               </div>
           </div>
       </div>
-      <van-empty description="对不起，暂无数据" style="overflow-y: scroll;" v-if="false"/>
+      <van-empty description="对不起，暂无数据" style="overflow-y: scroll;" v-if="noData"/>
       <tabbar :active.sync="active"></tabbar>
       <van-popup v-model="showPopup" position="bottom" :style="{ height: '40%' }">
           <van-picker
@@ -52,24 +36,28 @@
 <script>
 import tabbar from "@/components/tabbar"
 import province from "@/utils/area"
+import api from "@/api/yuyueSite"
 export default {
     components: {
         tabbar
     },
     data(){
         return{
+            noData: false,
             active: 2,
             columns: [],
             showPopup: false,
             text: "",
-            defaultIndex: ""
+            defaultIndex: "",
+            dataList: []
         }
     },
     mounted(){
         this.remouldData()
     },
     methods: {
-        guestIndex(){
+        guestIndex(value){
+            this.$store.dispatch('alterSite',value)
             this.$router.push({name: "yuyueNodeDetails"})
         },
         getLngLatLocation() {
@@ -82,6 +70,7 @@ export default {
                    cat.text = result.province
                    var adcode = result.adcode.slice(0,2)
                    var adcodes = adcode + "0000" // 去除精准度
+                   cat.apiGetList(adcodes)
                    cat.columns.forEach((v,index)=>{
                        if(v.id == adcodes){
                           cat.defaultIndex = index
@@ -105,10 +94,21 @@ export default {
             this.columns = arr
             this.getLngLatLocation()
         },
+        apiGetList(provinceId){
+            api.findOfficialYyStations({provinceId}).then(res=>{
+                if(!(res.data.data)){
+                    this.noData = true
+                    this.dataList = []
+                }else{
+                    this.dataList = res.data.data
+                    this.noData = false
+                }
+            })
+        },
         onConfirm(value, index) {
             this.text = value.text
             this.showPopup = false
-            // console.log(value)
+            this.apiGetList(value.id)
         },
         onChange(picker, value, index) {
           
