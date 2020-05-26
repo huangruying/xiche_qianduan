@@ -54,3 +54,21 @@ export const saveDot = data => {
     data
   })
 }
+
+//  根据openid修改手机号
+export const updateWeixinUserByOpenId = data => {
+  return axios({
+    method: 'post',
+    url: '/updateWeixinUserByOpenId',
+    data
+  })
+}
+
+//  yuyue个人中心修改资料
+export const updateWeixinUserByPhone = data => {
+  return axios({
+    method: 'post',
+    url: '/updateWeixinUserByPhone',
+    data
+  })
+}

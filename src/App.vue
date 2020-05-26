@@ -72,13 +72,53 @@
         <div class="bottom_text" v-if="text">若手机号未注册，系统会自动帮你注册</div>
       </van-form>
     </van-dialog>
+    <!-- 绑定手机号 -->
+    <van-action-sheet v-model="showPhone" title="绑定手机号">
+      <van-form :show-error="false" @submit="submitPhone" >
+        <div class="margin" style="border-bottom: 1px solid #eee;">
+          <van-field
+            v-model="userNamePhone"
+            placeholder="请输入真实姓名"
+            type="tel"
+            class="margin_border"
+            maxlength="8"
+            :rules="[{ required: true, message: '姓名不能为空' }]"
+          />
+        </div>
+        <div class="margin" style="border-bottom: 1px solid #eee;">
+          <van-field
+            v-model="phone"
+            placeholder="请输入手机号码"
+            type="tel"
+            class="margin_border"
+            maxlength="11"
+            :rules="[{ required: true, message: '手机号格式错误' },{ validator: mobileDialog2, message: '手机号格式错误' }]"
+          />
+        </div>
+        <div class="code margin">
+          <div style="border-bottom: 1px solid #eee;">
+            <van-field
+              v-model="phoneCode"
+              placeholder="请输入验证码"
+              class="margin_border"
+              maxlength="6"
+              :rules="[{ required: true, message: '验证码不能为空' }]"
+            />
+          </div>
+          <div class="bule" :class="tiems? 'hui' : ''" @click="getPhoneCode">{{phoneCodeText}}</div>
+        </div>
+        <div class="btn_box">
+          <van-button type="primary" native-type="submit" block>确定</van-button>
+        </div>
+      </van-form>
+    </van-action-sheet>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
 import { ActionSheet } from "vant";
-import { sendMsg , signUpOrLogIn , businessUpOrLogIn } from "@/api/login";
+import { sendMsg , signUpOrLogIn , businessUpOrLogIn , updateWeixinUserByOpenId } from "@/api/login";
 import api from '@/api/merchantIndex'
 Vue.use(ActionSheet);
 export default {
@@ -95,14 +135,20 @@ export default {
       show: false, // 登录提示
       mobileLogin: false, // 登录弹窗
       mobileCode: "获取验证码",
+      phoneCodeText: "获取验证码",
       timeId: null,
       tiems: false,
+      tiems2: false,
       onSale: false,
       merchant: false,
       text: false,
+      showPhone: false, // 绑定手机号弹窗
+      phone: "",
+      phoneCode: "",
       code: "",
       mobile: "",
       userName: "",
+      userNamePhone: ""
     };
   },
   created() {
@@ -110,6 +156,36 @@ export default {
     // this.wxSQ()
   },
   methods: {
+    // 绑定手机号
+    phoneDialog(){
+      this.showPhone = true
+    },
+    // 确定绑定手机号
+    submitPhone(){
+      var openId = this.$store.getters.openId  // 上线打开这个
+      // var openId = 'o2mJowp-PE2-xcdFlbu6-DDHA8tY'
+      if(!openId){
+        this.wxSQ()
+       }else{
+         updateWeixinUserByOpenId({
+           openid: openId,
+           phone: this.phone,  
+           code: this.phoneCode,
+           username: this.userNamePhone 
+         }).then(res=>{
+           if(res.data.code == 200){
+             localStorage.setItem("phone",res.data.phone)
+             this.$toast.success('绑定成功!')
+             this.showPhone = false
+             this.$router.push({name: "yuyueUser" , query: {
+               phone: 1
+             }})
+           }else{
+             this.$toast(res.data.msg)
+           }
+         })
+       }
+    },
      // 登录授权
     wxSQ(){
         // var wxUserData = localStorage.getItem('wxUserData')
@@ -122,21 +198,22 @@ export default {
           //     this.$store.dispatch('alterOpenId',res.data.data)
           //     alert("这是openId——-" + res.data.data)
           // })
+        }else{
+          this.authorization()
         }
-        this.authorization()
     },
     // 登录授权
     authorization() {
       //获取url中参数
-      const code = this.getUrlParam("code");
-      if (!code) {
+      // const code = this.getUrlParam("code");
+      // if (!code) {
         // const url = encodeURIComponent(location.href.split("#")[0]); // 获取#之前的当前路径
         const url = encodeURIComponent(location.href) // 获取#之前的当前路径
         window.location.href =
           "http://open.weixin.qq.com/connect/oauth2/authorize?appid=wx1008eb4c001227c4&redirect_uri=" +
           url + 
           "&response_type=code&scope=snsapi_userinfo&state=STATE&connect_redirect=1#wechat_redirect";
-      }
+      // }
     },
     // 登录授权
     apiCode(code) {
@@ -147,8 +224,8 @@ export default {
           })
           .then(res => {
             this.$store.dispatch('alterOpenId',res.data.openid)
-            var data = JSON.stringify(res.data)
-            localStorage.setItem("wxUserData", data)
+            // var data = JSON.stringify(res.data)
+            localStorage.setItem("wxUserId", res.data.openid)
           })
       }
     },
@@ -254,6 +331,44 @@ export default {
         return false;
       }
     },
+    mobileDialog2() {
+      var re = /^1\d{10}$/;
+      let str = this.phone;
+      if (re.test(str)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    async getPhoneCode(){
+      if (this.tiems2) {
+        return false;
+      }
+      if (this.mobileDialog2()) {
+        var res = await sendMsg({
+          phone: this.phone //手机号
+        });
+        if (res.data.code == 400) {
+          this.$toast(res.data.msg);
+        } else if (res.data.code == 200) {
+          this.$toast.success(res.data.msg);
+          var num = 60;
+          var timeId = this.timeId;
+          timeId = setInterval(() => {
+            if (num === 0) {
+              this.phoneCodeText = "获取验证码";
+              clearInterval(timeId);
+              this.tiems2 = false;
+            } else {
+              this.phoneCodeText = "请等待" + num--;
+              this.tiems2 = true;
+            }
+          }, 1000);
+        }
+      } else {
+        this.$toast('手机号格式错误')
+      }
+    },
     async getCode() {
       if (this.tiems) {
         return false;
@@ -306,9 +421,6 @@ export default {
   font-weight: bold;
   padding: 12.5px 0;
 }
-.van-action-sheet__content {
-  // height: 200px;
-}
 .van-action-sheet__cancel {
   font-size: 15px;
   height: 45px;
@@ -321,6 +433,7 @@ export default {
   .van-button--block {
     height: 40px;
     border-radius: 25px;
+    line-height: 38px;
     .van-button__text {
       font-size: 16px;
       letter-spacing: 2.5px;
@@ -355,12 +468,12 @@ export default {
   }
   .bule {
     width: 40%;
-    height: 30px;
+    height: 45px;
     background: #08a0ff;
     border-radius: 0.1rem;
     color: #fff;
     text-align: center;
-    line-height: 30px;
+    line-height: 45px;
     &.hui {
       background: #999999;
     }

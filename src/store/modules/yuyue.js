@@ -5,7 +5,8 @@ export default {
     // state是存储的数据
     // 要设置的全局访问的state对象
     state: {
-        yuyueSite: {}
+        yuyueSite: {},
+        userID: null
     },
     // mutations对象是函数，默认传值是state，也就是上面的state，所以可以直接操作state.dataList
     // 动态的改变vuex的数据 触发 $store.commit('名',10)  传参直接后面添加即可
@@ -13,6 +14,9 @@ export default {
     mutations: {
       alterYuyueSite ( state , data) {
         state.yuyueSite = data
+      },
+      alterUserID ( state , data) {
+        state.userID = data
       },
     },
     // actions和mutations的写法一样，都是函数
@@ -24,6 +28,9 @@ export default {
       // 改变数据
       alterSite( context , view ){
         context.commit('alterYuyueSite' , view)
+      },
+      alterId( context , view ){
+        context.commit('alterUserID' , view)
       }
     },
     // getters用来计算 state 然后生成新的数据 ( 状态 ) 的,它也是默认接受state

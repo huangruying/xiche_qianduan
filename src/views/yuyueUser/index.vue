@@ -4,18 +4,19 @@
       <div class="boxbgd">
           <!-- 空盒子背景图 -->
           <div class="box"></div>   
-          <div class="user_box" v-if="false">
+          <div class="user_box" v-if="userBox">
               <div class="user_img_box">
-                  <img src="@/assets/yuyueIcon/default_user_portrait.png" alt="">
-                  <div class="text_box" v-if="false">
+                  <img :src="UserList.headimgurl" alt="" v-if="userImg">
+                  <img src="@/assets/yuyueIcon/default_user_portrait.png" alt="" v-if="!userImg">
+                  <div class="text_box" v-if="!userBoxName" @click="loginUser">
                       <span>点击登录</span>
                   </div>
-                  <div class="text_user"  >
-                      <span>13729014409</span>
-                      <div>胡椒粉</div>
+                  <div class="text_user"  v-if="userBoxName">
+                      <span>{{UserList.phone}}</span>
+                      <div>{{UserList.nickname}}</div>
                   </div>
               </div>
-              <div class="centre_text">
+              <div class="centre_text" @click="purchase">
                 <i></i>
                 <span>没有开通权益哦！快去购买吧！</span>
                 <van-icon name="play" size="21"/>
@@ -24,10 +25,10 @@
                   协助取票  |  引导进站  |  优先登车  |  全流程服务
               </div>
           </div>
-          <div class="card_box">
-              <van-swipe autoplay="rf" height="200" @change="onChange">
+          <div class="card_box" v-if="cardBox">
+              <van-swipe autoplay="rf" ref="swipe" height="200" @change="onChange">
                 <van-swipe-item v-for="(image, index) in images" :key="index">
-                <img v-lazy="image" />
+                <img v-lazy="image.picfilepath" />
                 </van-swipe-item>
                 <template #indicator>
                     <div class="custom-indicator">
@@ -35,11 +36,11 @@
                     </div>
                 </template>
               </van-swipe>
-              <van-icon name="arrow-left" class="arrow_left"/>
-              <van-icon name="arrow" class="arrow_right"/>
+              <van-icon name="arrow-left" class="arrow_left" @click="iconSwipe(1)"/>
+              <van-icon name="arrow" class="arrow_right" @click="iconSwipe(2)"/>
           </div>
       </div>
-      <div class="my_equity">
+      <div class="my_equity" v-if="myEquity">
           <div class="top">尊享权益</div>
           <van-grid :column-num="5" class="equity_box" :border="false">
                 <van-grid-item>
@@ -130,34 +131,92 @@
 
 <script>
 import tabbar from "@/components/tabbar"
+import api from "@/api/yuyueUser"
 export default {
     components: {
-        tabbar
+        tabbar,
     },
     data(){
         return{
+            userImg: false,
+            userBox: true,
+            cardBox: false,
+            userBoxName: false,
+            myEquity: false,
             active: 1,
             current: 0,
-            images: [
-                require('@/assets/yuyueIndex/yuyueIndex.png'),
-                require('@/assets/yuyueIndex/yuyueIndex.png'),
-                require('@/assets/yuyueIndex/yuyueIndex.png'),
-                require('@/assets/yuyueIndex/yuyueIndex.png'),
+            images: [ // require('@/assets/yuyueIndex/yuyueIndex.png')
             ],
+            UserList: {}
+        }
+    },
+    watch: {
+        $route: {
+            handler() {
+                var phone = this.$route.query.phone;
+                if(phone){
+                    // this.UserList.phone = localStorage.getItem('phone')
+                    var openId = localStorage.getItem("wxUserId")
+                    this.apiGetWeiXinByOpenId(openId)
+                }
+                // 深度监听，同时也可监听到param参数变化
+            },
+            deep: true,
         }
     },
     mounted(){
-        this.$store.dispatch('alterOpenId', 'o2mJowp-PE2-xcdFlbu6-DDHA8tY') // 我的openid
-        var openId = this.$store.getters.openId
-        if(!openId){
-            this.$parent.wxSQ()
-        }
-        // console.log(this.$store.getters.openId);
+        this.getOpenId()
     },
     methods: {
+        getOpenId(){
+            this.$store.dispatch('alterOpenId', 'o2mJowp-PE2-xcdFlbu6-DDHA8tY')   // 我的openid
+            // this.$store.dispatch('alterOpenId', undefined)   // 测试
+            var openId = this.$store.getters.openId
+
+            // var openId = localStorage.getItem("wxUserId")  // 上线之后打开
+            if(!openId){
+                 this.userImg = false
+                 this.userBoxName = false
+                //  this.loginUser()
+             }else{
+                 this.userBoxName = true
+                 this.apiGetWeiXinByOpenId(openId)
+             }
+        },
+        loginUser(){
+            this.$parent.phoneDialog()
+        },
+        apiGetWeiXinByOpenId(openid){
+            api.getWeiXinByOpenId({openid}).then(res=>{
+                // console.log(res);
+                if(res.data && res.data.code == 200){
+                    this.UserList = res.data.data
+                    this.$store.dispatch("alterId", res.data.data.id)
+                    if(!(this.UserList.phone)){ // 还没有绑定手机号
+                        // console.log(this.UserList.phone);
+                    }
+                    if(this.UserList.yuyueProducts.length <= 0){ // 没有权益
+                        this.myEquity = false
+                    }else{
+                        this.myEquity = true
+                        this.userBox = false
+                        this.cardBox = true
+                        this.images = this.UserList.yuyueProducts
+                    }
+                    this.userImg = true
+                }else{
+                    this.loginUser()
+                    this.userBoxName = false
+                    this.userImg = false
+                }
+            })
+        },
         onChange(index) {
-          this.$toast('当前 Swipe 索引：' + index);
+        //   this.$toast('当前 Swipe 索引：' + index);
           this.current = index
+        },
+        purchase(){
+            this.$router.push({name: "yuyueIndex"})
         },
         userTab(index){
             if(index === 0){
@@ -165,15 +224,32 @@ export default {
             }else if(index === 1){
                 this.$router.push({name: "yuyueMyTicket"})
             }else if(index === 2){
-                this.$router.push({name: "yuyueUserData"})
+                if(!(this.UserList.phone)){
+                    this.loginUser()
+                }else{
+                    this.$router.push({name: "yuyueUserData",query: {
+                       phone: this.UserList.phone
+                    }})
+                }
             }else if(index === 3){
-                this.$router.push({name: "yuyueMyCoupon"})
+                if(!(this.UserList.id)){
+                    this.loginUser()
+                }else{
+                    this.$router.push({name: "yuyueMyCoupon"})
+                }
             }else if(index === 4){
                 
             }
         },
         yuyueMyExplain(){
             this.$router.push({name: "yuyueMyExplain"})
+        },
+        iconSwipe(index){
+            if(index == 1){
+                this.$refs.swipe.prev()
+            }else{
+                this.$refs.swipe.next()
+            }
         }
     }
 }
@@ -294,23 +370,30 @@ export default {
             border-radius: 8px;
             position: relative;
             .arrow_left{
-                font-size: 26px;
+                font-size: 23px;
                 position: absolute;
                 top: 50%;
                 left: 2px;
                 transform: translateY(-50%);
-                background: #ccc;
+                // background: #000;
+                background-color:rgba(37, 37, 37, 0.3);
                 color: #fff;
                 display: block;
                 padding: 3PX;
                 border-radius: 50%;
+                // opacity: .3;
             }
             .arrow_right{
-                font-size: 26px;
+                font-size: 23px;
                 position: absolute;
                 top: 50%;
                 right: 2px;
                 transform: translateY(-50%);
+                // background: #000;
+                // opacity: .3;
+                background-color:rgba(37, 37, 37, 0.3);
+                color: #fff;
+                border-radius: 50%;
             }
         }
         .user_box{

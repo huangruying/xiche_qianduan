@@ -11,7 +11,7 @@
         <van-tab title="已使用"></van-tab>
         <van-tab title="已过期"></van-tab>
       </van-tabs>
-      <div style="overflow-y: scroll;">
+      <div style="overflow-y: scroll;background: #f0f0f0;">
           <div style="padding: 16px 20px;">
             <van-cell-group>
                 <van-field
@@ -21,33 +21,34 @@
                     placeholder="输入券码领取优惠券"
                     >
                     <template #button>
-                        <van-button size="normal" color="#d2ad76">领 取</van-button>
+                        <van-button size="normal" color="#d2ad76" @click="codeReceive(couponCode)">领 取</van-button>
                     </template>
                 </van-field>
             </van-cell-group>
             
             <div class="card_box">
-              <div class="volume">
+              <div class="volume" v-for="(value , index) in codeList" :key="index">
                     <div class="img">
-                        <img src="@/assets/yuyueIcon/icon_1.png" alt v-if="cardIndex === 0 || cardIndex === 1"/>
-                        <img src="@/assets/yuyueIcon/icon2.png" alt v-if="cardIndex === 2 || cardIndex === 3"/>
-                        <div><i>￥</i> 50</div>
+                        <img src="@/assets/yuyueIcon/icon_1.png" alt v-if="value.status == 0 || value.status == 1"/>
+                        <img src="@/assets/yuyueIcon/icon2.png" alt v-if="value.status == 2 || value.status == 3"/>
+                        <div><i>￥</i>{{value.money}}</div>
                     </div>
                     <div class="box">
                         <div class="top">
                             <div class="left_text">
-                                <div :class="cardIndex === 2 || cardIndex === 3 ?'guo_qi': ''">立减5元</div>
+                                <div :class="value.status == 2 || value.status == 3 ?'guo_qi': ''">{{value.title}}</div>
                             </div>
-                            <div class="right_img" v-if="cardIndex === 3">
+                            <div class="right_img" v-if="value.status == 3">
                                 <img src="@/assets/cardVolume/已过期@2x.png" alt class="img"/>
                             </div>
-                            <div class="right_img" v-if="cardIndex === 2">
+                            <div class="right_img" v-if="value.status == 2">
                                 <img src="@/assets/cardVolume/已使用.png" alt class="img"/>
                             </div>
                         </div>
-                        <div class="bottom">2020-3-29前有效</div>
+                        <div class="bottom">{{value.enddate}}前有效</div>
                     </div>
               </div>
+              <van-loading size="24px" vertical v-if="loading">加载中...</van-loading>
             </div>
           </div>
           
@@ -60,19 +61,62 @@
 </template>
 
 <script>
+import api from "@/api/yuyueMyCoupon"
 export default {
     data(){
         return{
             couponCode: "",
-            cardIndex: 0
+            cardIndex: 0,
+            codeList: [],
+            id: "",
+            loading: false
         }
+    },
+    mounted(){
+       var id = this.$store.getters.userID
+       this.id = id
+       this.apiCoupon(id)
     },
     methods: {
         routerGo(){
             this.$router.go(-1)
         },
+        apiCoupon(id){
+          this.codeList = []
+          this.loading = true
+          api.findYyCouponscodeInfos({
+            uid: id,
+            status: this.cardIndex
+          }).then(res=>{
+            this.loading = false
+            if( res.data.code == 200 && res.data.data){
+              this.codeList = res.data.data
+            }else{
+              this.$toast(res.data.msg)
+            }
+          })
+        },
         onClick(name, title){
           this.cardIndex = name
+          this.apiCoupon(this.id)
+        },
+        codeReceive(codeReceive){
+          if(codeReceive.trim() == ""){
+            this.$toast("请输入券码!")
+            return
+          }
+          api.receiveYyCouponscodeByBarcode({
+              uid: this.id,   
+              barcode: codeReceive
+          }).then(res=>{
+            if(res.data && res.data.code == 200){
+              this.$toast.success("领取成功！")
+              this.apiCoupon(this.id)
+              this.couponCode = ""
+            }else{
+              this.$toast(res.data.msg)
+            }
+          })
         }
     }
 }
