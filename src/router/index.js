@@ -267,7 +267,7 @@ let router= new Router({
             name: 'yuyuePurchase',
             component: ()=>import('@/views/yuyuePurchase/index'),
             meta: {
-                title: '愉悦商旅44',
+                title: '愉悦商旅',
             }
         },
     ]

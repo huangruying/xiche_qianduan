@@ -5,41 +5,58 @@
           <span>购买记录</span>
           <div></div>
     </div>
-    <div class="nodata" v-if="false">没有更多数据~</div>
+    <div class="nodata" v-if="nodata">没有更多数据~</div>
     <div class="my_buy">
-        <div class="buy">
+        <div class="buy" v-for="(value,index) in dataList" :key="index">
             <div>
-                <div>悦途高铁礼券</div>
-                <span>支付金额：75元</span>
-                <span>购买时长：12年</span>
-                <span>购买时间：2020-01-20</span>
+                <div>{{value.name}}</div>
+                <span>价格：{{value.price}}元</span>
+                <!-- <span>购买时长：12年</span> -->
+                <span v-if="value.coupon">优惠券抵消金额：{{value.coupon}}元</span>
+                <span>购买时间：{{value.purchaseTime}}</span>
+                <span>实际支付金额：{{value.payAmount}}</span>
             </div>
-            <span>支付完成</span>
-        </div>
-        <div class="buy">
-            <div>
-                <div>悦途高铁礼券</div>
-                <span>支付金额：75元</span>
-                <span>购买时长：12年</span>
-                <span>购买时间：2020-01-20</span>
-            </div>
-            <span class="color">支付失败</span>
+            <span :class="value.status == 1?'':'color'">{{value.status == 1? "支付成功" : "支付失败"}}</span>
         </div>
     </div>
   </div>
 </template>
 
 <script>
+import api from "@/api/yuyueMyBuy"
 export default {
     data(){
         return{
-            
+            openId: "",
+            nodata: false,
+            dataList: []
         }
+    },
+    mounted(){
+        this.openId = localStorage.getItem("wxUserId")
+        this.apiFindProductOrderInfos()
     },
     methods: {
         routerGo(){
             this.$router.go(-1)
         },
+        apiFindProductOrderInfos(){
+            api.findProductOrderInfos({openId: this.openId}).then(res=>{
+                if(res.data && res.data.code == 200){
+                    if(res.data.data.length > 0){
+                        this.dataList = res.data.data
+                        this.nodata = false
+                    }else{
+                        this.dataList = []
+                        this.nodata = true
+                    }
+                }else{
+                    this.dataList = []
+                    this.$toast(res.data.msg)
+                    this.nodata = true
+                }
+            })
+        }
     }
 }
 </script>

@@ -26,67 +26,31 @@
               </div>
           </div>
           <div class="card_box" v-if="cardBox">
-              <van-swipe autoplay="rf" ref="swipe" height="200" @change="onChange">
-                <van-swipe-item v-for="(image, index) in images" :key="index">
+              <van-swipe autoplay="hah" ref="swipe" height="200" @change="onChange">
+                <van-swipe-item v-for="(image, index) in images" :key="index" @click="swipeQR(image)">
                 <img v-lazy="image.picfilepath" />
                 </van-swipe-item>
                 <template #indicator>
                     <div class="custom-indicator">
-                    {{ current + 1 }} / 4
+                    {{ current + 1 }} / {{ images.length }}
                     </div>
                 </template>
               </van-swipe>
-              <van-icon name="arrow-left" class="arrow_left" @click="iconSwipe(1)"/>
-              <van-icon name="arrow" class="arrow_right" @click="iconSwipe(2)"/>
+              <van-icon name="arrow-left" class="arrow_left" @click="iconSwipe(1)" v-if="images.length>1" />
+              <van-icon name="arrow" class="arrow_right" @click="iconSwipe(2)" v-if="images.length>1" />
           </div>
       </div>
       <div class="my_equity" v-if="myEquity">
           <div class="top">尊享权益</div>
           <van-grid :column-num="5" class="equity_box" :border="false">
-                <van-grid-item>
+                <van-grid-item v-for="(item,idx) in images[current].services" :key="idx">
                    <div class="equity_img">
-                       <img src="@/assets/yuyueIcon/16.png" alt="">
-                       <span>贵宾休息</span>
+                       <img :src="item.serviceIcon" alt="">
+                       <span>{{item.serviceName}}</span>
                    </div>
                 </van-grid-item>
-                <van-grid-item>
-                    <div class="equity_img">
-                        <img src="@/assets/yuyueIcon/13.png" alt="">
-                        <span>精美茶点</span>
-                    </div>
-                </van-grid-item>
-                <van-grid-item>
-                   <div class="equity_img">
-                        <img src="@/assets/yuyueIcon/18.png" alt="">
-                        <span>书籍</span>
-                    </div>
-                </van-grid-item>
-                <van-grid-item>
-                   <div class="equity_img">
-                        <img src="@/assets/yuyueIcon/07.png" alt="">
-                        <span>WiFi上网</span>
-                    </div>
-                </van-grid-item>
-                <van-grid-item>
-                   <div class="equity_img">
-                        <img src="@/assets/yuyueIcon/partner.png" alt="">
-                        <span>手机充电</span>
-                    </div>
-                </van-grid-item>
-                <van-grid-item>
-                   <div class="equity_img">
-                        <img src="@/assets/yuyueIcon/partner.png" alt="">
-                        <span>视听娱乐</span>
-                    </div>
-                </van-grid-item>
-                <van-grid-item>
-                   <div class="equity_img">
-                        <img src="@/assets/yuyueIcon/partner.png" alt="">
-                        <span>携伴优惠</span>
-                    </div>
-                </van-grid-item>
-            </van-grid>
-          <div class="look" @click="yuyueMyExplain">查看权益说明</div>
+          </van-grid>
+          <div class="look" @click="yuyueMyExplain(images[current].equityBrief)">查看权益说明</div>
       </div>
       <div class="class_my">
           <span>常用功能</span>
@@ -125,6 +89,22 @@
             </van-grid>
           </div>
       </div>
+
+      <!-- 弹窗 -->
+      <van-overlay :show="show" @click="show = false">
+        <div class="wrapper" @click.stop>
+            <div class="dialog">
+                <div class="dialog_text">9999999</div>
+                <div class="dialog_ying">{{card.name}}</div>
+                <div class="dialog_qr"><div id="qrcode" class="qrcode" ref="ref_qr"></div></div>
+                <div class="dialog_txt">请扫描二维码</div>
+                <div class="dialog_img">
+                    <!-- <img src="@/assets/yuyueIcon/weix@2x.png" alt/>
+                    <img src="@/assets/yuyueIcon/PYQ@2x.png" alt/> -->
+                </div>
+            </div>
+        </div>
+      </van-overlay>
       <tabbar :active.sync="active"></tabbar>
   </div>
 </template>
@@ -132,12 +112,15 @@
 <script>
 import tabbar from "@/components/tabbar"
 import api from "@/api/yuyueUser"
+import QRCode  from "qrcodejs2"
 export default {
     components: {
         tabbar,
+        QRCode 
     },
     data(){
         return{
+            show: false,
             userImg: false,
             userBox: true,
             cardBox: false,
@@ -147,7 +130,8 @@ export default {
             current: 0,
             images: [ // require('@/assets/yuyueIndex/yuyueIndex.png')
             ],
-            UserList: {}
+            UserList: {},
+            card: {}
         }
     },
     watch: {
@@ -158,6 +142,7 @@ export default {
                     // this.UserList.phone = localStorage.getItem('phone')
                     var openId = localStorage.getItem("wxUserId")
                     this.apiGetWeiXinByOpenId(openId)
+                    console.log(openId);
                 }
                 // 深度监听，同时也可监听到param参数变化
             },
@@ -168,12 +153,21 @@ export default {
         this.getOpenId()
     },
     methods: {
+        swipeQR(card){
+            this.show = true
+            this.card = card
+            // 调用二维码 注意： 在需要调用的地方  这样必须这样调用  否则会出现  appendChild  null  就是id为qrcode的dom获取不到 返回结果为null
+            this.$nextTick (function () {
+              this.qrcode("13729014409");
+            })
+            this.$refs.ref_qr.innerHTML = ""
+            // console.log(card);
+        },
         getOpenId(){
-            this.$store.dispatch('alterOpenId', 'o2mJowp-PE2-xcdFlbu6-DDHA8tY')   // 我的openid
-            // this.$store.dispatch('alterOpenId', undefined)   // 测试
-            var openId = this.$store.getters.openId
-
-            // var openId = localStorage.getItem("wxUserId")  // 上线之后打开
+             // this.$store.dispatch('alterOpenId', undefined)   // 测试
+            // this.$store.dispatch('alterOpenId', 'o2mJowp-PE2-xcdFlbu6-DDHA8tY')   // 我的openid
+            // var openId = this.$store.getters.openId
+            var openId = localStorage.getItem("wxUserId")  // 上线之后打开
             if(!openId){
                  this.userImg = false
                  this.userBoxName = false
@@ -182,6 +176,18 @@ export default {
                  this.userBoxName = true
                  this.apiGetWeiXinByOpenId(openId)
              }
+        },
+         //  生成二维码
+        qrcode (cardNumber) {
+            let that = this;
+            let qrcode = new QRCode('qrcode', {
+                width: 124,
+                height: 124,        // 高度
+                text: cardNumber,   // 二维码内容
+                // render: 'canvas' ,   // 设置渲染方式（有两种方式 table和canvas，默认是canvas）
+                // background: '#f0f',   // 背景色
+                // foreground: '#ff0'    // 前景色
+            })
         },
         loginUser(){
             this.$parent.phoneDialog()
@@ -212,7 +218,6 @@ export default {
             })
         },
         onChange(index) {
-        //   this.$toast('当前 Swipe 索引：' + index);
           this.current = index
         },
         purchase(){
@@ -220,9 +225,20 @@ export default {
         },
         userTab(index){
             if(index === 0){
-                this.$router.push({name: "yuyueMyBuy"})
+                if(!(this.UserList.phone)){
+                    this.loginUser()
+                }else{
+                    this.$router.push({name: "yuyueMyBuy"})
+                }
             }else if(index === 1){
-                this.$router.push({name: "yuyueMyTicket"})
+                if(!(this.UserList.phone)){
+                    this.loginUser()
+                }else{
+                    var id = this.$store.getters.userID
+                    this.$router.push({name: "yuyueMyTicket",query: {
+                        uid: id 
+                    }})
+                }
             }else if(index === 2){
                 if(!(this.UserList.phone)){
                     this.loginUser()
@@ -241,7 +257,8 @@ export default {
                 
             }
         },
-        yuyueMyExplain(){
+        yuyueMyExplain(item){
+            this.$store.dispatch("dispatchItem" , item)
             this.$router.push({name: "yuyueMyExplain"})
         },
         iconSwipe(index){
@@ -256,6 +273,92 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.dialog {
+  background-image: url("../../assets/yuyueIcon/dizhuo@2x.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  padding-bottom: 0.2rem;
+  padding-top: 0.2rem;
+  width: 75%;
+  margin: 2.67rem auto;
+  border-radius: 0.3rem;
+  &::before {
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: #000;
+    position: absolute;
+    top: 4rem;
+    right: -0.5rem;
+    opacity: 0;
+  }
+  &::after {
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: #000;
+    position: absolute;
+    top: 4rem;
+    left: -0.5rem;
+    opacity: 0;
+  }
+  .dialog_img {
+    display: flex;
+    justify-content: center;
+    height: 1.4rem;
+    > img {
+      width: 1rem;
+      height: 1rem;
+      margin: 0.2rem 0.28rem;
+    }
+  }
+  .dialog_txt {
+    text-align: center;
+    font-size: 0.3rem;
+    font-family: PingFang SC;
+    color: #333;
+    margin: 0.3rem 0;
+  }
+  .dialog_text {
+    font-size: 0.36rem;
+    text-align: center;
+    margin: 0.1rem 0;
+    color: #000;
+  }
+  .dialog_ying {
+    font-size: 0.6rem;
+    color: #e7394e;
+    text-align: center;
+    margin: 0.2rem 0;
+  }
+   /*固定宽高*/
+  .dialog_qr {
+    height: 3.6rem;
+    width: 3.6rem;
+    background: #08a0ff;
+    margin: 0 auto;
+
+    /*内容自适应*/
+    /deep/.qrcode{
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /*生成的二维码里面的img标签宽高自适应*/
+    /deep/.qrcode img{
+        width: 100% !important;
+        height: 100% !important;
+    }
+    /*一开始生成的canvas也要进行宽高自适应*/
+    /deep/.qrcode canvas{
+        width: 100% !important;
+        height: 100% !important;
+    }
+  }
+}
 .custom-indicator {
     position: absolute;
     right: 5px;
@@ -289,6 +392,11 @@ export default {
             color: #777;
             display: block;
             margin-top: 3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
         }
     }
     .equity_box{

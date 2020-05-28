@@ -92,7 +92,8 @@ export default {
       // api.wxOfficialPay()
       var this2 = this
       var openId = this.$store.getters.openId
-      api.wxOfficialPay({openId: openId}).then(res=>{
+      var pid = "1"
+      api.wxOfficialPay({openId: openId,pid}).then(res=>{
         wx.config({
           debug: false, // true:调试时候弹窗
           appId: "wx1008eb4c001227c4", // 微信appid
@@ -102,7 +103,7 @@ export default {
           jsApiList: [
             // 所有要调用的 API 都要加到这个列表中
             // 'onMenuShareTimeline', // 分享到朋友圈接口
-            // 'onMenuShareAppMessage', //  分享到朋友接口
+            // 'onMenuShareAppMessage', //  分享到朋友接口 
             // 'onMenuShareQQ', // 分享到QQ接口
             // 'onMenuShareWeibo', // 分享到微博接口
             "scanQRCode", // 微信扫一扫功能
@@ -129,7 +130,7 @@ export default {
                   //      name:"success_page"
                   //  })
                   var res = JSON.stringify(res)
-                  alert('支付成功' + res)
+                  // alert('支付成功' + res)
                    console.log(res)
                },
                cancel: function (res) { //提示引用的是mint-UI里toast

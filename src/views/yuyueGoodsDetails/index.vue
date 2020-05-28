@@ -8,7 +8,7 @@
       <div class="content"><img :src="dataList.picfilepath" alt=""></div>
       <div class="cell_price">
           <span><i>￥</i>{{dataList.price}}</span>
-          <van-button round type="info" color="#de9c4a" size="mini" @click="purchase">立即购买</van-button>
+          <van-button round type="info" color="#de9c4a" size="mini" @click="purchase(dataList)">立即购买</van-button>
       </div>
       <div class="serve_box">
           <div class="serve_title">
@@ -34,7 +34,7 @@
            {{dataList.content}}
       </div>
       <div class="nodeBtn">
-          <van-button block round color="linear-gradient(to right, #d2ae6d, #f3dea8)" @click="purchase">立即购买</van-button>
+          <van-button block round color="linear-gradient(to right, #d2ae6d, #f3dea8)" @click="purchase(dataList)">立即购买</van-button>
       </div>
   </div>
 </template>
@@ -56,14 +56,14 @@ export default {
             api.getYyProductByEquity({id}).then(res=>{
                 if(res.data.code == 200){
                     this.dataList = res.data.data
-                    console.log(res);
                 }
             })
         },
         routerGo(){
             this.$router.go(-1)
         },
-        purchase(){
+        purchase(value){
+            this.$store.dispatch("dispatchValue", value)
             this.$router.push({name: "yuyuePurchase"})
         }
     }

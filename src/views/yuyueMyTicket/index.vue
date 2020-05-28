@@ -5,47 +5,65 @@
           <span>我的卡包</span>
           <div></div>
       </div>
-      <van-tabs @click="onClick" color="#e6bb57">
+      <van-tabs @click="onClick" v-model="active" color="#e6bb57">
         <van-tab title="全部"></van-tab>
         <van-tab title="待使用"></van-tab>
         <van-tab title="已使用"></van-tab>
       </van-tabs>
       <div class="card_box">
-        <div class="card">
-          <img src="@/assets/yuyueIndex/yuyue.png" alt="">
+        <van-loading size="24px" vertical v-if="loading">加载中...</van-loading>
+        <div class="card" v-for="( value , index ) in dataList" :key="index">
+          <img :src="value.picfilepath" alt="">
           <div class="text_box">
-            <div>贵宾卡</div>
-            <span>获取时间：2020-28-23</span>
-            <em><em>类 型</em>：年卡</em>
-            <i><i>有 效 期</i>：2929-12-20</i>
+            <div>{{ value.name }}</div>
+            <span>获取时间：{{ value.getTime }}</span>
+            <!-- <em><em>类 型</em>：年卡</em> -->
+            <i><i>有 效 期</i>：{{ value.validityTime }}</i>
           </div>
-        </div>
-        <div class="card">
-          <img src="@/assets/yuyueIndex/yuyue.png" alt="">
-          <div class="text_box">
-            <div>贵宾卡</div>
-            <span>获取时间：2020-28-23</span>
-            <em><em>类 型</em>：年卡</em>
-            <i><i>有 效 期</i>：2929-12-20</i>
-          </div>
+          <img src="@/assets/cardVolume/已使用.png" alt class="cardimg" v-if="value.status == 2" />
         </div>
       </div>
   </div>
 </template>
 
 <script>
+import api from "@/api/yuyueMyTicket"
 export default {
   data(){
     return{
-
+      uid: "",
+      active: 0,
+      dataList: [],
+      loading: false
     }
+  },
+  mounted(){ 
+    var { uid } = this.$route.query
+    this.uid = uid
+    this.MyTicket(uid)
   },
   methods: {
     routerGo(){
       this.$router.go(-1)
     },
     onClick(name, title){
-      // console.log(name,title);
+      this.MyTicket(this.uid)
+    },
+    MyTicket(uid){
+      this.loading = true
+      this.dataList = []
+      api.finYyProductCardByUid({uid,status: this.active}).then(res=>{
+        this.loading = false
+        if(res.data.code == 200){
+          this.dataList = res.data.data
+          this.dataList.map(v=>{
+            v.getTime = v.getTime.trim().split(/\s+/)[0]
+            v.validityTime = v.validityTime.trim().split(/\s+/)[0]
+          })
+        }else{
+          this.$toast(res.data.msg)
+        }
+      })
     }
   }
 }
@@ -60,7 +78,16 @@ export default {
     border-radius: 7px;
     padding: 10px 14px;
     margin: 3px 0 10px;
+    position: relative;
+    .cardimg{
+      width: 45px;
+      height: 45px;
+      position: absolute;
+      top: 18px;
+      right: 14px;
+    }
     .text_box{
+      flex: 1;
       color: #f4efd1;
       >i{
         display: block;

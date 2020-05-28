@@ -18,10 +18,11 @@
             <van-cell-group class="input_cell">
                 <van-field
                     v-model="nickName"
-                    label="昵称"
-                    placeholder="请输入昵称"
+                    type="text"
+                    label="真实姓名"
+                    placeholder="请输入真实姓名"
                     class="nickName"
-                    :rules="[{ required: true, message: '昵称不能为空' }]"
+                    :rules="[{ required: true, message: '真实姓名不能为空' }]"
                 />
             </van-cell-group>
             <van-cell-group class="input_cell">

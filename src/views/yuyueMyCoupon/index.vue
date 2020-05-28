@@ -31,7 +31,7 @@
                     <div class="img">
                         <img src="@/assets/yuyueIcon/icon_1.png" alt v-if="value.status == 0 || value.status == 1"/>
                         <img src="@/assets/yuyueIcon/icon2.png" alt v-if="value.status == 2 || value.status == 3"/>
-                        <div><i>￥</i>{{value.money}}</div>
+                        <div><i>￥</i>{{value.price}}</div>
                     </div>
                     <div class="box">
                         <div class="top">
@@ -73,7 +73,9 @@ export default {
         }
     },
     mounted(){
-       var id = this.$store.getters.userID
+      //  var id = this.$store.getters.userID
+      // localStorage.setItem("wxUserId", 'o2mJowp-PE2-xcdFlbu6-DDHA8tY')
+       var id = localStorage.getItem("wxUserId")  // 上线打开
        this.id = id
        this.apiCoupon(id)
     },
@@ -85,7 +87,7 @@ export default {
           this.codeList = []
           this.loading = true
           api.findYyCouponscodeInfos({
-            uid: id,
+            openid: id,
             status: this.cardIndex
           }).then(res=>{
             this.loading = false
@@ -106,7 +108,7 @@ export default {
             return
           }
           api.receiveYyCouponscodeByBarcode({
-              uid: this.id,   
+              openid: this.id,   
               barcode: codeReceive
           }).then(res=>{
             if(res.data && res.data.code == 200){

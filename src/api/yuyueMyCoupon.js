@@ -17,9 +17,29 @@ const receiveYyCouponscodeByBarcode = data => {
       url: '/receiveYyCouponscodeByBarcode',
       data
     })
-  }
+}
+
+// 微信公众号支付
+const wxOfficialPay = data => {
+  return axios({
+    method: 'get',
+    url: '/wxOfficialPay',
+    params:data
+  })
+}
+
+// 定时请求获取订单是否支付
+const getStatusByOrderNo = data => {
+  return axios({
+    method: 'post',
+    url: '/getStatusByOrderNo',
+    data: data
+  })
+}
 
 export default{
     findYyCouponscodeInfos,
-    receiveYyCouponscodeByBarcode
+    receiveYyCouponscodeByBarcode,
+    wxOfficialPay,
+    getStatusByOrderNo
 }

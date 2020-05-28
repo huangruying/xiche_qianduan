@@ -162,7 +162,8 @@ export default {
     },
     // 确定绑定手机号
     submitPhone(){
-      var openId = this.$store.getters.openId  // 上线打开这个
+      // var openId = this.$store.getters.openId  
+      var openId = localStorage.getItem("wxUserId")  // 上线打开这个
       // var openId = 'o2mJowp-PE2-xcdFlbu6-DDHA8tY'
       if(!openId){
         this.wxSQ()
@@ -173,6 +174,7 @@ export default {
            code: this.phoneCode,
            username: this.userNamePhone 
          }).then(res=>{
+           localStorage.setItem("wxUserId", openId)
            if(res.data.code == 200){
              localStorage.setItem("phone",res.data.phone)
              this.$toast.success('绑定成功!')

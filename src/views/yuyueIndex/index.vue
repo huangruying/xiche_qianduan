@@ -40,7 +40,7 @@
                        <span>{{value.name}}</span>
                        <div class="price">
                             <span>￥{{value.price}}/人</span>
-                            <van-button round type="info" color="#de9c4a" size="mini" @click.stop="purchase">立即购买</van-button>
+                            <van-button round type="info" color="#de9c4a" size="mini" @click.stop="purchase(value)">立即购买</van-button>
                        </div>
                        <div class="text">
                             <img src="@/assets/yuyueIndex/ico.png" alt="">
@@ -105,7 +105,8 @@ export default {
                 // this.$router.push({name: ""})
             }
         },
-        purchase(){
+        purchase(value){
+            this.$store.dispatch("dispatchValue", value)
             this.$router.push({name: "yuyuePurchase"}).catch(err => {})
         },
         phone(phoneNumber){

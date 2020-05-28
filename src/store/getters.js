@@ -5,5 +5,7 @@ const getters = {
     openId: state => state.valueList.openId,
     yuyueSite: state => state.yuyue.yuyueSite,
     userID: state => state.yuyue.userID,
+    item: state => state.yuyue.item,
+    value: state => state.yuyue.value,
   }
 export default getters

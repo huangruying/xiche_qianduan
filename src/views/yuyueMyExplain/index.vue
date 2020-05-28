@@ -5,6 +5,9 @@
           <span>权益说明</span>
           <div></div>
     </div>
+    <div v-html="item">
+      {{item}}
+    </div>
   </div>
 </template>
 
@@ -12,8 +15,11 @@
 export default {
     data(){
         return{
-
+          item: null
         }
+    },
+    mounted(){
+      this.item = this.$store.getters.item
     },
     methods: {
         routerGo(){
