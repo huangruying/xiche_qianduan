@@ -12,7 +12,7 @@
                 <div>{{value.name}}</div>
                 <span>价格：{{value.price}}元</span>
                 <!-- <span>购买时长：12年</span> -->
-                <span v-if="value.coupon">优惠券抵消金额：{{value.coupon}}元</span>
+                <span v-if="value.money">优惠券抵消金额：{{value.money}}元</span>
                 <span>购买时间：{{value.purchaseTime}}</span>
                 <span>实际支付金额：{{value.payAmount}}</span>
             </div>

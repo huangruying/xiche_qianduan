@@ -16,13 +16,20 @@
       <van-form :show-error="false" @submit="submit" >
         <div class="input_box">
             <van-cell-group class="input_cell">
+                <!-- class="nickName" placeholder="请输入真实姓名" :rules="[{ required: true, message: '真实姓名不能为空' }]"-->
                 <van-field
+                    disabled
                     v-model="nickName"
                     type="text"
                     label="真实姓名"
-                    placeholder="请输入真实姓名"
-                    class="nickName"
-                    :rules="[{ required: true, message: '真实姓名不能为空' }]"
+                />
+            </van-cell-group>
+            <van-cell-group class="input_cell">
+                <van-field
+                    v-model="userRawPhone"
+                    label="原手机号码"
+                    placeholder="请输入原手机号码"
+                    :rules="[{ required: true, message: '原手机号码不能为空' },{ validator: mobileDialog2, message: '原手机号码格式错误' }]"
                 />
             </van-cell-group>
             <van-cell-group class="input_cell">
@@ -71,8 +78,12 @@ export default {
             userNname: "",
             nickName: "",
             phoneCode: "",
-            phoneCodeText: "获取验证码"
+            userRawPhone: "",
+            phoneCodeText: "获取验证码",
         }
+    },
+    mounted(){
+        this.nickName = this.$route.query.name
     },
     methods: {
         routerGo(){
@@ -81,6 +92,15 @@ export default {
         mobileDialog() {
             var re = /^1\d{10}$/;
             let str = this.userPhone;
+            if (re.test(str)) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        mobileDialog2() {
+            var re = /^1\d{10}$/;
+            let str = this.userRawPhone;
             if (re.test(str)) {
                 return true;
             } else {
@@ -127,8 +147,12 @@ export default {
         },
         submit(){
             var { phone } = this.$route.query
+            if(phone != this.userRawPhone){
+                this.$toast("原手机号码错误！")
+                return
+            }
             updateWeixinUserByPhone({
-                phone: phone,  
+                phone: this.userRawPhone,  
                 newPhone: this.userPhone,
                 code: this.phoneCode,
                 username: this.nickName
@@ -148,7 +172,7 @@ export default {
 <style lang="less" scoped>
 .btn_box{
     padding: 0 20px;
-    margin-top: 35px;
+    margin-top: 50px;
 }
 .input_box{
     padding: 0 20px;

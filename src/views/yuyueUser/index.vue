@@ -3,7 +3,19 @@
       <div class="title_top">会员中心</div>
       <div class="boxbgd">
           <!-- 空盒子背景图 -->
-          <div class="box"></div>   
+          <div class="box">
+              <div class="box_user" v-if="cardBox">
+                  <img :src="UserList.headimgurl" alt="" v-if="userImg">
+                  <img src="@/assets/yuyueIcon/default_user_portrait.png" alt="" v-if="!userImg">
+                  <div class="text_box" v-if="!userBoxName" @click="loginUser">
+                      <span>点击登录</span>
+                  </div>
+                  <div class="text_user"  v-if="userBoxName">
+                      <span>{{UserList.phone}}</span>
+                      <div>{{UserList.nickname}}</div>
+                  </div>
+               </div>
+          </div>   
           <div class="user_box" v-if="userBox">
               <div class="user_img_box">
                   <img :src="UserList.headimgurl" alt="" v-if="userImg">
@@ -52,7 +64,7 @@
           </van-grid>
           <div class="look" @click="yuyueMyExplain(images[current].equityBrief)">查看权益说明</div>
       </div>
-      <div class="class_my">
+      <div class="class_my" style="overflow-y: scroll;">
           <span>常用功能</span>
           <div>
             <van-grid :column-num="4">
@@ -142,12 +154,14 @@ export default {
                     // this.UserList.phone = localStorage.getItem('phone')
                     var openId = localStorage.getItem("wxUserId")
                     this.apiGetWeiXinByOpenId(openId)
-                    console.log(openId);
                 }
                 // 深度监听，同时也可监听到param参数变化
             },
             deep: true,
         }
+    },
+    comments: {
+        // value.replace(value.substring(4, value.length - 4), '****')
     },
     mounted(){
         this.getOpenId()
@@ -198,10 +212,13 @@ export default {
                 if(res.data && res.data.code == 200){
                     this.UserList = res.data.data
                     this.$store.dispatch("alterId", res.data.data.id)
+                    this.userImg = true
                     if(!(this.UserList.phone)){ // 还没有绑定手机号
                         // console.log(this.UserList.phone);
+                    }else{
+                        this.UserList.phone =  this.UserList.phone.replace( this.UserList.phone.substring(3,  this.UserList.phone.length - 4), '****')
                     }
-                    if(this.UserList.yuyueProducts.length <= 0){ // 没有权益
+                    if(!(this.UserList.yuyueProducts) || this.UserList.yuyueProducts.length <= 0){ // 没有权益
                         this.myEquity = false
                     }else{
                         this.myEquity = true
@@ -209,7 +226,6 @@ export default {
                         this.cardBox = true
                         this.images = this.UserList.yuyueProducts
                     }
-                    this.userImg = true
                 }else{
                     this.loginUser()
                     this.userBoxName = false
@@ -244,11 +260,12 @@ export default {
                     this.loginUser()
                 }else{
                     this.$router.push({name: "yuyueUserData",query: {
-                       phone: this.UserList.phone
+                       phone: this.UserList.phone,
+                       name: this.UserList.username
                     }})
                 }
             }else if(index === 3){
-                if(!(this.UserList.id)){
+                if(!(this.UserList.phone)){
                     this.loginUser()
                 }else{
                     this.$router.push({name: "yuyueMyCoupon"})
@@ -446,7 +463,39 @@ export default {
 .yuyueUser{
     background: #f0f0f0;
     height: 100vh;
+    padding-bottom: 30px;
     .boxbgd{
+        .box_user{
+                padding: 12px 23px 0;
+                display: flex;
+                .text_user{
+                    color: #3f3f3f;
+                    font-size: 12px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    >span{
+                        font-size: 11px;
+                    }
+                    >div{
+                        margin-top: 4px;
+                    }
+                }
+                .text_box{
+                    display: flex;
+                    align-items: center;
+                    >span{
+                        color: #d1af85;
+                        font-size: 12px;
+                    }
+                }
+                >img{
+                    width: 43px;
+                    height: 43px;
+                    border-radius: 50%;
+                    margin-right: 9px;
+                }
+        }
         .bottom_class{
             color: #d1ae83;
             text-align: center;
@@ -474,7 +523,8 @@ export default {
             // background: #000;
             height: 152px;
             width: 90%;
-            margin: -115px auto 15px;
+            // margin: -115px auto 15px;
+            margin: -70px auto 15px;
             border-radius: 8px;
             position: relative;
             .arrow_left{

@@ -73,14 +73,19 @@ export default {
             this.timestamp = res.data.timestamp
             this.signature = res.data.signature
     })
-    // 商家登录
-    var obj = localStorage.getItem("userMerchant");
-    var obj = JSON.parse(obj)
-    if (obj === null) {
-      this.$parent.login(1)
-    }
   },
   methods: {
+    loginMerchant(){
+      // 商家登录
+      var obj = localStorage.getItem("userMerchant");
+      var obj = JSON.parse(obj)
+      if (obj === null) {
+        this.$parent.login(1)
+        return false
+      }else{
+        return true
+      }
+    },
     haha(){
       //  localStorage.removeItem("userMerchant")
       // api.weChatUnifiedorder({
@@ -131,7 +136,6 @@ export default {
                   //  })
                   var res = JSON.stringify(res)
                   // alert('支付成功' + res)
-                   console.log(res)
                },
                cancel: function (res) { //提示引用的是mint-UI里toast
                    this2.$toast('已取消支付');
@@ -263,25 +267,25 @@ export default {
       }
     },
     userContent(index) {
+      var login = this.loginMerchant()
       if (index === 0) {
         // this.$router.push({name: 'userAccount'})
       } else if (index === 1) {
-        this.$router.push({ name: "orderManagement" });
-      } else if (index === 2) {
-        this.$router.push({ name: "redeemCode" });
-      } else if (index === 3) {
-        // 商家登录
-        var obj = localStorage.getItem("userMerchant");
-        var obj = JSON.parse(obj)
-        if (obj === null) {
-          this.$parent.login(1)
-        }else{
-          this.WxAdd() // 微信扫一扫
+        if(login){
+          this.$router.push({ name: "orderManagement" });
         }
+      } else if (index === 2) {
+        if(login){
+          this.$router.push({ name: "redeemCode" });
+        }
+      } else if (index === 3) {
+         if(login){
+            this.WxAdd() // 微信扫一扫
+         }
       } else if (index === 5) {
         // this.$router.push({name: 'platform'})
       } else {
-        this.configWx();
+        // this.configWx();
       }
     }
   }

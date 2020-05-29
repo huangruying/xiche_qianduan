@@ -79,7 +79,7 @@
           <van-field
             v-model="userNamePhone"
             placeholder="请输入真实姓名"
-            type="tel"
+            type="text"
             class="margin_border"
             maxlength="8"
             :rules="[{ required: true, message: '姓名不能为空' }]"
@@ -89,7 +89,7 @@
           <van-field
             v-model="phone"
             placeholder="请输入手机号码"
-            type="tel"
+            type="number"
             class="margin_border"
             maxlength="11"
             :rules="[{ required: true, message: '手机号格式错误' },{ validator: mobileDialog2, message: '手机号格式错误' }]"
@@ -153,12 +153,18 @@ export default {
   },
   created() {
     // 微信授权
-    // this.wxSQ()
+    this.wxSQ()
   },
   methods: {
     // 绑定手机号
     phoneDialog(){
-      this.showPhone = true
+      var openId = localStorage.getItem("wxUserId")  // 上线打开这个
+      // var openId = 'o2mJowp-PE2-xcdFlbu6-DDHA8tY'
+      if(!openId){
+        this.wxSQ()
+       }else{
+         this.showPhone = true
+       }
     },
     // 确定绑定手机号
     submitPhone(){

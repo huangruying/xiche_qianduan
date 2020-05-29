@@ -27,7 +27,7 @@
             </van-cell-group>
             
             <div class="card_box">
-              <div class="volume" v-for="(value , index) in codeList" :key="index">
+              <div class="volume" v-for="(value , index) in codeList" :key="index" @click="routerGoIndex(value.status)">
                     <div class="img">
                         <img src="@/assets/yuyueIcon/icon_1.png" alt v-if="value.status == 0 || value.status == 1"/>
                         <img src="@/assets/yuyueIcon/icon2.png" alt v-if="value.status == 2 || value.status == 3"/>
@@ -82,6 +82,13 @@ export default {
     methods: {
         routerGo(){
             this.$router.go(-1)
+        },
+        routerGoIndex(status){
+          if(status == 3 || status == 2){
+
+          }else{
+            this.$router.push({name: "yuyueIndex"})
+          }
         },
         apiCoupon(id){
           this.codeList = []

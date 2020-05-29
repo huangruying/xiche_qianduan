@@ -36,7 +36,7 @@
             <div class="dialog" v-if="overlayShow" @click="overlayShow = false">
                 <div class="dialog-cover">
                     <div @click.stop class="click_stop">
-                        <van-swipe autoplay="ht" ref="swipe" @change="onChange" :loop="true">
+                        <van-swipe autoplay="900000" ref="swipe" @change="onChange" :loop="true">
                                 <van-swipe-item v-for="(item,index) in arrCard" :key="index">
                                     <div class="dialog">
                                         <div class="dialog_text">卡号待数据</div>
@@ -44,14 +44,14 @@
                                         <div class="dialog_qr"><div :id="'qrcode' + index" class="qrcode" ref="ref_qr"></div></div>
                                         <div class="dialog_txt">请扫描二维码</div>
                                         <div class="dialog_img">
-                                            <span @click="cardBag" v-if="blCard"><van-icon name="arrow-left" /><span>左右滑动切换卡包</span> <van-icon name="arrow" /></span>
+                                            <span v-if="blCard"><van-icon name="arrow-left" /><span>左右滑动切换卡包</span> <van-icon name="arrow" /></span>
                                         </div>
                                     </div>
                                 </van-swipe-item>
                         </van-swipe>
                     </div>
                 </div>
-                </div>
+            </div>
         </transition>
   </div>
 </template>
@@ -76,7 +76,6 @@ export default {
     },
     mounted(){
         this.dataList = this.$store.getters.yuyueSite
-        // 使用按钮，上线之后打开
     },
     methods: {
         routerGo(){
@@ -168,7 +167,7 @@ export default {
 <style lang="less" scoped>
 // 最外层 设置position定位 
   .dialog {
-    position: relative;
+    // position: relative;
     color: #2e2c2d;
     font-size: 16px;
   }
@@ -176,7 +175,7 @@ export default {
   .dialog-cover {
     background: rgba(0,0,0, 0.8);
     position: fixed;
-    z-index: 200;
+    z-index: 10;
     top: 0;
     left: 0;
     width: 100%;
@@ -188,16 +187,16 @@ export default {
     height: 308px !important;
     margin: 2.67rem auto;
   }
-/deep/.van-swipe{
-    width: 276px !important;
-    height: 308px !important;
-}
- /deep/.van-swipe-item{
-    width: 276px !important;
-}
-/deep/.van-swipe__track{
-    width: 276px !important;
-}
+// /deep/.van-swipe{
+//     width: 276px !important;
+//     height: 308px !important;
+// }
+//  /deep/.van-swipe-item{
+//     width: 276px !important;
+// }
+// /deep/.van-swipe__track{
+//     width: 276px !important;
+// }
 .dialog {
   background-image: url("../../assets/yuyueIcon/dizhuo@2x.png");
   background-repeat: no-repeat;

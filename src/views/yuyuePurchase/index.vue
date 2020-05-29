@@ -150,7 +150,9 @@ export default {
                     })
                  
                 }else{
-                    this.$toast("服务器炸啦！")
+                    // this.$toast("服务器炸啦！")
+                    this.$toast(res.data.msg)
+                    this.$parent.phoneDialog()
                 }
             })
         },
@@ -174,7 +176,6 @@ export default {
             openid: this.openId,
             status: this.cardIndex
           }).then(res=>{
-              console.log(res);
             if( res.data.code == 200 && res.data.data){
               this.codeList = res.data.data
               this.codeList2 = res.data.data
@@ -183,7 +184,7 @@ export default {
                   v.radio = JSON.stringify(radio)
               })
             }else{
-              this.$toast(res.data.msg)
+            //   this.$toast(res.data.msg)
             }
           })
         },
