@@ -177,14 +177,16 @@ export default {
             status: this.cardIndex
           }).then(res=>{
             if( res.data.code == 200 && res.data.data){
-              this.codeList = res.data.data
-              this.codeList2 = res.data.data
-              this.codeList.map(v=>{
+              res.data.data.map(v=>{
                   var radio = [v.barcode,v.price]
                   v.radio = JSON.stringify(radio)
               })
+            let list = res.data.data.filter(v=>{
+                  return v.status == 1
+              })
+              this.codeList = list
+              this.codeList2 = list
             }else{
-            //   this.$toast(res.data.msg)
             }
           })
         },

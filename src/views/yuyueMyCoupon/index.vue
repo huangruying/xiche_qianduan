@@ -56,6 +56,9 @@
               <div>你还没有相关的优惠券</div>
               <span>优惠券可享受折扣</span>
           </div>
+          <div class="nodata" v-if="codeList.length === 0">
+            <img src="@/assets/yuyueIcon/custom-empty-image.png" alt="">
+          </div>
       </div>
   </div>
 </template>
@@ -101,7 +104,7 @@ export default {
             if( res.data.code == 200 && res.data.data){
               this.codeList = res.data.data
             }else{
-              this.$toast(res.data.msg)
+              // this.$toast(res.data.msg)
             }
           })
         },
@@ -238,6 +241,11 @@ export default {
          color: #999;
          font-size: 10.5px;
          margin-top: 100px;
+         >img{
+           width: 100px;
+           height: 100px;
+           margin: auto;
+         }
          >span{
             display: block;
          }

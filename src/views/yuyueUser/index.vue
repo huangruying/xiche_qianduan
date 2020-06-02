@@ -178,7 +178,7 @@ export default {
             // console.log(card);
         },
         getOpenId(){
-             // this.$store.dispatch('alterOpenId', undefined)   // 测试
+            //  this.$store.dispatch('alterOpenId', undefined)   // 测试
             // this.$store.dispatch('alterOpenId', 'o2mJowp-PE2-xcdFlbu6-DDHA8tY')   // 我的openid
             // var openId = this.$store.getters.openId
             var openId = localStorage.getItem("wxUserId")  // 上线之后打开

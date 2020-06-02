@@ -83,8 +83,6 @@ export default {
             padding: 10px;
             border-radius: 8px;
             >div{
-                // color: #666;
-                // color: #fff;
                 color: #f4efd1;
                 >div{
                     color: #000;
@@ -98,9 +96,7 @@ export default {
                 }
             }
             >span{
-                // color: rgb(210, 174, 109);
-                // color: #fff;
-                color: #2de8bd;
+                color: #3f3f3f;
                 &.color{
                     color: #f00;
                 }

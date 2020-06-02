@@ -26,8 +26,8 @@ module.exports = {
     },
     proxy: {
       "/yuyuetrip": {
-        // target: "http://192.168.0.160:8189/",
-        target: "http://test2.yuyuetrip.com.cn/wash/official",
+        target: "http://192.168.0.160:8189/",
+        // target: "http://test2.yuyuetrip.com.cn/wash/official",
         pathRewrite: { "^/yuyuetrip": "/yuyuetrip" },
         changeOrigin: true, // 是域名的话，需要这个参数，
         secure: true // 设置支持https协议的代理

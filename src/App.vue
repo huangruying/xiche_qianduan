@@ -78,7 +78,7 @@
         <div class="margin" style="border-bottom: 1px solid #eee;">
           <van-field
             v-model="userNamePhone"
-            placeholder="请输入真实姓名"
+            placeholder="请输入真实姓名(绑定后不可更改)"
             type="text"
             class="margin_border"
             maxlength="8"
@@ -153,7 +153,7 @@ export default {
   },
   created() {
     // 微信授权
-    this.wxSQ()
+    // this.wxSQ()
   },
   methods: {
     // 绑定手机号
