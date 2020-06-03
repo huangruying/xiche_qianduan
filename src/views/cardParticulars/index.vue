@@ -4,14 +4,14 @@
           <div class="top">
               <div class="title">{{dataList.alias}}</div>
               <div class="date">有效截止日期：{{dataList.failureTime}}</div>
-              <div class="barCode">
+              <!-- <div class="barCode">
                   <div class="bar">
                       <barcode :value="use" v-if="use" :options="barCode_options" style="width:100%;">
                         你的手机条不支持条形码，请扫描以下二维码
                       </barcode>
                   </div>
-              </div>
-              <div class="qrcode">
+              </div> -->
+              <div class="qrcode dialog_qr">
                   <div class="qr" id="qrcode" ref="ref_qr"></div>
               </div>
               <span class="conversion tag-read" @click="copy" :data-clipboard-text="use">兑换码：{{use}}</span>
@@ -81,7 +81,7 @@ export default {
                 // console.log(res);
                 if(res.data.status == 'NOT_USED'){  // 未使用
                     //  注意： 在需要调用的地方  这样必须这样调用  否则会出现  appendChild  null  就是id为qrcode的dom获取不到 返回结果为null
-                        this.$refs.ref_qr.innerHTML = ''
+                    this.$refs.ref_qr.innerHTML = ''
                     this.$nextTick (function () {
                         this.qrcode(res.data.data.couponCode);
                     })
@@ -133,16 +133,30 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/* 消息提示 */
-// .van-toast{
-// //  width: 200px;
-//  min-height: 90px !important;
-//  max-width: 80% !important;
-//  border-radius: 10px !important;
-// }
-// .van-toast__text{
-//   line-height: 20px !important;
-// }
+ /*固定宽高*/
+  .dialog_qr {
+    height: 3.6rem;
+    width: 3.6rem;
+    background: #08a0ff;
+    margin: 0 auto;
+
+    /*内容自适应*/
+    /deep/.qr{
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /*生成的二维码里面的img标签宽高自适应*/
+    /deep/.qr img{
+        width: 100% !important;
+        height: 100% !important;
+    }
+    /*一开始生成的canvas也要进行宽高自适应*/
+    /deep/.qr canvas{
+        width: 100% !important;
+        height: 100% !important;
+    }
+  }
 .cardParticulars{
     width: 100%;
     background: #F2F1F6;

@@ -89,8 +89,8 @@ export default {
         // this.$router.push({name: 'index'})
         this.$parent.login(0)
     }else{
-      this.id = obj.userId
-      this.apiList(obj.userId)
+      this.id = obj.id
+      this.apiList(obj.id)
     }
   },
   watch: {
@@ -100,8 +100,8 @@ export default {
               if(login){
                   var obj = localStorage.getItem('user')
                   var obj = JSON.parse(obj)
-                  this.id = obj.userId
-                  this.apiList(obj.userId)
+                  this.id = obj.id
+                  this.apiList(obj.id)
               }
               // 深度监听，同时也可监听到param参数变化
         },

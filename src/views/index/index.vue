@@ -129,9 +129,9 @@ export default {
   },
   mounted (){
     // 此处为调用精确定位之后，调取ip定位，可根据实际情况改写
-    this.getLocation();   // 高德定位
+    // this.getLocation();   // 高德定位
     this.tabList()     
-    // this.wxLocation()  // 微信地理位置
+    this.wxLocation()  // 微信地理位置
   },
   created() {
     // this.getLocationPop(); // 调用获取地理位置 

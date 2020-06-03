@@ -247,7 +247,7 @@
         <div class="uploader">
             <van-uploader v-model="fileList4" multiple :max-count="1" preview-size="60" :after-read="afterRead4" @delete="deletefile4">
                 <div class="uploadder_box">
-                    <img src="@/assets/上传照片@2x.png" alt="">
+                    <img src="@/ /上传照片@2x.png" alt="">
                     <span>上传施工车间照片</span>
                 </div>
             </van-uploader>

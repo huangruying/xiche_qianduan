@@ -13,7 +13,7 @@
               <p>{{value.hallLocation}}</p>
               <div class="phone">
                   <span>营业时间: {{value.businessHours}}</span>
-                  <van-icon name="phone" color="#4ad617" size="25"/>
+                  <van-icon name="phone" color="#4ad617" size="25" @click.stop @click="servicePhone(value.servicePhone)"/>
               </div>
           </div>
       </div>
@@ -56,6 +56,9 @@ export default {
         this.remouldData()
     },
     methods: {
+        servicePhone(phoneNumber){
+            window.location.href = 'tel://' + phoneNumber
+        },
         guestIndex(value){
             this.$store.dispatch('alterSite',value)
             this.$router.push({name: "yuyueNodeDetails"})

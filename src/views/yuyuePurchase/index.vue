@@ -34,7 +34,7 @@
         </div>
         <div class="radio_box">
             <!-- <van-checkbox :name="value.radio" checked-color="#de9c4a" v-for="(value,index) in codeList" :key="index" v-if="value.status == 1">{{value.title}}</van-checkbox> -->
-            <van-radio @click="radioBarCode(value.radio)" :name="value.radio" checked-color="#de9c4a" v-for="(value,index) in codeList" :key="index" v-if="value.status == 1">{{value.title}}</van-radio>
+            <van-radio @click="radioBarCode(value.radio)" :name="value.radio" checked-color="#de9c4a" v-for="(value,index) in codeList" :key="index" v-if="value.status == 1">{{value.title}} <div class="price">-￥{{value.price}}</div> </van-radio>
         </div>
     </van-radio-group>
     <!-- </van-checkbox-group> -->
@@ -225,8 +225,18 @@ export default {
 .radio_box{
     background: #fff;
     padding-left: 11px;
+    // display: flex;
+    // align-items: center;
+    // justify-content: space-between;
+    .price{
+        color: #f00;
+        position: absolute; 
+        top: 0;
+        right: 10px;
+    }
     >div{
         padding-bottom: 8px;
+        position: relative;
     }
 }
 .coupon_box{

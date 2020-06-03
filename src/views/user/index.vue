@@ -100,7 +100,7 @@ export default {
      onSubmit(values) {
        values.licensePlate = this.plate + values.licensePlate
        api.saveVehicleUserId(values).then(res=>{
-         console.log(res);
+        //  console.log(res);
          if(res.data.code == 200){
             this.$toast.success("绑定成功！")
             var obj = res.data.data
