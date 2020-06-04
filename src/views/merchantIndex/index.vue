@@ -78,8 +78,7 @@ export default {
     loginMerchant(){
       // 商家登录
       var obj = localStorage.getItem("userMerchant");
-      var obj = JSON.parse(obj)
-      if (obj === null) {
+      if (obj == null) {
         this.$parent.login(1)
         return false
       }else{

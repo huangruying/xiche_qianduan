@@ -22,7 +22,7 @@
           <van-button type="primary" block @click="submit(1)">手机号登录</van-button>
         </div>
         <div class="btn_box">
-          <van-button type="primary" plain block @click="submit(2)" v-if="!text">商家注册</van-button>
+          <van-button type="primary" plain block @click="submit(2)">商家注册</van-button>
         </div>
       </div>
     </van-action-sheet>
@@ -67,13 +67,13 @@
           <div class="bule" :class="tiems? 'hui' : ''" @click="getCode">{{mobileCode}}</div>
         </div>
         <div class="btn_box">
-          <van-button type="primary" block native-type="submit">登录<span v-if="text">/注册</span></van-button>
+          <van-button type="primary" block native-type="submit">登录</van-button>
         </div>
-        <div class="bottom_text" v-if="text">若手机号未注册，系统会自动帮你注册</div>
+        <!-- <div class="bottom_text" v-if="text">若手机号未注册，系统会自动帮你注册</div> -->
       </van-form>
     </van-dialog>
     <!-- 绑定手机号 -->
-    <van-action-sheet v-model="showPhone" title="绑定手机号">
+    <van-action-sheet v-model="showPhone" title="绑定手机号" @close="close">
       <van-form :show-error="false" @submit="submitPhone" >
         <div class="margin" style="border-bottom: 1px solid #eee;">
           <van-field
@@ -141,7 +141,6 @@ export default {
       tiems2: false,
       onSale: false,
       merchant: false,
-      text: false,
       showPhone: false, // 绑定手机号弹窗
       phone: "",
       phoneCode: "",
@@ -180,14 +179,23 @@ export default {
            code: this.phoneCode,
            username: this.userNamePhone 
          }).then(res=>{
-           localStorage.setItem("wxUserId", openId)
            if(res.data.code == 200){
-             localStorage.setItem("phone",res.data.phone)
+            //  console.log(res);
+             if(this.onSale){ 
+              // 优惠券绑定手机号，回到优惠券
+              this.onSale = false
+              this.$router.push({name: 'cardVolume',query: {login: 1}})
+             }else{
+               // 洗车个人中心绑定手机号
+                localStorage.setItem("phone",res.data.phone)
+                this.$router.push({name: "yuyueUser" , query: {
+                  phone: 1
+                }})
+               
+             }
              this.$toast.success('绑定成功!')
+             localStorage.setItem("wxUserId", res.data.data.openid)
              this.showPhone = false
-             this.$router.push({name: "yuyueUser" , query: {
-               phone: 1
-             }})
            }else{
              this.$toast(res.data.msg)
            }
@@ -196,16 +204,10 @@ export default {
     },
      // 登录授权
     wxSQ(){
-        // var wxUserData = localStorage.getItem('wxUserData')
         const code = this.getUrlParam("code");
         if(code){
           // 登录授权
           this.apiCode(code)
-          // 获取openId
-          // api.getOpenId({code: code}).then(res=>{
-          //     this.$store.dispatch('alterOpenId',res.data.data)
-          //     alert("这是openId——-" + res.data.data)
-          // })
         }else{
           this.authorization()
         }
@@ -248,7 +250,7 @@ export default {
       this.isRouterAlive = false; //先关闭，
       this.$nextTick(function() {
         this.isRouterAlive = true; //再打开
-      });
+      }); 
     },
     submit(index) {
       if (index === 0) {
@@ -260,16 +262,22 @@ export default {
       }
     },
     login(num){
-      this.show = true
-      if(num === 0){
-        // 这是优惠卷的弹出登录，若取消登录应回到首页
-        this.onSale = true
-        this.text = true
-      }else if(num === 1){
-        // 这是商家的弹出登录
-        this.merchant = true
-        this.text = false
-      }
+      var openId = localStorage.getItem("wxUserId")  // 上线打开这个
+      // var openId = 'o2mJowp-PE2-xcdFlbu6-DDHA8tY'
+       if(!openId){
+        this.wxSQ()
+       }else{
+          // this.show = true
+          if(num === 0){
+            this.showPhone = true
+            this.onSale = true  // 这是优惠卷的弹出登录绑定手机号，若取消登录应回到洗车首页
+            // this.text = true
+          }else if(num === 1){
+            // 这是商家的弹出登录
+            this.show = true
+            // this.merchant = true
+          }
+       }
     },
     // 取消登录
     closeLogin(){
@@ -283,33 +291,15 @@ export default {
         
       }
     },
-    onFailed(errorInfo) {
+    // 取消绑定手机号
+    close(){
       if(this.onSale){
-          signUpOrLogIn({
-            phone: this.mobile,
-            code: this.code,
-            name: this.userName
-          }).then(res=>{
-            // console.log(res);
-            this.onSale = false
-            if(res.data.code == 200){
-              var obj = res.data.data
-              var obj = JSON.stringify(obj)
-              localStorage.setItem('user',obj)
-              this.$toast.success('登录成功！')
-              this.mobileLogin = false
-              this.show = false
-              this.$router.push({name: 'cardVolume',query: {login: 1}})
-              // this.$router.replace('/cardVolume')
-              // this.$forceUpdate()
-            }else{
-              this.$toast(res.data.msg)
-              this.$router.push({name: 'user'})
-              this.mobileLogin = false
-              this.show = false
-            }
-          })
-      }else{
+        // 优惠卷的弹出登录
+        this.onSale = false
+        this.$router.push({name: 'index'})
+      }
+    },
+    onFailed() {
         businessUpOrLogIn({
             phone: this.mobile,
             code: this.code,
@@ -328,7 +318,6 @@ export default {
               this.$toast(res.data.msg)
             }
           })
-      }
     },
     mobileDialog() {
       var re = /^1\d{10}$/;

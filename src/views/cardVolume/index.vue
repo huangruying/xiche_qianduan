@@ -44,6 +44,8 @@
           
       </div> -->
     </div>
+    <!-- 加载 -->
+    <van-loading class="nodata" type="spinner" color="#1989fa" v-if="loading"/>
     <!-- 无数据 -->
     <div class="nodata" v-if="nodata">
         <img src="@/assets/cardVolume/提示@2x.png" alt="">
@@ -71,6 +73,7 @@ export default {
           name: 2
         }
       ],
+      loading: false,
       dataList: [],
       nodata: false,
       activeName: 0,
@@ -82,28 +85,25 @@ export default {
     };
   },
   created(){
-    var obj = localStorage.getItem('user')
-    var obj = JSON.parse(obj)
-    // console.log(obj);
-    if(obj === null){
+    var openId = localStorage.getItem("wxUserId")
+    if(openId === null){
         // this.$router.push({name: 'index'})
         this.$parent.login(0)
     }else{
-      this.id = obj.id
-      this.apiList(obj.id)
+      this.id = openId
+      this.apiList(id)
     }
   },
   watch: {
     $route: {
-          handler() {
-              var login = this.$route.query.login;
-              if(login){
-                  var obj = localStorage.getItem('user')
-                  var obj = JSON.parse(obj)
-                  this.id = obj.id
-                  this.apiList(obj.id)
-              }
-              // 深度监听，同时也可监听到param参数变化
+        handler() {
+          var login = this.$route.query.login;
+          if(login){
+              var openId = localStorage.getItem("wxUserId")
+              this.id = openId
+              this.apiList(openId)
+          }
+          // 深度监听，同时也可监听到param参数变化
         },
         deep: true,
     }
@@ -140,6 +140,9 @@ export default {
     },
     // 获取数据
     apiList(id){
+      this.loading = true
+      this.nodata = false
+      this.dataList = []
       var data
       if(this.activeName === 0){
         data = 1
@@ -149,9 +152,10 @@ export default {
         data = 0
       }
       api.findGeneralCouponByUserId({
-        userId: id,  // 1  测试数据
+        openid: id,  // 1  测试数据
         status: data
       }).then(res=>{
+        this.loading = false
         // console.log(res);
         if(res.data.data && res.data.data.length > 0){
           this.dataList = res.data.data
