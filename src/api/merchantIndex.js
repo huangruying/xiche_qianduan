@@ -73,6 +73,24 @@ const wxOfficialPay = data => {
   })
 }
 
+// 第3方支付
+const buyBearercardjsapi = data => {
+  return axios({
+    method: 'get',
+    url: '/buyBearercardjsapi',
+    params: data
+  })
+}
+
+// 第3方支付信息
+const getYyIproductById = data => {
+  return axios({
+    method: 'get',
+    url: '/getYyIproductById',
+    params: data
+  })
+}
+
 export default{
   getParameter,
   wxUserInfo,
@@ -81,5 +99,7 @@ export default{
   getDotsTypeInfo,
   weChatUnifiedorder,
   wxOfficialPay,
-  getOpenId
+  getOpenId,
+  buyBearercardjsapi,
+  getYyIproductById
 }

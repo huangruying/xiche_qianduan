@@ -1,5 +1,10 @@
 <template>
   <div class="user">
+    <div class="cell_box">
+      <div @click="routerGo"><van-icon name="arrow-left" /></div>
+      <span>绑定</span>
+      <div></div>
+    </div>
     <div class="title">绑定后享受车后服务</div>
     <div class="title_details">支持小/大型汽车、新能源车、教练车、港澳入境车</div>
     <div class="input_box">
@@ -45,9 +50,7 @@
           </div>
         </div>
         <div style="margin: 16px;">
-          <van-button round block type="info" native-type="submit" size="large" style="height:40px; line-height: 40px;">
-            绑定
-          </van-button>
+          <van-button round block type="info" color="#3f3f3f" native-type="submit" size="large" style="height:40px; line-height: 38px;">绑 定</van-button>
         </div>
       </van-form>
     </div>
@@ -121,7 +124,10 @@ export default {
     onConfirm(value, index){
       this.show = false
       this.plate = value[0] + value[1]
-    }
+    },
+    routerGo() {
+      this.$router.go(-1);
+    },
   }
 }
 </script>
@@ -188,7 +194,7 @@ export default {
     font-weight: 600;
     font-size: 20px;
     color: #010101;
-    margin-top: 25px;
+    margin-top: 10px;
   }
 }
 </style> 

@@ -270,6 +270,14 @@ let router= new Router({
                 title: '愉悦商旅',
             }
         },
+        {
+            path: '/pay',
+            name: 'pay',
+            component: ()=>import('@/views/pay/index'),
+            meta: {
+                title: '微信支付',
+            }
+        },
     ]
 })
 

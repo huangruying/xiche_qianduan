@@ -1,24 +1,24 @@
 <template>
   <div class="orderManagement">
-      <div class="title_box" style="margin-bottom: 2px;">
-          <span @click="routerIndex(0)">首页</span>
-          <van-icon name="arrow" />
-          <span>订单管理</span>
+      <div class="cell_box">
+        <div @click="routerGo"><van-icon name="arrow-left" /></div>
+        <span>订单管理</span>
+        <div></div>
       </div>
       <div style="overflow-y: scroll;background: #fff;">
         <div class="order_box" @click="orderParticulars(value)" v-for="(value,index) in dataList" :key="index">
             <div class="index">{{ index + 1 }}.</div>
             <div class="order">
-                    <div class="order_title">{{value.companyName}}</div>  
-                    <span>服务商家： {{value.dotName}}</span>
-                    <span>核销时间： {{value.destructionTime}} </span>
-                    <span>车牌号码： {{value.licensePlate}}</span>
+               <div class="order_title">{{value.companyName}}</div>  
+               <span>服务商家： {{value.dotName}}</span>
+               <span>核销时间： {{value.destructionTime}} </span>
+               <span>车牌号码： {{value.licensePlate}}</span>
             </div>
             <div class="state">已结算</div>
         </div>
       </div>
       <div v-if="nodata" class="nodata">暂无数据~</div>
-      <van-button type="default" block @click="routerGo">返回</van-button>
+      <van-button type="default" plain block @click="routerGo" color="#3f3f3f">返回</van-button>
   </div>
 </template>
 
@@ -34,9 +34,9 @@ export default {
     mounted(){
         var obj = localStorage.getItem("userMerchant");
         var obj = JSON.parse(obj);
-        if(obj === null){
+        if(obj === null || obj == undefined){
             this.$toast('请先登录！')
-            this.$router.push({name: 'merchantIndex'})
+            this.$router.push({name: 'login'})
         }else{
             this.apiGetList(obj)
         }
@@ -51,13 +51,8 @@ export default {
                 }
             })
         },
-        routerIndex(index){
-            if(index === 0){
-                this.$router.push( { name: 'merchantIndex' } )
-            }
-        },
-        routerGo(){
-            this.$router.go(-1)
+        routerGo() {
+          this.$router.go(-1);
         },
         orderParticulars(value){
             this.$store.dispatch('alterList',value)

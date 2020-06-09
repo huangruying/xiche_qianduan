@@ -1,18 +1,13 @@
 <template>
   <div class="merchantLogin">
-    <div class="boxboxbox"></div>
-
+    <div class="cell_box">
+        <div @click="routerGo"><van-icon name="arrow-left" /></div>
+        <span>商家注册</span>
+        <div></div>
+    </div>
     <div class="input_box">
       <van-form @submit="onSubmit" :show-error="false" label-width="150px">
         <div class="title">基本信息</div>
-        <van-field
-          required
-          v-model="dotAbbreviation"
-          name="dotAbbreviation"
-          label="网点简称"
-          placeholder="请输入网点简称"
-          :rules="[{ required: true, message: '请输入网点简称!' }]"
-        />
         <van-field
           required
           v-model="dotName"
@@ -21,6 +16,14 @@
           placeholder="请输入网点名称"
           :rules="[{ required: true, message: '请输入网点名称!' }]"
         />
+        <van-field
+          required
+          v-model="dotAbbreviation"
+          name="dotAbbreviation"
+          label="网点简称"
+          placeholder="请输入网点简称"
+          :rules="[{ required: true, message: '请输入网点简称!' }]"
+        />
         <van-field name="carwashId" label="网点类型：" required :rules="[{ validator: asyncValidator , message: '请选择网点类型!' }]">
             <template #input>
                 <van-dropdown-menu class="item">
@@ -28,21 +31,13 @@
                 </van-dropdown-menu>
             </template>
         </van-field>
-        <!-- <van-field name="mechanismId" label="所属机构：" required :rules="[{ validator: asyncValidator , message: '请选择所属机构!' }]">
+        <van-field name="mechanismId" label="所属机构：" required :rules="[{ validator: asyncValidator , message: '请选择所属机构!' }]">
             <template #input>
                 <van-dropdown-menu class="item">
                     <van-dropdown-item v-model="mechanismId" :options="mechanismList"/>
                 </van-dropdown-menu>
             </template>
-        </van-field> -->
-        <van-field
-          required
-          v-model="mobile"
-          name="mobile"
-          label="客服电话"
-          placeholder="请输入客服电话"
-          :rules="[{ required: true, message: '请输入客服电话!' }]"
-        />
+        </van-field>
         <van-field
           required
           v-model="shopowner"
@@ -185,39 +180,43 @@
           placeholder="点击选择经纬度"
           :rules="[{ required: true, message: '请选择经纬度!' }]"
         />
-        <!-- <van-field
-          @click="dialogAmp"
-          readonly 
-          v-model="latitude" longitude
-          name="latitude"
-          label="纬度"
-          placeholder="请输入纬度"
-        /> -->
+        <van-field
+          v-model="mobile"
+          name="mobile"
+          label="客服电话"
+          placeholder="请输入客服电话"
+        />
         <van-field
           v-model="rescueCall"
           name="rescueCall"
           label="救援电话"
           placeholder="请输入救援电话号码"
         />
-        <!-- <div class="title">银行账户信息</div>
+        <div class="title">银行账户信息</div>
         <van-field
+          required
           name="accountName"
           :value="accountName"
           label="户名"
           placeholder="请输入户名"
+          :rules="[{ required: true, message: '请输入户名!' }]"
         />
         <van-field
+          required
           name="account"
           :value="account"
           label="账户"
           placeholder="请输入账户"
+          :rules="[{ required: true, message: '请输入账户!' }]"
         />
         <van-field
+          required
           name="openingBank"
           :value="openingBank"
           label="开户行"
           placeholder="请输入开户行"
-        /> -->
+          :rules="[{ required: true, message: '请输入开户行!' }]"
+        />
 
         <div class="title">网点照片及营业执照</div>
         <div class="uploader">
@@ -278,6 +277,7 @@
             native-type="submit"
             size="large"
             loading-text="注册中..."
+            color="#3f3f3f"
           >注册</van-button>
         </div>
       </van-form>
@@ -350,7 +350,7 @@ export default {
       maxDate: new Date(2030, 0, 20),
       carwashList: [
         { text: '车行', value: 0 },
-        // { text: '代办机构', value: 1 },
+        { text: '代办机构', value: 1 },
       ],
       mechanismList: [],
       storeImage: [],
@@ -383,6 +383,9 @@ export default {
     }
   },
   methods: {
+    routerGo() {
+      this.$router.go(-1);
+    },
     dialogAmp(){
       this.$router.push({name: 'location'})
       // this.showDialog = true

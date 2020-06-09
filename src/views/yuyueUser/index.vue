@@ -168,7 +168,6 @@ export default {
     },
     methods: {
         swipeQR(card){
-            console.log(card);
             this.show = true
             this.card = card
             // 调用二维码 注意： 在需要调用的地方  这样必须这样调用  否则会出现  appendChild  null  就是id为qrcode的dom获取不到 返回结果为null
@@ -464,7 +463,7 @@ export default {
 .yuyueUser{
     background: #f0f0f0;
     height: 100vh;
-    padding-bottom: 50px;
+    padding-bottom: 90px;
     .boxbgd{
         .box_user{
                 padding: 12px 23px 0;

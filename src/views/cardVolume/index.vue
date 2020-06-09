@@ -40,9 +40,6 @@
         <p>3.车主确认应支付费用后进行支付</p>
         <p>4.支付成功后进店服务。</p>
       </div>
-      <!-- <div class="explain_box2" v-if="bgdleft">
-          
-      </div> -->
     </div>
     <!-- 加载 -->
     <van-loading class="nodata" type="spinner" color="#1989fa" v-if="loading"/>
@@ -87,8 +84,7 @@ export default {
   created(){
     var openId = localStorage.getItem("wxUserId")
     if(openId === null){
-        // this.$router.push({name: 'index'})
-        this.$parent.login(0)
+        this.$parent.login()
     }else{
       this.id = openId
       this.apiList(id)

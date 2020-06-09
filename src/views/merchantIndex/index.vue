@@ -2,7 +2,7 @@
   <div class="merchantIndex">
     <!-- merchantIndex -->
     <div class="slideshow">
-      <img src="@/assets/merchantIndex/lunbo.png" alt />
+      <img src="https://dot-bucket.oss-cn-shenzhen.aliyuncs.com/2020-06-09/1.jpeg" alt />
     </div>
     <div class="tabs clearfix">
       <div class="box" @click="tabsIndex(0)">
@@ -12,6 +12,10 @@
       <div class="box" @click="tabsIndex(1)">
         <img src="@/assets/merchantIndex/icon-2@2x.png" alt />
         <span>联系我们</span>
+      </div>
+      <div class="box" @click="tabsIndex(2)">
+        <img src="@/assets/merchantIndex/tuichu.jpg" alt />
+        <span>退出登录</span>
       </div>
       <!-- <div class="box" @click="haha">
           <img src="@/assets/merchantIndex/icon-3@2x.png" alt="">
@@ -69,22 +73,12 @@ export default {
   },
   created() {
     api.getParameter({url: location.href}).then(res=>{
-            this.noncestr = res.data.noncestr
-            this.timestamp = res.data.timestamp
-            this.signature = res.data.signature
+      this.noncestr = res.data.noncestr
+      this.timestamp = res.data.timestamp
+      this.signature = res.data.signature
     })
   },
   methods: {
-    loginMerchant(){
-      // 商家登录
-      var obj = localStorage.getItem("userMerchant");
-      if (obj == null) {
-        this.$parent.login(1)
-        return false
-      }else{
-        return true
-      }
-    },
     haha(){
       //  localStorage.removeItem("userMerchant")
       // api.weChatUnifiedorder({
@@ -227,9 +221,6 @@ export default {
                             })
                          }
                     })
-                    // this2.$router.push({ name: 'redeemCode', query: {
-                    //   use: getCode
-                    // }})
                   }
                 })
               } else {
@@ -246,15 +237,7 @@ export default {
         wx.error(function(res) {
           this.$toast("服务器炸啦！");
           // config 信息验证失败会执行error函数,如签名过期导致验证失败,具体错误信息可以打开config的debug模式查看,也可以在返回的res参数中查看,对于SPA可以在这里更新签名
-          // console.log('微信sdk配置失败！');
         });
-      // });
-    },
-    UnionID() {
-      // let wxConfig = encodeURIComponent(window.location.href.split('#')[0])
-      // let url = encodeURIComponent(DefaultConfig.redirectUriWx);  // 注意一定要encodeURIComponent
-      //  window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4744f4ba8d477d86&redirect_uri=${url}&response_type=code&scope=${DefaultConfig.loginWay}&state=#wechat_redirect`
-      // console.log(wxConfig);
     },
     async tabsIndex(index) {
       if (index === 0) {
@@ -262,25 +245,29 @@ export default {
       } else if (index === 1) {
         this.$router.push({ name: "relation" });
       } else if (index === 2) {
-        this.$router.push({ name: "oil" });
+        // this.$router.push({ name: "oil" });
+        this.$dialog.confirm({
+          title: '确定退出登录？'
+        })
+          .then(() => {
+            localStorage.removeItem("userMerchant")
+            this.$router.push({name: "login"})
+            this.$toast("退出登录成功！")
+          })
+          .catch(() => {
+            // on cancel
+          });
       }
     },
     userContent(index) {
-      var login = this.loginMerchant()
       if (index === 0) {
         // this.$router.push({name: 'userAccount'})
       } else if (index === 1) {
-        if(login){
-          this.$router.push({ name: "orderManagement" });
-        }
+          this.$router.push({ name: "orderManagement" })
       } else if (index === 2) {
-        if(login){
-          this.$router.push({ name: "redeemCode" });
-        }
+          this.$router.push({ name: "redeemCode" })
       } else if (index === 3) {
-         if(login){
-            this.WxAdd() // 微信扫一扫
-         }
+          this.WxAdd() // 微信扫一扫
       } else if (index === 5) {
         // this.$router.push({name: 'platform'})
       } else {
@@ -358,6 +345,7 @@ export default {
     > img {
       width: 44px;
       height: 44px;
+      border-radius: 10px;
     }
     > span {
       font-size: 12px;

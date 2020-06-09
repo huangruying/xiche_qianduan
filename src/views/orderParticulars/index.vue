@@ -1,11 +1,9 @@
 <template>
   <div class="orderParticulars">
-      <div class="title_box" style="margin-bottom: 2px;">
-          <span @click="routerIndex(0)">首页</span>
-          <van-icon name="arrow" />
-          <span @click="routerIndex(1)">订单管理</span>
-          <van-icon name="arrow" />
-          <span>订单详情</span>
+      <div class="cell_box">
+        <div @click="routerGo"><van-icon name="arrow-left" /></div>
+        <span>订单管理</span>
+        <div></div>
       </div>
       <ul>
           <li>
@@ -65,7 +63,7 @@
               <em class="col">{{listData.couponMoney}}</em>
           </li>
       </ul>
-      <van-button type="default" block @click="routerGo">返回</van-button>
+     <van-button type="default" plain block @click="routerGo" color="#3f3f3f">返回</van-button>
   </div>
 </template>
 
@@ -81,13 +79,6 @@ export default {
         // console.log(this.$store.getters.listData)
     },
     methods: {
-        routerIndex(index){
-            if(index === 0){
-                this.$router.push( { name: 'merchantIndex' } )
-            }else if(index === 1){
-                this.$router.push( { name: 'orderManagement' } )
-            }
-        },
         routerGo(){
             this.$router.go(-1)
         },
@@ -109,7 +100,7 @@ ul{
         }
         >span{
             width: 30%;
-            color: #20a6fb;
+            color: #333;
             font-weight: bold;
             border-right: 1px solid #eee;
             padding-left: 10px;
@@ -122,6 +113,7 @@ ul{
             text-overflow: ellipsis;//显示省略符号来代表被修剪的文本。
             white-space: nowrap;//文字不换
              -webkit-line-clamp:2;
+             color: #777;
             &.col{
                 color: red;
             }

@@ -11,67 +11,6 @@
         <!-- 这里是不被缓存的视图组件 -->
     </router-view>
 
-    <!-- 登录提示 -->
-    <van-action-sheet v-model="show" title cancel-text="取消" @close="closeLogin">
-      <div class="title">为了你的账号安全，请绑定手机号</div>
-      <div class="content">
-        <!-- <div class="btn_box">
-          <van-button type="primary" block @click="submit(0)">微信授权登录</van-button>
-        </div> -->
-        <div class="btn_box">
-          <van-button type="primary" block @click="submit(1)">手机号登录</van-button>
-        </div>
-        <div class="btn_box">
-          <van-button type="primary" plain block @click="submit(2)">商家注册</van-button>
-        </div>
-      </div>
-    </van-action-sheet>
-    <!-- 登录弹窗 -->
-    <van-dialog
-      v-model="mobileLogin"
-      :showConfirmButton="false"
-      width="80%"
-      :closeOnClickOverlay="true" >
-      <van-form @submit="onFailed" :show-error="false">
-        <div class="title">验证手机号</div>
-        <div class="margin" style="border-bottom: 1px solid #eee;">
-          <van-field
-            v-model="userName"
-            placeholder="请输入姓名"
-            type="text"
-            class="margin_border"
-            maxlength="11"
-            :rules="[{ required: true, message: '请填写用户名' }]"
-          />
-        </div>
-        <div class="margin" style="border-bottom: 1px solid #eee;">
-          <van-field
-            v-model="mobile"
-            placeholder="请输入手机号码"
-            type="tel"
-            class="margin_border"
-            maxlength="11"
-            :rules="[{ required: true, message: '手机号格式错误' },{ validator: mobileDialog, message: '手机号格式错误' }]"
-          />
-        </div>
-        <div class="code margin">
-          <div style="border-bottom: 1px solid #eee;">
-            <van-field
-              v-model="code"
-              placeholder="请输入验证码"
-              class="margin_border"
-              maxlength="6"
-              :rules="[{ required: true, message: '验证码不能为空' }]"
-            />
-          </div>
-          <div class="bule" :class="tiems? 'hui' : ''" @click="getCode">{{mobileCode}}</div>
-        </div>
-        <div class="btn_box">
-          <van-button type="primary" block native-type="submit">登录</van-button>
-        </div>
-        <!-- <div class="bottom_text" v-if="text">若手机号未注册，系统会自动帮你注册</div> -->
-      </van-form>
-    </van-dialog>
     <!-- 绑定手机号 -->
     <van-action-sheet v-model="showPhone" title="绑定手机号" @close="close">
       <van-form :show-error="false" @submit="submitPhone" >
@@ -92,7 +31,7 @@
             type="number"
             class="margin_border"
             maxlength="11"
-            :rules="[{ required: true, message: '手机号格式错误' },{ validator: mobileDialog2, message: '手机号格式错误' }]"
+            :rules="[{ required: true, message: '手机号格式错误' },{ validator: mobileDialog, message: '手机号格式错误' }]"
           />
         </div>
         <div class="code margin">
@@ -132,9 +71,6 @@ export default {
   data() {
     return {
       isRouterAlive: true, // 控制视图是否显示的变量
-      show: false, // 登录提示
-      mobileLogin: false, // 登录弹窗
-      mobileCode: "获取验证码",
       phoneCodeText: "获取验证码",
       timeId: null,
       tiems: false,
@@ -144,9 +80,6 @@ export default {
       showPhone: false, // 绑定手机号弹窗
       phone: "",
       phoneCode: "",
-      code: "",
-      mobile: "",
-      userName: "",
       userNamePhone: ""
     };
   },
@@ -214,16 +147,11 @@ export default {
     },
     // 登录授权
     authorization() {
-      //获取url中参数
-      // const code = this.getUrlParam("code");
-      // if (!code) {
-        // const url = encodeURIComponent(location.href.split("#")[0]); // 获取#之前的当前路径
         const url = encodeURIComponent(location.href) // 获取#之前的当前路径
         window.location.href =
           "http://open.weixin.qq.com/connect/oauth2/authorize?appid=wx1008eb4c001227c4&redirect_uri=" +
           url + 
           "&response_type=code&scope=snsapi_userinfo&state=STATE&connect_redirect=1#wechat_redirect";
-      // }
     },
     // 登录授权
     apiCode(code) {
@@ -252,44 +180,15 @@ export default {
         this.isRouterAlive = true; //再打开
       }); 
     },
-    submit(index) {
-      if (index === 0) {
-      } else if (index === 1) {
-        this.mobileLogin = true;
-      }else if(index === 2){
-        this.$router.push({name: 'merchantLogin'})
-        this.show = false
-      }
-    },
-    login(num){
+    login(){
       var openId = localStorage.getItem("wxUserId")  // 上线打开这个
       // var openId = 'o2mJowp-PE2-xcdFlbu6-DDHA8tY'
        if(!openId){
         this.wxSQ()
        }else{
-          // this.show = true
-          if(num === 0){
-            this.showPhone = true
-            this.onSale = true  // 这是优惠卷的弹出登录绑定手机号，若取消登录应回到洗车首页
-            // this.text = true
-          }else if(num === 1){
-            // 这是商家的弹出登录
-            this.show = true
-            // this.merchant = true
-          }
+          this.showPhone = true
+          this.onSale = true  // 这是优惠卷的弹出登录绑定手机号，若取消登录应回到洗车首页
        }
-    },
-    // 取消登录
-    closeLogin(){
-      if(this.onSale){
-        // 优惠卷的弹出登录
-        this.$router.push({name: 'index'})
-        this.onSale = false
-      }
-      if(this.merchant){
-        // 商家的弹出登录
-        
-      }
     },
     // 取消绑定手机号
     close(){
@@ -299,36 +198,7 @@ export default {
         this.$router.push({name: 'index'})
       }
     },
-    onFailed() {
-        businessUpOrLogIn({
-            phone: this.mobile,
-            code: this.code,
-            name: this.userName
-          }).then(res=>{
-            this.merchant = false
-            if(res.data.code == 200){
-              var obj = res.data.data
-              var obj = JSON.stringify(obj)
-              localStorage.setItem('userMerchant',obj)
-              this.$toast.success('登录成功!')
-              this.mobileLogin = false
-              this.show = false
-              this.$forceUpdate()
-            }else{
-              this.$toast(res.data.msg)
-            }
-          })
-    },
     mobileDialog() {
-      var re = /^1\d{10}$/;
-      let str = this.mobile;
-      if (re.test(str)) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    mobileDialog2() {
       var re = /^1\d{10}$/;
       let str = this.phone;
       if (re.test(str)) {
@@ -341,7 +211,7 @@ export default {
       if (this.tiems2) {
         return false;
       }
-      if (this.mobileDialog2()) {
+      if (this.mobileDialog()) {
         var res = await sendMsg({
           phone: this.phone //手机号
         });
@@ -359,35 +229,6 @@ export default {
             } else {
               this.phoneCodeText = "请等待" + num--;
               this.tiems2 = true;
-            }
-          }, 1000);
-        }
-      } else {
-        this.$toast('手机号格式错误')
-      }
-    },
-    async getCode() {
-      if (this.tiems) {
-        return false;
-      }
-      if (this.mobileDialog()) {
-        var res = await sendMsg({
-          phone: this.mobile //手机号
-        });
-        if (res.data.code == 400) {
-          this.$toast(res.data.msg);
-        } else if (res.data.code == 200) {
-          this.$toast.success(res.data.msg);
-          var num = 60;
-          var timeId = this.timeId;
-          timeId = setInterval(() => {
-            if (num === 0) {
-              this.mobileCode = "获取验证码";
-              clearInterval(timeId);
-              this.tiems = false;
-            } else {
-              this.mobileCode = "请等待" + num--;
-              this.tiems = true;
             }
           }, 1000);
         }

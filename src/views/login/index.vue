@@ -1,266 +1,220 @@
 <template>
   <div class="login">
-    <!-- <div class="login_head">
-      <img src="../assets/index/jiantou@2x (2).png" alt @click="router_go" />
-      <div class="zhuce">注册</div>
-      <div class="div"></div>
+    <div class="cell_box">
+        <div @click="routerGo"><van-icon name="arrow-left" /></div>
+        <span>商家登录</span>
+        <div></div>
     </div>
-    <div class="text">欢迎注册成为代理</div>
-    <div class="input">
-      <van-cell-group class="margin">
-        <van-field
-          v-model="mobile"
-          placeholder="请输入手机号码"
-          type="tel"
-          class="margin_border"
-          maxlength="11"
-          @blur="mobile_11"
-        />
-      </van-cell-group>
-      <div class="code margin">
-        <van-cell-group class="code_input border_ad">
+    <van-form :show-error="false" @submit="submit">
+      <div class="input_box">
+        <van-cell-group class="input_cell">
           <van-field
-            v-model="code"
-            placeholder="请输入验证码"
-            class="margin_border"
-            maxlength="6"
+            v-model="userPhone"
+            label="手机号码"
+            placeholder="请输入手机号码"
+            :rules="[{ required: true, message: '手机号码不能为空' },{ validator: mobileDialog, message: '手机号格式错误' }]"
           />
         </van-cell-group>
-        <div class="bule" :class="tiems? 'hui' : ''" @click="get_code">{{yanz_zhen_ma}}</div>
+        <van-cell-group class="input_cell">
+          <van-field
+            v-model="phoneCode"
+            placeholder="请输入验证码"
+            label="验证码"
+            maxlength="6"
+            class="code"
+            :rules="[{ required: true, message: '验证码不能为空' }]"
+          />
+          <div class="bule" :class="tiems? 'hui' : ''" @click="getPhoneCode">{{phoneCodeText}}</div>
+        </van-cell-group>
+        <div class="account_number">
+          <div></div>
+          <div class="register" @click="merchantLogin">没有账号？去注册 <van-icon name="arrow" /></div>
+        </div>
       </div>
-      <van-cell-group class="margin">
-        <van-field
-          v-model="password"
-          :type="password_text"
-          placeholder="请输入密码"
-          class="margin_border"
-        />
-        <img src="@/assets/yincang@2x.png" alt @click="visible" v-if="image" />
-        <img src="@/assets/xianshi@2x.png" alt @click="visible" v-if="images" />
-      </van-cell-group>
-    </div>
-    <div class="displ">
-      <van-checkbox class="rigth" v-model="checked" icon-size=".2rem" shape="square">
-        <span class="colo">阅读并同意</span>
-        <a href="javascript:;">《用户协议》</a>
-        <span class="colo">和</span>
-        <a href="javascript:;">《隐私政策》</a>
-      </van-checkbox>
-      <span class="colo_zuo" @click="push_login">已有账号？去登录</span>
-    </div>
-    <div class="zhu_ce" :class="checked==false? 'zhu_ce_hui': '' " @click="zhu_ce">注册</div> -->
+      <div class="btn_box">
+        <van-button round color="#3f3f3f" native-type="submit" block>登 录</van-button>
+      </div>
+    </van-form>
   </div>
 </template>
 
 <script>
-// import { Dialog } from "vant";
-// import { getCode, checkCode, register_index } from "@/apis/index";
+import { sendMsg , updateWeixinUserByPhone , businessUpOrLogIn } from "@/api/login";
 export default {
-  // components: {
-  //   [Dialog.Component.name]: Dialog.Component
-  // },
-  // data() {
-  //   return {
-  //     image: true,
-  //     images: false,
-  //     mobile: "",
-  //     code: "",
-  //     password: "",
-  //     checked: false,
-  //     code_yao: "",
-  //     password_text: "password",
-  //     yanz_zhen_ma: "获取验证码",
-  //     timeId: null,
-  //     tiems: false
-  //   };
-  // },
-  // mounted() {
-  //   var code = this.$route.params.code;
-  //    if(code == undefined){
-  //     this.$router.push({name:'Invitation'})
-  //   }
-  //   var data_list = this.$route.params.data_list;
-  //    this.code_yao = code.code;
-  // },
-  // methods: {
-  //   visible() {
-  //     if (this.password_text == "password") {
-  //       this.password_text = "text";
-  //     } else {
-  //       this.password_text = "password";
-  //     }
-  //     this.image = !this.image;
-  //     this.images = !this.images;
-  //   },
-  //   push_login() {
-  //     this.$router.push({ name: "log_in" });
-  //   },
-  //   async get_code() {
-  //     if (this.tiems) {
-  //       return false;
-  //     }
-  //     var res = await getCode({
-  //       mobile: this.mobile, //手机号
-  //       type: 101 //类型(101注册；102登录；103找回密码)
-  //     });
-  //     if (res.data.code == 400) {
-  //       this.$toast(res.data.msg);
-  //     } else if (res.data.code == 200) {
-  //       this.$toast.success(res.data.msg);
-  //       var num = 60;
-  //       var timeId = this.timeId;
-  //       timeId = setInterval(() => {
-  //         if (num === 0) {
-  //           this.yanz_zhen_ma = "获取验证码";
-  //           clearInterval(timeId);
-  //           this.tiems = false;
-  //         } else {
-  //           this.yanz_zhen_ma = "请等待" + num--;
-  //           this.tiems = true;
-  //         }
-  //       }, 1000);
-  //     }
-  //   },
-  //   mobile_11() {
-  //     var re = /^1\d{10}$/;
-  //     let str = this.mobile;
-  //     if (re.test(str)) {
-  //     } else {
-  //       this.$toast("手机号码不合法");
-  //     }
-  //   },
-  //   async zhu_ce() {
-  //     if (this.checked == true) {
-  //       var res = await register_index({
-  //         mobile: this.mobile, //手机号
-  //         type: 101, //类型，此值固定
-  //         code: this.code, //手机短信验证码；注，获取短信验证码就查看 agent/sms/getCode
-  //         password: this.password, //设置密码
-  //         invitationCode: this.code_yao //邀请码
-  //       });
-  //       if (res.data.code == 200) {
-  //         this.$toast({
-  //           message: "注册成功！",
-  //           icon: "like-o"
-  //         });
-  //         this.$router.push({ name: "log_in" });
-  //       } else {
-  //         this.$toast(res.data.msg);
-  //       }
-  //     } else {
-  //       this.$toast("请认证阅读并同意勾选用户协议和隐私政策");
-  //     }
-  //   },
-  //   router_go() {
-  //     this.$router.go(-1);
-  //   }
-  // }
+  data() {
+    return {
+      tiems: false,
+      timeId: null,
+      userPhone: "",
+      phoneCode: "",
+      userRawPhone: "",
+      phoneCodeText: "获取验证码"
+    };
+  },
+  mounted() {
+    
+  },
+  created() {
+    var loginState = this.loginMerchant()
+    if(loginState){
+      this.$router.push({ name: "merchantIndex" })
+    }
+  },
+  methods: {
+    routerGo() {
+      this.$router.go(-1);
+    },
+    merchantLogin(){
+      this.$router.push({name: "merchantLogin"})
+    },
+    mobileDialog() {
+      var re = /^1\d{10}$/;
+      let str = this.userPhone;
+      if (re.test(str)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    async getPhoneCode() {
+      if (this.tiems) {
+        return false;
+      }
+      if (this.mobileDialog()) {
+        var res = await sendMsg({
+          phone: this.userPhone //手机号
+        });
+        if (res.data.code == 400) {
+          this.$toast(res.data.msg);
+        } else if (res.data.code == 200) {
+          this.$toast.success(res.data.msg);
+          var num = 60;
+          var timeId = this.timeId;
+          timeId = setInterval(() => {
+            if (num === 0) {
+              this.phoneCodeText = "获取验证码";
+              clearInterval(timeId);
+              this.tiems = false;
+            } else {
+              this.phoneCodeText = "请等待" + num--;
+              this.tiems = true;
+            }
+          }, 1000);
+        }
+      } else {
+        this.$toast("手机号格式错误");
+      }
+    },
+    loginMerchant(){
+      // 商家登录
+      var obj = localStorage.getItem("userMerchant");
+      if (obj == null || obj == undefined) {
+        return false
+      }else{
+        return true
+      }
+    },
+    submit() {
+      businessUpOrLogIn({
+       phone: this.userPhone,
+       code: this.phoneCode
+     }).then(res=>{
+       if(res.data.code == 200){
+         var obj = res.data.data
+         var obj = JSON.stringify(obj)
+         localStorage.setItem('userMerchant',obj)
+         this.$toast.success('登录成功!')
+         this.$router.push({name: "merchantIndex"})
+       }else{
+         this.$toast(res.data.msg)
+       }
+     })
+    }
+  }
 };
 </script>
 
 <style lang="less" scoped>
-.zhu_ce {
-  background: #08a0ff;
-  height: 0.9rem;
-  width: 80%;
-  margin: 0.3rem auto;
-  border-radius: 0.4rem;
-  text-align: center;
-  line-height: 0.9rem;
-  font-size: 0.36rem;
-  color: #fff;
-  &.zhu_ce_hui {
-    background: #999;
-  }
-}
-.displ {
+.account_number{
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  font-size: 0.2rem;
-  margin-right: 0.3rem;
-  color: #666;
-  align-content: center;
-}
-.rigth {
-  font-size: 0.2rem;
-  margin-left: 0.3rem;
-  position: relative;
-  top: -0.1rem;
-  .colo {
-    color: #666;
-  }
-  a {
-    color: #08a0ff;
+  padding: 10px;
+  .register{
+    display: flex;
+    align-items: center;
+    color: #777;
   }
 }
-.text {
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
-  text-align: center;
+.btn_box {
+  padding: 0 20px;
+  margin-top: 50px;
 }
-.code {
-  width: 100;
-  display: flex;
-  .border_ad {
-    border-radius: 0.1rem;
-  }
-  .code_input {
-    margin-right: 0.3rem;
-  }
-  .bule {
-    width: 40%;
-    height: 0.9rem;
-    background: #08a0ff;
-    border-radius: 0.1rem;
-    color: #fff;
-    text-align: center;
-    line-height: 0.9rem;
-    &.hui {
-      background: #999999;
+.input_box {
+  padding: 0 20px;
+  margin-top: 20px;
+  .input_cell {
+    margin-bottom: 12px;
+    position: relative;
+    .bule {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 90px;
+      height: 45px;
+      background: #dec389;
+      border-radius: 0.1rem;
+      color: #fff;
+      text-align: center;
+      line-height: 45px;
+      &.hui {
+        background: #999999;
+      }
+    }
+    .nickName {
+      /deep/.van-field__label {
+        letter-spacing: 24px;
+      }
+    }
+    .code {
+      /deep/.van-field__label {
+        letter-spacing: 6.5px;
+      }
+    }
+    /deep/.van-cell {
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 2px;
+      /deep/.van-field__label {
+        color: #333;
+      }
     }
   }
 }
-.input {
-  padding: 0 0.2rem;
-}
-.margin {
-  margin-bottom: 0.3rem;
-  border-radius: 0.1rem;
-  > img {
-    width: 0.4rem;
-    height: 0.4rem;
-    position: absolute;
-    top: 0.25rem;
-    right: 0.3rem;
-  }
-  .margin_border {
-    border-radius: 0.3rem;
-  }
-}
-.code .code_input {
-  width: 60%;
-}
-.login_head {
-  background: #fff;
-  height: 0.88rem;
-  width: 100%;
+.user_img_name {
+  text-align: center;
   display: flex;
-  box-sizing: border-box;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding-left: 0.1rem;
-  font-size: 0.36rem;
-  color: #333;
-  > img {
-    width: 0.4rem;
-    height: 0.4rem;
+  margin: 20px auto;
+  > span {
+    color: #6699cc;
+  }
+  /deep/.van-uploader__preview-image {
+    width: 90px !important;
+    height: 90px !important;
+    border-radius: 50%;
   }
 }
-.login {
-  position: fixed;
-  top: 0px;
-  width: 100%;
-  height: 100%;
-  background: #eeeeee;
+.uploadder_box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // margin: 20px auto;
+  > img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+  }
 }
 </style>
