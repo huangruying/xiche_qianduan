@@ -15,7 +15,7 @@
         <div class="search_input">
           <van-search v-model="search" placeholder="请输入搜索关键词" @blur="blurSearch"/>
         </div>
-        <div class="text">地图</div>
+        <div class="text" @click="lookMap">地图</div>
       </div>
     </div>
     <div class="tabs clearFix">
@@ -142,6 +142,9 @@ export default {
       // }
   },
   methods: {
+    lookMap(){
+      this.$router.push({name: "accredit"})
+    },
     wxLocation(){
         api.getParameter({url: window.location.href}).then(res=>{
             this.noncestr = res.data.noncestr

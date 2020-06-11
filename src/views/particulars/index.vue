@@ -152,11 +152,23 @@ export default {
           if(option.name == '百度地图'){
               window.location.href = `http://api.map.baidu.com/marker?location=${this.lat},${this.lng}&title=${this.dataList.address}&content=${this.dataList.address}&output=html`
           }else if(option.name == '高德地图'){
-              window.location.href = `http://uri.amap.com/marker?position=lng,lat&name=${this.dataList.address}&coordinate=${this.lat}&callnative=${this.lng}`
+              window.location.href = `http://uri.amap.com/marker?position=${this.lng},${this.lat}&name=${this.dataList.address}&coordinate=gaode&callnative=1`
           }else if(option.name == '腾讯地图'){
               window.location.href = `http://apis.map.qq.com/uri/v1/marker?marker=coord:${this.lat},${this.lng};addr:${this.dataList.address}`
           }
           this.showShare = false;
+            // 掉起百度
+            // getBaidu: function(){
+            //     return 'http://api.map.baidu.com/marker?location=' + this.position1+'&output=html&title='+this.fahuoAddress
+            // },
+            // //掉起高德地图
+            // getGaode: function() {
+            //     return 'https://uri.amap.com/marker?position=' + this.position+'&name='+this.fahuoAddress
+            // },
+            // //调起腾讯地图
+            // getTencent: function(){
+            //     return 'https://apis.map.qq.com/uri/v1/marker?marker=coord:'+this.position1+';title:'+this.fahuoAddress+';addr:'+this.addressName+'&referer=聚品'
+            // }
         },
         async apiGetList(dotCode,city,region){
             var res = await api.getOfficialDotByDotCode({dotCode,city,region})

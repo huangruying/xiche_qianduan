@@ -60,8 +60,8 @@ export default {
             if(!this.openId){
               this.$parent.wxSQ()
             }
-            var { goodsId, ChannelId } = this.$route.query
-            var res = await api.buyBearercardjsapi({openId: this.openId, goodsId, ChannelId})
+            var { goodsId, ChannelId, customerId, orderId, belongOrg, belongSys, cardEffTime, cardInvTime, bindMemName, bindMemPhone } = this.$route.query
+            var res = await api.buyBearercardjsapi({openId: this.openId, goodsId, ChannelId, customerId, orderId, belongOrg, belongSys, cardEffTime, cardInvTime, bindMemName, bindMemPhone })
              var this2 = this
              wx.config({
              debug: false, // true:调试时候弹窗
@@ -77,7 +77,7 @@ export default {
              wx.error(function(res3) {
                  this2.Yes = false
                  this2.No = true
-                 this.$toast("服务器炸啦！")
+                 this2.$toast("服务器炸啦！")
                  // console.log('微信sdk配置失败！');
              });
              wx.ready(function(){
