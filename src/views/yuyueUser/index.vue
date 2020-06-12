@@ -64,7 +64,7 @@
           </van-grid>
           <div class="look" @click="yuyueMyExplain(images[current].equityBrief)">查看权益说明</div>
       </div>
-      <div class="class_my" style="overflow-y: scroll;">
+      <div class="class_my" style="overflow-y: scroll; padding-bottom: 90px;">
           <span>常用功能</span>
           <div>
             <van-grid :column-num="4">
@@ -106,7 +106,7 @@
       <van-overlay :show="show" @click="show = false">
         <div class="wrapper" @click.stop>
             <div class="dialog">
-                <div class="dialog_text">9999999</div>
+                <div class="dialog_text">{{card.card}}</div>
                 <div class="dialog_ying">{{card.name}}</div>
                 <div class="dialog_qr"><div id="qrcode" class="qrcode" ref="ref_qr"></div></div>
                 <div class="dialog_txt">请扫描二维码</div>
@@ -172,16 +172,17 @@ export default {
             this.card = card
             // 调用二维码 注意： 在需要调用的地方  这样必须这样调用  否则会出现  appendChild  null  就是id为qrcode的dom获取不到 返回结果为null
             this.$nextTick (function () {
-              this.qrcode("13729014409");
+              this.qrcode(card.card);
             })
             this.$refs.ref_qr.innerHTML = ""
             // console.log(card);
         },
         getOpenId(){
-            //  this.$store.dispatch('alterOpenId', undefined)   // 测试
             // this.$store.dispatch('alterOpenId', 'o2mJowp-PE2-xcdFlbu6-DDHA8tY')   // 我的openid
             // var openId = this.$store.getters.openId
+            // localStorage.getItem("wxUserId",'o2mJowp-PE2-xcdFlbu6-DDHA8tY')
             var openId = localStorage.getItem("wxUserId")  // 上线之后打开
+            // var openId = 'o2mJowp-PE2-xcdFlbu6-DDHA8tY'
             if(!openId){
                  this.userImg = false
                  this.userBoxName = false
@@ -208,7 +209,6 @@ export default {
         },
         apiGetWeiXinByOpenId(openid){
             api.getWeiXinByOpenId({openid}).then(res=>{
-                // console.log(res);
                 if(res.data && res.data.code == 200){
                     this.UserList = res.data.data
                     this.$store.dispatch("alterId", res.data.data.id)
@@ -226,6 +226,7 @@ export default {
                         this.cardBox = true
                         this.images = this.UserList.yuyueProducts
                     }
+                    this.$forceUpdate()
                 }else{
                     this.loginUser()
                     this.userBoxName = false
@@ -463,7 +464,6 @@ export default {
 .yuyueUser{
     background: #f0f0f0;
     height: 100vh;
-    padding-bottom: 90px;
     .boxbgd{
         .box_user{
                 padding: 12px 23px 0;

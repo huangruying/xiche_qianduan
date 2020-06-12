@@ -132,6 +132,10 @@ export default {
     // this.getLocation();   // 高德定位
     this.tabList()     
     this.wxLocation()  // 微信地理位置
+    var openId = localStorage.getItem("wxUserId")  // 上线打开这个
+    if(!openId){
+     this.$parent.wxSQ()
+    }
   },
   created() {
     // this.getLocationPop(); // 调用获取地理位置 

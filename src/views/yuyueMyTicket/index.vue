@@ -12,13 +12,16 @@
       </van-tabs>
       <div class="card_box">
         <van-loading size="24px" vertical v-if="loading">加载中...</van-loading>
+        <div class="nodata" v-if="dataList.length === 0 && !loading">
+          <img src="@/assets/yuyueIcon/custom-empty-image.png" alt="">
+        </div>
         <div class="card" v-for="( value , index ) in dataList" :key="index">
           <img :src="value.picfilepath" alt="">
           <div class="text_box">
             <div>{{ value.name }}</div>
             <span>获取时间：{{ value.getTime }}</span>
             <!-- <em><em>类 型</em>：年卡</em> -->
-            <i><i>有 效 期</i>：{{ value.validityTime }}</i>
+            <i><i>有 效 期</i>：{{ value.cardEffTime }}</i>
           </div>
           <img src="@/assets/cardVolume/已使用.png" alt class="cardimg" v-if="value.status == 2" />
         </div>
@@ -55,11 +58,13 @@ export default {
       api.finYyProductCardByUid({uid,status: this.active}).then(res=>{
         this.loading = false
         if(res.data.code == 200){
-          this.dataList = res.data.data
-          this.dataList.map(v=>{
-            v.getTime = v.getTime.trim().split(/\s+/)[0]
-            v.validityTime = v.validityTime.trim().split(/\s+/)[0]
-          })
+          if(res.data.data){
+            this.dataList = res.data.data
+            this.dataList.map(v=>{
+              v.getTime = v.getTime.trim().split(/\s+/)[0]
+              v.cardEffTime = v.cardEffTime.trim().split(/\s+/)[0]
+            })
+          }
         }else{
           this.$toast(res.data.msg)
         }
@@ -70,6 +75,23 @@ export default {
 </script>
 
 <style lang="less" scoped>
+ .nodata{
+    text-align: center;
+    color: #999;
+    font-size: 10.5px;
+    margin-top: 100px;
+    >img{
+      width: 100px;
+      height: 100px;
+      margin: auto;
+    }
+    >span{
+       display: block;
+    }
+    >div{
+        margin-bottom: 9px;
+    }
+}
 .card_box{
   padding: 10px;
   .card{

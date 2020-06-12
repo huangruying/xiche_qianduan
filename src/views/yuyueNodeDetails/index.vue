@@ -39,7 +39,7 @@
                         <van-swipe autoplay="900000" ref="swipe" @change="onChange" :loop="true">
                                 <van-swipe-item v-for="(item,index) in arrCard" :key="index">
                                     <div class="dialog">
-                                        <div class="dialog_text">卡号待数据</div>
+                                        <div class="dialog_text">{{item.card}}</div>
                                         <div class="dialog_ying">{{item.name}}</div>
                                         <div class="dialog_qr"><div :id="'qrcode' + index" class="qrcode" ref="ref_qr"></div></div>
                                         <div class="dialog_txt">请扫描二维码</div>
@@ -97,11 +97,7 @@ export default {
             })
         },
         employ(){
-            //  this.$store.dispatch('alterOpenId', undefined)   // 测试
-            // this.$store.dispatch('alterOpenId', 'o2mJowp-PE2-xcdFlbu6-DDHA8tY')   // 我的openid
-            // var openId = this.$store.getters.openId
-
-            var openId = localStorage.getItem("wxUserId")  // 上线之后打开
+            var openId = localStorage.getItem("wxUserId") // 上线之后打开 
             if(openId){
                 this.apiGetWeiXinByOpenId(openId)
             }else{
@@ -113,7 +109,6 @@ export default {
                 if(res.data && res.data.code == 200){
                     this.$store.dispatch("alterId", res.data.data.id)
                     if(!(res.data.data.phone) || res.data.data.phone == null){ // 还没有绑定手机号
-                        // console.log(this.UserList.phone);
                         this.$toast("请先绑定手机号！")
                         this.$parent.phoneDialog()
                         return
@@ -150,7 +145,7 @@ export default {
             this.codeItem = item
             var idIndex = 'qrcode' + idCode
             this.$nextTick (function () {
-                this.qrcode(item.name, idIndex);  // 二维码内容及id
+                this.qrcode(item.card, idIndex);  // 二维码内容及id
             })
             // this.$refs.ref_qr.innerHTML = ""
         },
