@@ -30,6 +30,8 @@
             :default-index="defaultIndex"
             />
       </van-popup>
+      <!-- 利用标签的自带属性改编码格式 -->
+      <!-- <div id="a" style="display: none;"></div>  -->
   </div>
 </template>
 
@@ -52,8 +54,17 @@ export default {
             dataList: []
         }
     },
+    created(){
+        
+    },
     mounted(){
         this.remouldData()
+        this.$toast.loading({
+            duration: 0, // 持续展示 toast
+            message: '加载中...',
+            forbidClick: true,
+            loadingType: 'spinner',
+        });
     },
     methods: {
         servicePhone(phoneNumber){
@@ -99,6 +110,7 @@ export default {
         },
         apiGetList(provinceId){
             api.findOfficialYyStations({provinceId}).then(res=>{
+                this.$toast.clear()
                 if(!(res.data.data)){
                     this.noData = true
                     this.dataList = []

@@ -18,7 +18,7 @@ if(process.env.NODE_ENV==='development'){
 // axios.interceptors.request.use(function (config) {
 //   // 在发送请求之前做些什么
 //   // 获取token
-//   // let token = localStorage.getItem('heima_39_Authorization')
+//   // let token = localStorage.getItem('Authorization')
 //   // 如果有token，则通过请求头的方式进行传递
 //   // if (token) {
 //   //   config.headers.Authorization = token

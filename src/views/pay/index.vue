@@ -60,8 +60,12 @@ export default {
             if(!this.openId){
               this.$parent.wxSQ()
             }
-            var { goodsId, ChannelId, customerId, orderId, belongOrg, belongSys, cardEffTime, cardInvTime, bindMemName, bindMemPhone } = this.$route.query
-            var res = await api.buyBearercardjsapi({openId: this.openId, goodsId, ChannelId, customerId, orderId, belongOrg, belongSys, cardEffTime, cardInvTime, bindMemName, bindMemPhone })
+            var { goodsId, orderno } = this.$route.query
+            var res = await api.buyBearercardjsapi({openId: this.openId, goodsId, orderno})
+            if(res.data.code == 205){
+                this.$toast(res.data.msg)
+                return
+            }
              var this2 = this
              wx.config({
              debug: false, // true:调试时候弹窗
@@ -96,7 +100,7 @@ export default {
                      // alert('支付成功' + res)
                     //  this2.apiPayment(res.data.data.orderNo)
                  },
-                 cancel: function (res) { //提示引用的是mint-UI里toast
+                 cancel: function (res) { 
                      this2.Yes = false
                      this2.No = true
                      this2.$toast('已取消支付');
