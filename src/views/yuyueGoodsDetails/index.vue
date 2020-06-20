@@ -2,7 +2,7 @@
   <div class="yuyueGoodsDetails">
       <div class="cell_box">
           <div @click="routerGo"><van-icon name="arrow-left" /></div>
-          <span>愉悦机场贵宾卡</span>
+          <span>{{dataList.name}}</span>
           <div></div>
       </div>
       <div class="content"><img :src="dataList.picfilepath" alt=""></div>
@@ -13,7 +13,7 @@
       <div class="serve_box">
           <div class="serve_title">
               <img src="@/assets/yuyueIcon/card_tab_01.png" alt="">
-              <span>愉悦机场贵宾卡</span>
+              <span>{{dataList.name}}</span>
           </div>
           <div class="text" v-html="dataList.equityBrief">
               <p>{{dataList.equityBrief}}</p>
@@ -56,6 +56,7 @@ export default {
             api.getYyProductByEquity({id}).then(res=>{
                 if(res.data.code == 200){
                     this.dataList = res.data.data
+                    console.log(this.dataList);
                 }
             })
         },

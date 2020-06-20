@@ -38,7 +38,7 @@
               </div>
           </div>
           <div class="card_box" v-if="cardBox">
-              <van-swipe autoplay="hah" ref="swipe" height="200" @change="onChange">
+              <van-swipe autoplay="hah" ref="swipes" height="200" @change="onChange">
                 <van-swipe-item v-for="(image, index) in images" :key="index" @click="swipeQR(image)">
                 <img v-lazy="image.picfilepath" />
                 </van-swipe-item>
@@ -102,8 +102,8 @@
           </div>
       </div>
 
-      <!-- 弹窗 -->
-      <van-overlay :show="show" @click="show = false">
+      <!-- 弹窗,原来单张卡权益，后面升级可能会保留，勿删 -->
+      <!-- <van-overlay :show="show" @click="show = false">
         <div class="wrapper" @click.stop>
             <div class="dialog">
                 <div class="dialog_text">{{card.card}}</div>
@@ -111,12 +111,32 @@
                 <div class="dialog_qr"><div id="qrcode" class="qrcode" ref="ref_qr"></div></div>
                 <div class="dialog_txt">请扫描二维码</div>
                 <div class="dialog_img">
-                    <!-- <img src="@/assets/yuyueIcon/weix@2x.png" alt/>
-                    <img src="@/assets/yuyueIcon/PYQ@2x.png" alt/> -->
+                    <span v-if="blCard"><van-icon name="arrow-left" /><span>左右滑动切换卡包</span> <van-icon name="arrow" /></span>
                 </div>
             </div>
         </div>
-      </van-overlay>
+      </van-overlay> -->
+      <transition name="van-fade">
+            <div v-if="overlayShow" @click="overlayShow = false">
+                <div class="dialog-cover">
+                    <div @click.stop class="click_stop">
+                        <van-swipe autoplay="900000" ref="swipe" @change="onChange2" :loop="true" indicator-color="#d4b06f">
+                                <van-swipe-item v-for="(item,index) in arrCard" :key="index">
+                                    <div class="dialog">
+                                        <div class="dialog_text">{{item.card}}</div>
+                                        <div class="dialog_ying">{{item.name}}</div>
+                                        <div class="dialog_qr"><div :id="'qrcode' + index" class="qrcode" ref="ref_qr"></div></div>
+                                        <div class="dialog_txt">请扫描二维码</div>
+                                        <div class="dialog_img">
+                                            <span v-if="blCard"><van-icon name="arrow-left" /><span>左右滑动切换卡包</span> <van-icon name="arrow" /></span>
+                                        </div>
+                                    </div>
+                                </van-swipe-item>
+                        </van-swipe>
+                    </div>
+                </div>
+            </div>
+      </transition>
       <tabbar :active.sync="active"></tabbar>
   </div>
 </template>
@@ -138,12 +158,16 @@ export default {
             cardBox: false,
             userBoxName: false,
             myEquity: false,
+            overlayShow: false,
+            blCard: false,
             active: 1,
             current: 0,
+            current2: 0,
             images: [ // require('@/assets/yuyueIndex/yuyueIndex.png')
             ],
             UserList: {},
-            card: {}
+            card: {},
+            arrCard: []
         }
     },
     watch: {
@@ -168,21 +192,37 @@ export default {
     },
     methods: {
         swipeQR(card){
-            this.show = true
-            this.card = card
+            // 单卡权益弹窗
+            // this.show = true
+            // this.card = card
             // 调用二维码 注意： 在需要调用的地方  这样必须这样调用  否则会出现  appendChild  null  就是id为qrcode的dom获取不到 返回结果为null
-            this.$nextTick (function () {
-              this.qrcode(card.card);
+            // this.$nextTick (function () {
+            //   this.qrcode(card.card);
+            // })
+            // this.$refs.ref_qr.innerHTML = ""
+            // console.log(card.serviceCard);
+            this.overlayShow = true
+            this.arrCard = card.serviceCard
+            if(card.serviceCard.length > 1){
+                this.blCard = true
+            }
+            this.arrCard.forEach((v,i)=>{
+                this.applyCode(v,i)
             })
-            this.$refs.ref_qr.innerHTML = ""
-            // console.log(card);
+        },
+        applyCode(item,idCode){
+            var idIndex = 'qrcode' + idCode
+            this.$nextTick (function () {
+                this.qrcode(item.card, idIndex)  // 二维码内容及id
+            })
+            // this.$refs.ref_qr.innerHTML = ""
         },
         getOpenId(){
             // this.$store.dispatch('alterOpenId', 'o2mJowp-PE2-xcdFlbu6-DDHA8tY')   // 我的openid
             // var openId = this.$store.getters.openId
-            // localStorage.getItem("wxUserId",'o2mJowp-PE2-xcdFlbu6-DDHA8tY')
+            // localStorage.setItem("wxUserId",'o2mJowuCwy7R__H2fAKc9nLoCyd0')
             var openId = localStorage.getItem("wxUserId")  // 上线之后打开
-            // var openId = 'o2mJowp-PE2-xcdFlbu6-DDHA8tY'
+            // var openId = 'o2mJowuCwy7R__H2fAKc9nLoCyd0'
             if(!openId){
                  this.userImg = false
                  this.userBoxName = false
@@ -193,9 +233,9 @@ export default {
              }
         },
          //  生成二维码
-        qrcode (cardNumber) {
+        qrcode (cardNumber,idCode) {
             let that = this;
-            let qrcode = new QRCode('qrcode', {
+            let qrcode = new QRCode(idCode, {
                 width: 124,
                 height: 124,        // 高度
                 text: cardNumber,   // 二维码内容
@@ -236,6 +276,9 @@ export default {
         },
         onChange(index) {
           this.current = index
+        },
+        onChange2(index){
+          this.current2 = index
         },
         purchase(){
             this.$router.push({name: "yuyueIndex"})
@@ -281,9 +324,9 @@ export default {
         },
         iconSwipe(index){
             if(index == 1){
-                this.$refs.swipe.prev()
+                this.$refs.swipes.prev()
             }else{
-                this.$refs.swipe.next()
+                this.$refs.swipes.next()
             }
         }
     }
@@ -291,42 +334,53 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.dialog {
+//
+/deep/.van-grid-item__content::after{
+    z-index: auto;
+}
+// 最外层 设置position定位 
+  .dialog {
+    // position: relative;
+    color: #2e2c2d;
+    font-size: 16px;
+  }
+  // 遮罩 设置背景层，z-index值要足够大确保能覆盖，高度 宽度设置满 做到全屏遮罩
+  .dialog-cover {
+    background: rgba(0,0,0, 0.8);
+    position: fixed;
+    z-index: 999999;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /deep/.van-swipe{
+        width: 276px !important;
+        height: 330px !important;
+    }
+  }
+//   内容，记得定宽高阻止事件冒泡
+  .click_stop{
+    width: 276px !important;
+    height: 330px !important;
+    margin: 2.67rem auto;
+  }
+  .dialog {
   background-image: url("../../assets/yuyueIcon/dizhuo@2x.png");
   background-repeat: no-repeat;
   background-size: cover;
-  position: relative;
   padding-bottom: 0.2rem;
   padding-top: 0.2rem;
-  width: 75%;
-  margin: 2.67rem auto;
+  text-align: center;
   border-radius: 0.3rem;
-  &::before {
-    content: "";
-    width: 1rem;
-    height: 1rem;
-    border-radius: 50%;
-    background: #000;
-    position: absolute;
-    top: 4rem;
-    right: -0.5rem;
-    opacity: 0;
-  }
-  &::after {
-    content: "";
-    width: 1rem;
-    height: 1rem;
-    border-radius: 50%;
-    background: #000;
-    position: absolute;
-    top: 4rem;
-    left: -0.5rem;
-    opacity: 0;
-  }
   .dialog_img {
     display: flex;
     justify-content: center;
     height: 1.4rem;
+    >span{
+        display: flex;
+        align-items: center;
+        color: #777777;
+    }
     > img {
       width: 1rem;
       height: 1rem;
@@ -347,8 +401,8 @@ export default {
     color: #000;
   }
   .dialog_ying {
-    font-size: 0.6rem;
-    color: #e7394e;
+    font-size: 0.5rem;
+    color: #d4b06f;
     text-align: center;
     margin: 0.2rem 0;
   }
@@ -377,6 +431,93 @@ export default {
     }
   }
 }
+//   单卡权益样式
+// .dialog {
+//   background-image: url("../../assets/yuyueIcon/dizhuo@2x.png");
+//   background-repeat: no-repeat;
+//   background-size: cover;
+//   position: relative;
+//   padding-bottom: 0.2rem;
+//   padding-top: 0.2rem;
+//   width: 75%;
+//   margin: 2.67rem auto;
+//   border-radius: 0.3rem;
+//   &::before {
+//     content: "";
+//     width: 1rem;
+//     height: 1rem;
+//     border-radius: 50%;
+//     background: #000;
+//     position: absolute;
+//     top: 4rem;
+//     right: -0.5rem;
+//     opacity: 0;
+//   }
+//   &::after {
+//     content: "";
+//     width: 1rem;
+//     height: 1rem;
+//     border-radius: 50%;
+//     background: #000;
+//     position: absolute;
+//     top: 4rem;
+//     left: -0.5rem;
+//     opacity: 0;
+//   }
+//   .dialog_img {
+//     display: flex;
+//     justify-content: center;
+//     height: 1.4rem;
+//     > img {
+//       width: 1rem;
+//       height: 1rem;
+//       margin: 0.2rem 0.28rem;
+//     }
+//   }
+//   .dialog_txt {
+//     text-align: center;
+//     font-size: 0.3rem;
+//     font-family: PingFang SC;
+//     color: #333;
+//     margin: 0.3rem 0;
+//   }
+//   .dialog_text {
+//     font-size: 0.36rem;
+//     text-align: center;
+//     margin: 0.1rem 0;
+//     color: #000;
+//   }
+//   .dialog_ying {
+//     font-size: 0.5rem;
+//     color: #d4b06f;
+//     text-align: center;
+//     margin: 0.2rem 0;
+//   }
+//    /*固定宽高*/
+//   .dialog_qr {
+//     height: 3.6rem;
+//     width: 3.6rem;
+//     background: #08a0ff;
+//     margin: 0 auto;
+
+//     /*内容自适应*/
+//     /deep/.qrcode{
+//         width: 100% !important;
+//         height: 100% !important;
+//     }
+
+//     /*生成的二维码里面的img标签宽高自适应*/
+//     /deep/.qrcode img{
+//         width: 100% !important;
+//         height: 100% !important;
+//     }
+//     /*一开始生成的canvas也要进行宽高自适应*/
+//     /deep/.qrcode canvas{
+//         width: 100% !important;
+//         height: 100% !important;
+//     }
+//   }
+// }
 .custom-indicator {
     position: absolute;
     right: 5px;
@@ -464,6 +605,7 @@ export default {
 .yuyueUser{
     background: #f0f0f0;
     height: 100vh;
+    position: relative;
     .boxbgd{
         .box_user{
                 padding: 12px 23px 0;
@@ -551,6 +693,8 @@ export default {
                 // opacity: .3;
                 background-color:rgba(37, 37, 37, 0.3);
                 color: #fff;
+                display: block;
+                padding: 3PX;
                 border-radius: 50%;
             }
         }

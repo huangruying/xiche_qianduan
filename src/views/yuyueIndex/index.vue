@@ -155,7 +155,12 @@ export default {
             // margin-top: 3px;
             >span{
                 font-size: 12px;
-                font-weight: 600;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                color: #888;
             }
             >img{
                 width: 15px;

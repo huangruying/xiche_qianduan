@@ -205,7 +205,7 @@ export default {
         height: 100%;
       }
       > div {
-        font-size: 30px;
+        font-size: 24px;
         position: absolute;
         top: 25%;
         left: 40%;

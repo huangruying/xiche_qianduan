@@ -6,7 +6,9 @@ import store from './store'
 import router from './router/index'
 // import AMap from 'vue-amap'
 // rem 大小屏幕单位适配
-import 'lib-flexible'
+// import 'lib-flexible'
+import "lib-flexible/flexible.js";
+// https://blog.csdn.net/weixin_44767239/article/details/91975474
 // import rem from './rem/remConfig'
 // rem()
 
