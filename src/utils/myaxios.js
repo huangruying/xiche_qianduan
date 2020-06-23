@@ -3,10 +3,10 @@ import axios from 'axios'
 if(process.env.NODE_ENV==='development'){
   // 开发环境
   // axios.defaults.baseURL = 'yuyuetrip/wash/official'
-  axios.defaults.baseURL = 'http://test2.yuyuetrip.com.cn/wash/official'
+  axios.defaults.baseURL = 'http://mp.yuyuetrip.com.cn/wash/official'
  }else{
    // 生产环境
-  axios.defaults.baseURL = 'http://test2.yuyuetrip.com.cn/wash/official'
+  axios.defaults.baseURL = 'http://mp.yuyuetrip.com.cn/wash/official'
 }
 // 2.设置基准路径
 // axios.defaults.baseURL = 'http://a.insoonto.net'

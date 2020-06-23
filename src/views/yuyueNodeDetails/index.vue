@@ -268,10 +268,15 @@ export default {
            color: #777;
            display: block;
            margin-top: 5px;
+           font-size: 12.5px;overflow: hidden;
+           text-overflow: ellipsis;
+           display: -webkit-box;
+           -webkit-line-clamp: 1;
+           -webkit-box-orient: vertical;
        }
        >img{
-           width: 45PX;
-           height: 45PX;
+           width: 38PX;
+           height: 38PX;
        }
    } 
 }

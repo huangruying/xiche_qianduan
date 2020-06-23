@@ -7,7 +7,7 @@
               <van-icon name="arrow" />
           </div>
       </div>
-      <div style="overflow-y: scroll;background: #f0f0f0;">
+      <div style="overflow-y: scroll;background: #f0f0f0;padding-bottom: 60px;">
           <div class="guest" @click="guestIndex(value)" v-for="(value,index) in dataList" :key="index">
               <b>{{value.hallName}}</b>
               <p>{{value.hallLocation}}</p>

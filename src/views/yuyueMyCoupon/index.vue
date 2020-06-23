@@ -45,7 +45,7 @@
                                 <img src="@/assets/cardVolume/已使用.png" alt class="img"/>
                             </div>
                         </div>
-                        <div class="bottom">{{value.enddate}}前有效</div>
+                        <div class="bottom">{{value.enddate}} 前有效</div>
                     </div>
               </div>
               <van-loading size="24px" vertical v-if="loading">加载中...</van-loading>
@@ -65,6 +65,7 @@
 
 <script>
 import api from "@/api/yuyueMyCoupon"
+import formatTime from "@/utils/formatTime"
 export default {
     data(){
         return{
@@ -103,6 +104,9 @@ export default {
             this.loading = false
             if( res.data.code == 200 && res.data.data){
               this.codeList = res.data.data
+              this.codeList.map(v=>{
+                v.enddate = formatTime(v.enddate*1000,'yyyy-mm-dd') 
+              })
             }else{
               // this.$toast(res.data.msg)
             }
