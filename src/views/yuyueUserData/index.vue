@@ -146,7 +146,7 @@ export default {
             }
         },
         submit(){
-            var { phone } = this.$route.query
+            var phone = this.$store.getters.phone
             if(phone != this.userRawPhone){
                 this.$toast("原手机号码错误！")
                 return

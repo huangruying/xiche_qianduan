@@ -8,7 +8,8 @@ export default {
         yuyueSite: {},
         userID: null,
         item: "",
-        value: {}
+        value: {},
+        phone: null
     },
     // mutations对象是函数，默认传值是state，也就是上面的state，所以可以直接操作state.dataList
     // 动态的改变vuex的数据 触发 $store.commit('名',10)  传参直接后面添加即可
@@ -25,6 +26,9 @@ export default {
       },
       alterValue ( state , data) {
         state.value = data
+      },
+      alterPhone ( state , data) {
+        state.phone = data
       },
     },
     // actions和mutations的写法一样，都是函数

@@ -78,6 +78,14 @@ export default {
       this.signature = res.data.signature
     })
   },
+  activated(){
+      // 页面缓存时走这里
+      api.getParameter({url: location.href}).then(res=>{
+        this.noncestr = res.data.noncestr
+        this.timestamp = res.data.timestamp
+        this.signature = res.data.signature
+      })
+  },
   methods: {
     haha(){
       //  localStorage.removeItem("userMerchant")

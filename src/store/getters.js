@@ -7,5 +7,6 @@ const getters = {
     userID: state => state.yuyue.userID,
     item: state => state.yuyue.item,
     value: state => state.yuyue.value,
+    phone: state => state.yuyue.phone,
   }
 export default getters

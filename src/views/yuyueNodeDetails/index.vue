@@ -32,7 +32,7 @@
       </div>
 
      <!-- 使用弹窗 -->
-          <transition name="van-fade">
+        <transition name="van-fade">
             <div class="dialog" v-if="overlayShow" @click="overlayShow = false">
                 <div class="dialog-cover">
                     <div @click.stop class="click_stop">
@@ -229,7 +229,7 @@ export default {
     color: #000;
   }
   .dialog_ying {
-    font-size: 0.6rem;
+    font-size: 0.47rem;
     color: #e7394e;
     text-align: center;
     margin: 0.2rem 0;

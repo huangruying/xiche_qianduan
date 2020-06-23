@@ -120,19 +120,22 @@
             <div v-if="overlayShow" @click="overlayShow = false">
                 <div class="dialog-cover">
                     <div @click.stop class="click_stop">
-                        <van-swipe autoplay="900000" ref="swipe" @change="onChange2" :loop="true" indicator-color="#d4b06f">
-                                <van-swipe-item v-for="(item,index) in arrCard" :key="index">
-                                    <div class="dialog">
-                                        <div class="dialog_text">{{item.card}}</div>
-                                        <div class="dialog_ying">{{item.name}}</div>
-                                        <div class="dialog_qr"><div :id="'qrcode' + index" class="qrcode" ref="ref_qr"></div></div>
-                                        <div class="dialog_txt">请扫描二维码</div>
-                                        <div class="dialog_img">
-                                            <span v-if="blCard"><van-icon name="arrow-left" /><span>左右滑动切换卡包</span> <van-icon name="arrow" /></span>
-                                        </div>
+                        <van-swipe @change="onChange2" :loop="true" indicator-color="#d4b06f">
+                            <van-swipe-item v-for="(item,index) in arrCard" :key="index">
+                                <div class="dialog">
+                                    <div class="dialog_text">{{item.card}}</div>
+                                    <div class="dialog_ying">{{item.name}}</div>
+                                    <div class="dialog_qr"><div :id="'qrcode' + index" class="qrcode" ref="ref_qr"></div></div>
+                                    <div class="dialog_txt">请扫描二维码</div>
+                                    <div class="dialog_img">
+                                        <span v-if="blCard"><van-icon name="arrow-left" /><span>左右滑动切换会员卡</span> <van-icon name="arrow" /></span>
                                     </div>
-                                </van-swipe-item>
+                                </div>
+                            </van-swipe-item>
                         </van-swipe>
+                        <div class="indicator_current2">
+                          {{ current2 + 1 }} / {{ arrCard.length }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -188,6 +191,13 @@ export default {
         // value.replace(value.substring(4, value.length - 4), '****')
     },
     mounted(){
+        this.getOpenId()
+    },
+    created(){
+        // this.getOpenId()
+    },
+    activated(){
+        // 页面缓存时走这里
         this.getOpenId()
     },
     methods: {
@@ -256,6 +266,9 @@ export default {
                     if(!(this.UserList.phone)){ // 还没有绑定手机号
                         // console.log(this.UserList.phone);
                     }else{
+                        // vuex存储手机号,修改手机号会用到
+                        this.$store.commit('alterPhone',res.data.data.phone)
+                        // 截取手机号保密信息，记得用的是备份资料
                         this.UserList.phone =  this.UserList.phone.replace( this.UserList.phone.substring(3,  this.UserList.phone.length - 4), '****')
                     }
                     if(!(this.UserList.yuyueProducts) || this.UserList.yuyueProducts.length <= 0){ // 没有权益
@@ -266,6 +279,7 @@ export default {
                         this.cardBox = true
                         this.images = this.UserList.yuyueProducts
                     }
+                    // 其他页面跳转过来的，需要强制刷新页面
                     this.$forceUpdate()
                 }else{
                     this.loginUser()
@@ -278,7 +292,7 @@ export default {
           this.current = index
         },
         onChange2(index){
-          this.current2 = index
+           this.current2 = index
         },
         purchase(){
             this.$router.push({name: "yuyueIndex"})
@@ -304,7 +318,6 @@ export default {
                     this.loginUser()
                 }else{
                     this.$router.push({name: "yuyueUserData",query: {
-                       phone: this.UserList.phone,
                        name: this.UserList.username
                     }})
                 }
@@ -334,7 +347,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-//
 /deep/.van-grid-item__content::after{
     z-index: auto;
 }
@@ -348,7 +360,7 @@ export default {
   .dialog-cover {
     background: rgba(0,0,0, 0.8);
     position: fixed;
-    z-index: 999999;
+    z-index: 99;
     top: 0;
     left: 0;
     width: 100vw;
@@ -518,6 +530,17 @@ export default {
 //     }
 //   }
 // }
+.indicator_current2{
+    position: absolute;
+    right: 5px;
+    top: 420px;
+    // padding: 3px 7px;
+    font-size: 14px;
+    // background: rgba(37, 37, 37, 0.1);
+    border-radius: 5px;
+    // background: #fff;
+    color: #fff;
+}
 .custom-indicator {
     position: absolute;
     right: 5px;
@@ -526,6 +549,7 @@ export default {
     font-size: 12px;
     background: rgba(37, 37, 37, 0.1);
     border-radius: 5px;
+    z-index: 9;
 }
 /deep/.van-swipe__track{
     height: 0px;
