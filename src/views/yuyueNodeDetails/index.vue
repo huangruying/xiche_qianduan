@@ -36,19 +36,23 @@
             <div class="dialog" v-if="overlayShow" @click="overlayShow = false">
                 <div class="dialog-cover">
                     <div @click.stop class="click_stop">
-                        <van-swipe autoplay="900000" ref="swipe" @change="onChange" :loop="true">
-                                <van-swipe-item v-for="(item,index) in arrCard" :key="index">
-                                    <div class="dialog">
-                                        <div class="dialog_text">{{item.card}}</div>
-                                        <div class="dialog_ying">{{item.name}}</div>
-                                        <div class="dialog_qr"><div :id="'qrcode' + index" class="qrcode" ref="ref_qr"></div></div>
-                                        <div class="dialog_txt">请扫描二维码</div>
-                                        <div class="dialog_img">
-                                            <span v-if="blCard"><van-icon name="arrow-left" /><span>左右滑动切换卡包</span> <van-icon name="arrow" /></span>
-                                        </div>
+                        <van-swipe autoplay="900000" ref="swipe" @change="onChange" :loop="true" indicator-color="#d4b06f">
+                            <van-swipe-item v-for="(item,index) in arrCard" :key="index">
+                                <div class="dialog">
+                                    <div class="dialog_text">{{item.card}}</div>
+                                    <div class="dialog_ying">{{item.name}}</div>
+                                    <div class="dialog_textName">{{item.iname}}</div>
+                                    <div class="dialog_qr"><div :id="'qrcode' + index" class="qrcode" ref="ref_qr"></div></div>
+                                    <div class="dialog_txt">请扫描二维码</div>
+                                    <div class="dialog_img">
+                                        <span v-if="blCard"><van-icon name="arrow-left" /><span>左右滑动切换卡包</span> <van-icon name="arrow" /></span>
                                     </div>
-                                </van-swipe-item>
+                                </div>
+                            </van-swipe-item>
                         </van-swipe>
+                        <div class="indicator_current2">
+                          {{ current + 1 }} / {{ arrCard.length }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -84,6 +88,9 @@ export default {
         phone(phoneNumber){
             window.location.href = 'tel://' + phoneNumber
         },
+        loginUser() {
+            this.$parent.phoneDialog();
+        },
          //  生成二维码
         qrcode (cardNumber,idCode) {
             let that = this;
@@ -105,15 +112,17 @@ export default {
             }
         },
         apiGetWeiXinByOpenId(openid){
-            api.getWeiXinByOpenId({openid}).then(res=>{
+            api.finHallQrcode({openid}).then(res=>{
                 if(res.data && res.data.code == 200){
-                    this.$store.dispatch("alterId", res.data.data.id)
+                    if(res.data.data.id){
+                        this.$store.dispatch("alterId", res.data.data.id)
+                    }
                     if(!(res.data.data.phone) || res.data.data.phone == null){ // 还没有绑定手机号
                         this.$toast("请先绑定手机号！")
                         this.$parent.phoneDialog()
                         return
                     }
-                    if(res.data.data.yuyueProducts.length <= 0){ // 没有权益
+                    if(!(res.data.data.yuyueProducts) || res.data.data.yuyueProducts.length <= 0){ // 没有权益
                         this.$dialog.confirm({
                         //    title: '',
                            message: '你还未购买权益哦！是否去购买？',
@@ -126,15 +135,21 @@ export default {
                         }); 
                     }else{ // 有权益，买了卡，打开弹窗
                         var arr = res.data.data.yuyueProducts
-                        if(arr.length > 1){
+                        var arrData = []
+                        arr.forEach(card=>{
+                            card.serviceCard.forEach(cardItem=>{
+                                // 把所有的高铁卡单独放到一个数组里面做轮播图
+                                arrData.push(cardItem)
+                            })
+                        })
+                        if(arrData.length > 1){
                             this.blCard = true
                         }
-                        this.arrCard = arr
+                        this.arrCard = arrData
                         this.overlayShow = true
-                        arr.forEach((v,i)=>{
+                        arrData.forEach((v,i)=>{
                             this.applyCode(v,i)
                         })
-                       // this.applyCode(arr[0]) // 多张卡默认拿第一张做展示二维码
                     }
                 }else{
                     this.loginUser()
@@ -160,6 +175,20 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/.van-swipe__indicators{
+    bottom: 1px;
+}
+/deep/.van-swipe__indicator{
+    background-color: #555;
+}
+.indicator_current2 {
+  position: absolute;
+  right: 5px;
+  top: 420px;
+  font-size: 14px;
+  border-radius: 5px;
+  color: #fff;
+}
 // 最外层 设置position定位 
   .dialog {
     // position: relative;
@@ -203,7 +232,7 @@ export default {
   .dialog_img {
     display: flex;
     justify-content: center;
-    height: 1.4rem;
+    height: 1rem;
     >span{
         display: flex;
         align-items: center;
@@ -222,6 +251,10 @@ export default {
     color: #333;
     margin: 0.3rem 0;
   }
+  .dialog_textName {
+    text-align: center;
+    color: #000;
+  }
   .dialog_text {
     font-size: 0.36rem;
     text-align: center;
@@ -230,7 +263,7 @@ export default {
   }
   .dialog_ying {
     font-size: 0.47rem;
-    color: #e7394e;
+    color: #d4b06f;
     text-align: center;
     margin: 0.2rem 0;
   }

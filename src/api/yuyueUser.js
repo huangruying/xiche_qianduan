@@ -9,7 +9,16 @@ const getWeiXinByOpenId = data => {
     data
   })
 }
+// 根据openid查询站点高铁卡
+const finHallQrcode = data => {
+  return axios({
+    method: 'post',
+    url: '/finHallQrcode',
+    data
+  })
+}
 
 export default{
-    getWeiXinByOpenId,
+  getWeiXinByOpenId,
+  finHallQrcode
 }
