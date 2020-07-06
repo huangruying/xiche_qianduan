@@ -114,9 +114,7 @@ export default {
       indexSrc: require('@/assets/index/index_img.png'),
       vanTab:[],
       option1: [
-        { text: '天河区', value: 0 },
-        { text: '白云区', value: 1 },
-        { text: '番禺区', value: 2 },
+        { text: '天河区', value: 0 }
       ],
       activeName: 0,
       duration: 0,

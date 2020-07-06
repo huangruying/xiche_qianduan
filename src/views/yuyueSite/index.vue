@@ -18,7 +18,7 @@
           </div>
       </div>
       <van-empty description="对不起，暂无数据" style="overflow-y: scroll;" v-if="noData"/>
-      <tabbar :active.sync="active"></tabbar>
+      <tabbar :active.sync="active" v-if="(this.chinaLife == null)"></tabbar>
       <van-popup v-model="showPopup" position="bottom" :style="{ height: '40%' }">
           <van-picker
             title="选择城市"
@@ -51,6 +51,7 @@ export default {
             showPopup: false,
             text: "",
             defaultIndex: "",
+            chinaLife: null,
             dataList: []
         }
     },
@@ -58,6 +59,13 @@ export default {
         
     },
     mounted(){
+        var url = this.$route.query
+        if(url.chinaLife){
+            // 国寿过来的地址
+            this.chinaLife = url.chinaLife
+        }else{
+            this.chinaLife = null
+        }
         this.remouldData()
         this.$toast.loading({
             duration: 0, // 持续展示 toast
@@ -71,6 +79,9 @@ export default {
             window.location.href = 'tel://' + phoneNumber
         },
         guestIndex(value){
+            if(!(this.chinaLife == null)){
+                value.chinaLife = this.chinaLife
+            }
             this.$store.dispatch('alterSite',value)
             this.$router.push({name: "yuyueNodeDetails"})
         },

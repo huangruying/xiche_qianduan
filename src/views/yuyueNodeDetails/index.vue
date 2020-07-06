@@ -28,7 +28,7 @@
           </div>
       </div>
       <div class="nodeBtn">
-          <van-button block round color="linear-gradient(to right, #4ad617, #ade083)" @click="employ">立即使用</van-button>
+          <van-button block round color="linear-gradient(to right, #4ad617, #ade083)" @click="employ" v-if="btnBl">立即使用</van-button>
       </div>
 
      <!-- 使用弹窗 -->
@@ -73,6 +73,7 @@ export default {
             overlayShow: false,
             blCard: false,
             selectShow: false,
+            btnBl: true,
             current: 0,
             codeItem: {},
             arrCard: []
@@ -80,6 +81,11 @@ export default {
     },
     mounted(){
         this.dataList = this.$store.getters.yuyueSite
+        if(this.dataList.chinaLife){
+            this.btnBl = false
+        }else{
+            this.btnBl = true
+        }
     },
     methods: {
         routerGo(){

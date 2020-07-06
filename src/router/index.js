@@ -47,7 +47,8 @@ let router= new Router({
             name: 'cardVolume',
             component: ()=>import('@/views/cardVolume/index'),
             meta: {
-                title: '我的卡券'
+                title: '我的卡券',
+                keepAlive: false, //此组件不需要被缓存
             }
         },
         {

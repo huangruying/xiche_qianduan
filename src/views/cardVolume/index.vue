@@ -90,6 +90,16 @@ export default {
       this.apiList(id)
     }
   },
+  activated() {
+    // 页面缓存时走这里
+    var openId = localStorage.getItem("wxUserId")
+    if(openId === null){
+        this.$parent.login()
+    }else{
+      this.id = openId
+      this.apiList(id)
+    }
+  },
   watch: {
     $route: {
         handler() {
