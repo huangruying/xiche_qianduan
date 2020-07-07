@@ -24,8 +24,10 @@
     </div>
     <div class="con-box" v-if="!search_key">
       <!--地址列表-->
+      <van-button type="primary" block @click="SearchBtn()" color="#3f3f3f">确定选取该位置</van-button>
       <div class="Hlist-box">
         <ul>
+          <!-- <van-button type="primary" block @click="SearchBtn()">确定选取该位置</van-button> -->
           <li v-for="(item, index) in lists" :key="index" @click="onAddressLi(item)">
             <b>
               <van-icon color="#a6a6a6" name="clock" />
@@ -77,12 +79,22 @@ export default {
     routerGo(){
         this.$router.go(-1)
     },
+    // 确定选取位置
+    SearchBtn(){
+      var arr = this.center
+      console.log(arr);
+      this.$store.dispatch('disLngLat',arr) // vuex存起来以后可能用到
+      this.$router.push({name: 'merchantLogin',query: {
+          lng: arr[0],
+          lat: arr[1]
+      }}) // 回到注册页,带上经纬度
+    },
     adMap() {
       this.loading = true;
       //初始化地图
       var map = new AMap.Map("container", {
         zoom: 14, //缩放级别
-        center: this.center //设置地图中心点
+        // center: this.center //设置地图中心点
         //resizeEnable: true,  //地图初始化加载定位到当前城市
       });
       //获取初始中心点并赋值

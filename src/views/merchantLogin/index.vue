@@ -196,7 +196,7 @@
         <van-field
           required
           name="accountName"
-          :value="accountName"
+          v-model="accountName"
           label="户名"
           placeholder="请输入户名"
           :rules="[{ required: true, message: '请输入户名!' }]"
@@ -204,7 +204,7 @@
         <van-field
           required
           name="account"
-          :value="account"
+          v-model="account"
           label="账户"
           placeholder="请输入账户"
           :rules="[{ required: true, message: '请输入账户!' }]"
@@ -212,7 +212,7 @@
         <van-field
           required
           name="openingBank"
-          :value="openingBank"
+          v-model="openingBank"
           label="开户行"
           placeholder="请输入开户行"
           :rules="[{ required: true, message: '请输入开户行!' }]"
@@ -220,7 +220,7 @@
 
         <div class="title">网点照片及营业执照</div>
         <div class="uploader">
-            <van-uploader v-model="fileList1" multiple :max-count="3" preview-size="60" :after-read="afterRead1" @delete="deletefile1">
+            <van-uploader v-model="fileList1" multiple :max-count="4" preview-size="60" :after-read="afterRead1" @delete="deletefile1">
                 <div class="uploadder_box">
                     <img src="@/assets/上传照片@2x.png" alt="">
                     <span>上传店面形象照片</span>
@@ -295,7 +295,7 @@
 
 <script>
 import { cardTitle, letter } from "@/utils/plateNumber";
-import { findMechanismName , saveDot } from '@/api/login'
+import { findMechanismName , saveDot , findCarwashTypesInfos } from '@/api/login'
 import api from '@/api/index'
 import areaList from '@/utils/area'
 import { officialOssUpload } from '@/api/evaluate'
@@ -338,6 +338,8 @@ export default {
       province: "",
       city: "",
       region: "",
+      provinceId: "",
+      cityId: "",
       contractTime2: new Date(),
       showTime: false,
       showPicker: false,
@@ -358,7 +360,8 @@ export default {
       honorImage: [],
       constructionImage: [],
       trafficImage: [],
-      businessImage: []
+      businessImage: [],
+      serviceItemList: []
     };
   },
   mounted() {
@@ -367,6 +370,7 @@ export default {
     // var lnglat = this.$store.getters.lngLat
     // this.lnglat = lnglat[0] + "/" + lnglat[1]
     // console.log(lnglat);
+    this.serviceItem() // 服务项数据
   },
   watch: {
     $route: {
@@ -385,6 +389,24 @@ export default {
   methods: {
     routerGo() {
       this.$router.go(-1);
+    },
+    // 服务项数据
+    serviceItem(){
+      findCarwashTypesInfos().then(res=>{
+        console.log(res);
+        this.serviceItemList = res.data
+        this.serviceItemList.forEach(v=>{
+          v.id = v.dtId
+          var obj = {
+            id: v.dtId
+          }
+          v.carwashsTypes.forEach(i=>{
+            obj.ids = i.id
+            i.strObj = JSON.stringify(obj) // 2级id字符串
+          })
+        })
+         console.log(this.serviceItemList);
+      })
     },
     dialogAmp(){
       this.$router.push({name: 'location'})
@@ -551,6 +573,8 @@ export default {
       this.region = values[2].name
       this.regionId = values[2].code
       this.showArea = false
+      this.provinceId = values[0].code
+      this.cityId = values[1].code
     },
     async onSubmit(values) {
       this.loading = true
@@ -565,6 +589,8 @@ export default {
       values.city = this.city
       values.region = this.region
       values.regionId = this.regionId
+      values.provinceId = this.provinceId
+      values.cityId = this.cityId
       values.latitude = this.latitude
       values.longitude = this.longitude
       delete values.area  
@@ -572,6 +598,7 @@ export default {
       delete values.businessHours2
       delete values.lnglat
       var data = values
+      // console.log(data);
       saveDot(data).then(res => {
         if (res.data.code == 200) {
           var obj = res.data.data

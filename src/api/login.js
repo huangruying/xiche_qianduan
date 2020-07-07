@@ -72,3 +72,12 @@ export const updateWeixinUserByPhone = data => {
     data
   })
 }
+
+// 洗车网点服务项
+export function findCarwashTypesInfos(data) {
+  return axios({
+    url: '/findCarwashTypesInfos',
+    method: 'post',
+    data
+  })
+}
