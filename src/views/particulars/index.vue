@@ -21,11 +21,11 @@
       <div class="bottom_address">
         <div class="left">
           <img src="@/assets/particulars/电话@2x.png" alt="">
-          <span>电话 <span>{{dataList.mobile}}</span></span>
+          <span>电话 <span>{{dataList.storePhone}}</span></span>
         </div>
         <div class="right">
           <img src="@/assets/index/时间@2x.png" alt="" class="img">
-          <span>{{dataList.businessHours}}</span>
+          <span>{{dataList.businessHours}} - {{dataList.businessHours2}}</span>
         </div>
       </div>
       <div class="bgd_box">
@@ -172,7 +172,7 @@ export default {
         },
         async apiGetList(dotCode,city,region){
             var res = await api.getOfficialDotByDotCode({dotCode,city,region})
-            console.log(res.data.data);
+            // console.log(res.data.data);
             this.dataList = res.data.data
             // var imgArr = JSON.parse(this.dataList.storeImage)
             // let imgArr2 = imgArr.filter((num) => {
@@ -189,11 +189,14 @@ export default {
                 city: thiss.city
             })
             geocoder.getLocation( address, function(status, result) {
+                // console.log(result);
                 if (status === 'complete' && result.info === 'OK') {
                    // result中对应详细地理坐标信息
                    thiss.lat = result.geocodes[0].location.lat
                    thiss.lng = result.geocodes[0].location.lng
                    thiss.showShare = true
+                }else{
+                    thiss.$toast("地理位置查询失败,请联系客服!")
                 }
               })
             })

@@ -217,6 +217,21 @@
           placeholder="请输入开户行"
           :rules="[{ required: true, message: '请输入开户行!' }]"
         />
+        <div class="title">服务项信息</div>
+        <van-field name="valueVcheckList">
+          <template #input>
+            <van-checkbox-group v-model="valueVcheckList" direction="horizontal" @change="Vchange">
+              <div v-for="(itemV,indexV) in serviceItemList" :key="indexV">
+                <div class="itemV_item">{{ itemV.dotType }}</div>
+                <div v-for="(valueV,indexV) in itemV.carwashsTypes" :key="indexV">
+                  <van-checkbox :name="valueV.strObj">{{ valueV.dotsType }}</van-checkbox>
+                  <van-field label="请输入价格" type="number" v-model="valueV.price" placeholder="请输入价格" />
+                </div>
+              </div>
+            </van-checkbox-group>
+          </template>
+        </van-field>
+
 
         <div class="title">网点照片及营业执照</div>
         <div class="uploader">
@@ -361,7 +376,9 @@ export default {
       constructionImage: [],
       trafficImage: [],
       businessImage: [],
-      serviceItemList: []
+      serviceItemList: [],
+      valueVcheckList: [], // 服务项绑定数据数组
+      valueArr: [], // 处理后的数据
     };
   },
   mounted() {
@@ -390,11 +407,32 @@ export default {
     routerGo() {
       this.$router.go(-1);
     },
+    Vchange(){  // 服务项
+      let arr = []
+      var itemArr = JSON.parse(JSON.stringify(this.valueVcheckList)) //拷贝选中数组
+      var sum = JSON.parse(JSON.stringify(this.serviceItemList)) //拷贝全部数据数组
+      itemArr.forEach(v=>{
+        var obj = JSON.parse(v)
+        sum.forEach(value=>{
+          if(obj.id == value.id){
+            value.carwashsTypes.forEach(item=>{
+              if(item.id == obj.ids && obj.id == value.id){
+                let itemObj = {}
+                itemObj.carwashsId = item.id
+                itemObj.price = item.price
+                itemObj.carwashId = obj.id
+                arr.push(itemObj)
+              }
+            })
+          }
+        })
+      })
+      this.valueArr = arr
+    },
     // 服务项数据
     serviceItem(){
       findCarwashTypesInfos().then(res=>{
-        console.log(res);
-        this.serviceItemList = res.data
+        this.serviceItemList = res.data.data
         this.serviceItemList.forEach(v=>{
           v.id = v.dtId
           var obj = {
@@ -405,7 +443,6 @@ export default {
             i.strObj = JSON.stringify(obj) // 2级id字符串
           })
         })
-         console.log(this.serviceItemList);
       })
     },
     dialogAmp(){
@@ -584,7 +621,8 @@ export default {
       values.honorImage = JSON.stringify(this.honorImage)
       values.receptionImage = JSON.stringify(this.receptionImage)
       values.storeImage = JSON.stringify(this.storeImage)
-      values.businessHours = this.businessHours1 + '-' + this.businessHours2
+      values.businessHours = this.businessHours1
+      values.businessHours2 = this.businessHours2
       values.province = this.province
       values.city = this.city
       values.region = this.region
@@ -593,10 +631,13 @@ export default {
       values.cityId = this.cityId
       values.latitude = this.latitude
       values.longitude = this.longitude
+      values.dotServices = this.valueArr // 服务项绑定数据
+      values.dotType = this.carwashId
+      values.mechanismId = this.mechanismId
       delete values.area  
       delete values.businessHours1
-      delete values.businessHours2
       delete values.lnglat
+      delete values.valueVcheckList
       var data = values
       // console.log(data);
       saveDot(data).then(res => {
@@ -631,6 +672,19 @@ export default {
   width:300px;
   height: 180px; 
 }  
+.itemV_item{
+  display: inline-block;
+  padding: 1px 10px;
+  background: #3f3f3f;
+  margin-bottom: 7px;
+  color: #fff;
+  text-align: center;
+  border-radius: 7px;
+}
+/deep/.van-checkbox__label{
+  font-weight: bold;
+  font-size: 15.5px;
+}
 .ditu{
   padding: 25px 15px;
 }

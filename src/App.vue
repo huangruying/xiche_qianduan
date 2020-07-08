@@ -119,12 +119,11 @@ export default {
               this.onSale = false
               this.$router.push({name: 'cardVolume',query: {login: 1}})
              }else{
-               // 洗车个人中心绑定手机号
+               // 贵宾厅个人中心绑定手机号
                 localStorage.setItem("phone",res.data.phone)
                 this.$router.push({name: "yuyueUser" , query: {
                   phone: 1
                 }})
-               
              }
              this.$toast.success('绑定成功!')
              localStorage.setItem("wxUserId", res.data.data.openid)
@@ -180,6 +179,7 @@ export default {
         this.isRouterAlive = true; //再打开
       }); 
     },
+    // 洗车优惠卷的弹出登录
     login(){
       var openId = localStorage.getItem("wxUserId")  // 上线打开这个
       // var openId = 'o2mJowp-PE2-xcdFlbu6-DDHA8tY'

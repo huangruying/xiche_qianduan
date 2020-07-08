@@ -54,7 +54,7 @@
             </div>
             <div class="right">
               <img src="@/assets/index/时间@2x.png" alt="" class="img">
-              <span>{{item.businessHours}}</span>
+              <span>{{item.businessHours}} - {{item.businessHours2}}</span>
             </div>
           </div>
         </div>
@@ -312,7 +312,9 @@ export default {
            ++this.pageNum
           // this.nodata = false
           res.data.data.map(v=>{
-            v.storeImage = v.storeImages[0]
+            if(v.storeImages && v.storeImages[0]){
+              v.storeImage = v.storeImages[0]
+            }
             var distance = this.latLng(v.latitude,v.longitude)
             v.distance = distance
           })

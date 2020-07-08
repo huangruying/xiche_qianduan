@@ -198,7 +198,8 @@ export default {
     // value.replace(value.substring(4, value.length - 4), '****')
   },
   mounted() {
-    this.getOpenId();
+    this.getOpenId()
+    // this.loginUser() // 测试绑定手机号
   },
   created() {
     // this.getOpenId()
@@ -212,14 +213,14 @@ export default {
       // 单卡权益弹窗
       // this.show = true
       // this.card = card
-      // 调用二维码 注意： 在需要调用的地方  这样必须这样调用  否则会出现  appendChild  null  就是id为qrcode的dom获取不到 返回结果为null
+      // 调用二维码 注意：在需要调用的地方,这样必须这样调用,否则会出现 appendChild null 就是id为qrcode的dom获取不到,返回结果为null
       // this.$nextTick (function () {
       //   this.qrcode(card.card);
       // })
       // this.$refs.ref_qr.innerHTML = ""
       // console.log(card.serviceCard);
-      this.overlayShow = true;
-      this.arrCard = card.serviceCard;
+      this.overlayShow = true
+      this.arrCard = card.serviceCard
       if (card.serviceCard.length > 1) {
         this.blCard = true;
       }
@@ -239,7 +240,6 @@ export default {
       // var openId = this.$store.getters.openId
       // localStorage.setItem("wxUserId",'o2mJowuCwy7R__H2fAKc9nLoCyd0')
       var openId = localStorage.getItem("wxUserId"); // 上线之后打开
-      // var openId = 'o2mJowuCwy7R__H2fAKc9nLoCyd0'
       if (!openId) {
         this.userImg = false;
         this.userBoxName = false;
