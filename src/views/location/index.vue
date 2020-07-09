@@ -8,7 +8,7 @@
     <div class="search-box">
       <div class="search-postion">
         <span class="buts" @click="routerGo">返回</span>
-        <input type="text" placeholder="输入关键字搜索" v-model="search_key" />
+        <input type="text" placeholder="输入关键字搜索" v-model="search_key" @blur="blur"/>
         <span class="clear" v-if="search_key" @click="search_key ='' ">
           <van-icon color="#8f8f8f" name="clear" />
         </span>
@@ -59,7 +59,7 @@
 export default {
   data() {
     return {
-      center: [116.42792, 39.902896], //经度+纬度
+      center: [], //经度+纬度
       search_key: "", //搜索值
       lists: [], //地点列表
       search_list: [], //搜索结果列表
@@ -69,8 +69,9 @@ export default {
     };
   },
   mounted() {
-    var center = this.$store.getters.center
-    this.center = center // 拿到vuex的经纬度数据
+    // var center = this.$store.getters.center
+    // this.center = center // 拿到vuex的经纬度数据
+    this.getLocation()
     setTimeout(() => {
       this.adMap();
     }, 1000);
@@ -79,22 +80,84 @@ export default {
     routerGo(){
         this.$router.go(-1)
     },
+    blur(){
+      this.$forceUpdate()
+    },
     // 确定选取位置
     SearchBtn(){
       var arr = this.center
-      console.log(arr);
+      // console.log(arr);
       this.$store.dispatch('disLngLat',arr) // vuex存起来以后可能用到
       this.$router.push({name: 'merchantLogin',query: {
           lng: arr[0],
           lat: arr[1]
       }}) // 回到注册页,带上经纬度
     },
+    getLocation(){  // 初始化定位
+        const self = this;
+        AMap.plugin("AMap.Geolocation", function() {
+        var geolocation = new AMap.Geolocation({
+          // 是否使用高精度定位，默认：true
+          enableHighAccuracy: true,
+          // 设置定位超时时间，默认：无穷大
+          timeout: 10000
+        });
+        geolocation.getCurrentPosition();
+       // map.addControl(geolocation); //geolocation.getCurrentPosition(); //精准定位
+       // geolocation.getCityInfo();  //定位到城市
+        AMap.event.addListener(geolocation, "complete", onComplete);
+        AMap.event.addListener(geolocation, "error", onError);
+
+        function onComplete(data) {
+          // console.log("定位成功信息：", data);
+          self.center = [data.position.lng,data.position.lat]
+        }
+
+        function onError(data) {
+          // 定位出错
+          self.getLngLatLocation();
+        }
+      });
+    },
+    // 定位出错，调用ip定位
+    getLngLatLocation() {
+        var cat = this
+        AMap.plugin('AMap.CitySearch', function () {
+          var citySearch = new AMap.CitySearch()
+          citySearch.getLocalCity(function (status, result) {
+            if (status === 'complete' && result.info === 'OK') {
+              // 查询成功，result即为当前所在城市信息
+              // console.log('通过ip获取当前城市：',result)
+              //逆向地理编码
+              var citysty = result.city + "中心"
+              // console.log(citysty);
+              AMap.plugin('AMap.Geocoder', function () {
+                  var geocoder = new AMap.Geocoder({
+                      // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+                      // city: result.adcode
+                      city: result.city
+                  })
+                  // 经纬度查询地址
+                  var lnglat = result.rectangle.split(';')[0].split(',');
+                  geocoder.getLocation(citysty, function(status, result) {
+                    if (status === 'complete' && result.info === 'OK') {
+                      // result中对应详细地理坐标信息
+                      // console.log(result.geocodes[0].location);
+                      var datalnglat = result.geocodes[0].location
+                      cat.center = [datalnglat.lng,datalnglat.lat]
+                    }
+                  })
+              })
+            }
+          })
+        })
+    },
     adMap() {
       this.loading = true;
       //初始化地图
       var map = new AMap.Map("container", {
         zoom: 14, //缩放级别
-        // center: this.center //设置地图中心点
+        center: this.center //设置地图中心点
         //resizeEnable: true,  //地图初始化加载定位到当前城市
       });
       //获取初始中心点并赋值

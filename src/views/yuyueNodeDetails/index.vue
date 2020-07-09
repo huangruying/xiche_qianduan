@@ -81,7 +81,7 @@ export default {
     },
     mounted(){
         this.dataList = this.$store.getters.yuyueSite
-        if(this.dataList.chinaLife){
+        if(this.dataList.chinaLife || this.dataList.piccsz || this.dataList.cicc){
             this.btnBl = false
         }else{
             this.btnBl = true

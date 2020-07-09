@@ -18,7 +18,7 @@
           </div>
       </div>
       <van-empty description="对不起，暂无数据" style="overflow-y: scroll;" v-if="noData"/>
-      <tabbar :active.sync="active" v-if="(this.chinaLife == null)"></tabbar>
+      <tabbar :active.sync="active" v-if="tabbarBl"></tabbar>
       <van-popup v-model="showPopup" position="bottom" :style="{ height: '40%' }">
           <van-picker
             title="选择城市"
@@ -51,7 +51,10 @@ export default {
             showPopup: false,
             text: "",
             defaultIndex: "",
-            chinaLife: null,
+            chinaLife: false,
+            piccsz: false,
+            cicc: false,
+            tabbarBl: true,
             dataList: []
         }
     },
@@ -63,8 +66,20 @@ export default {
         if(url.chinaLife){
             // 国寿过来的地址
             this.chinaLife = url.chinaLife
+            this.tabbarBl = false
+        }else if(url.piccsz){
+            // 人寿过来的地址
+            this.piccsz = url.piccsz
+            this.tabbarBl = false
+        }else if(url.cicc){
+            // 大地过来的地址
+            this.cicc = url.cicc
+            this.tabbarBl = false
         }else{
-            this.chinaLife = null
+            this.piccsz = false
+            this.chinaLife = false
+            this.cicc = false
+            this.tabbarBl = true
         }
         this.remouldData()
         this.$toast.loading({
@@ -79,8 +94,16 @@ export default {
             window.location.href = 'tel://' + phoneNumber
         },
         guestIndex(value){
-            if(!(this.chinaLife == null)){
-                value.chinaLife = this.chinaLife
+            if(!(this.tabbarBl)){
+                if(this.chinaLife){
+                   value.chinaLife = this.chinaLife
+                }
+                if(this.piccsz){
+                   value.piccsz = this.piccsz
+                }
+                if(this.cicc){
+                   value.cicc = this.cicc
+                }
             }
             this.$store.dispatch('alterSite',value)
             this.$router.push({name: "yuyueNodeDetails"})
